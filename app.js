@@ -38,7 +38,7 @@ const logbookRef = collection(db, "logbook");
 // DOM Elements
 // ==========================================================================
 
-// Logbook (Right Drawer)
+// Access Log (Right Drawer)
 const logbookForm = document.getElementById("logbook-form");
 const nameInput = document.getElementById("name-input");
 const signBtn = document.getElementById("sign-btn");
@@ -69,8 +69,40 @@ const cancelComposeBtn = document.getElementById("cancel-compose-btn");
 const composerModeTitle = document.getElementById("composer-mode-title");
 const saveJournalText = document.getElementById("save-journal-text");
 
-// Shared Backdrop
+// Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
+const typewriterTarget = document.getElementById("typewriter-target");
+
+// ==========================================================================
+// Tactical Typewriter Text Animation
+// ==========================================================================
+function startTypewriter(element, text, speed = 65) {
+  if (!element) return;
+  element.textContent = "";
+  let i = 0;
+  function typeChar() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(typeChar, speed);
+    }
+  }
+  typeChar();
+}
+
+// Trigger Hero Typewriter on Load
+document.addEventListener("DOMContentLoaded", () => {
+  const greetingHeading = document.getElementById("greeting");
+  const fullGreeting = greetingHeading?.getAttribute("data-text") || "Hello, Mister Matthews";
+  startTypewriter(typewriterTarget, fullGreeting, 55);
+});
+
+// Initial trigger if script loads after DOM ready
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  const greetingHeading = document.getElementById("greeting");
+  const fullGreeting = greetingHeading?.getAttribute("data-text") || "Hello, Mister Matthews";
+  startTypewriter(typewriterTarget, fullGreeting, 55);
+}
 
 // ==========================================================================
 // Drawer Open / Close Logic
@@ -88,6 +120,14 @@ function openLogbookDrawer() {
   document.body.classList.add("logbook-open");
   if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "true");
   if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "false");
+  
+  // Trigger header typewriter animation
+  const titleEl = logbookDrawer?.querySelector("[data-typewriter]");
+  if (titleEl) {
+    const rawText = titleEl.getAttribute("data-typewriter");
+    startTypewriter(titleEl, rawText, 40);
+  }
+
   setTimeout(() => {
     if (nameInput) nameInput.focus();
   }, 250);
@@ -98,6 +138,13 @@ function openJournalDrawer() {
   document.body.classList.add("journal-open");
   if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "true");
   if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "false");
+  
+  // Trigger header typewriter animation
+  const titleEl = journalDrawer?.querySelector("[data-typewriter]");
+  if (titleEl) {
+    const rawText = titleEl.getAttribute("data-typewriter");
+    startTypewriter(titleEl, rawText, 40);
+  }
 }
 
 function toggleLogbookDrawer() {
@@ -131,7 +178,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 // ==========================================================================
-// Personal Journal Storage & CRUD
+// Personal Journal Storage & CRUD (Batman HUD Themed)
 // ==========================================================================
 const JOURNAL_STORAGE_KEY = "matthews_personal_journal_v1";
 
@@ -202,7 +249,12 @@ function renderJournal() {
     const sanitizedBody = escapeHTML(entry.body);
 
     return `
-      <article class="journal-card" data-entry-id="${entry.id}">
+      <article class="journal-card hud-card" data-entry-id="${entry.id}">
+        <span class="reticle reticle-tl" aria-hidden="true"></span>
+        <span class="reticle reticle-tr" aria-hidden="true"></span>
+        <span class="reticle reticle-bl" aria-hidden="true"></span>
+        <span class="reticle reticle-br" aria-hidden="true"></span>
+
         <div class="journal-card-header">
           <span class="journal-tag">LOG // ${logNumber}</span>
           <time class="journal-date">${entry.date || "UNKNOWN TIME"}</time>
@@ -325,7 +377,7 @@ if (journalForm) {
         return item;
       });
     } else {
-      // Create new entry (added to top)
+      // Create new entry
       const newEntry = {
         id: `log-${Date.now()}`,
         date: formatCurrentJournalDate(),
@@ -343,7 +395,7 @@ if (journalForm) {
 }
 
 // ==========================================================================
-// Quantum Logbook (Firestore Realtime)
+// Quantum Access Log (Firestore Realtime)
 // ==========================================================================
 
 function formatLogDate(timestamp) {
@@ -366,7 +418,7 @@ function renderLogbook(entries) {
     logbookList.innerHTML = `
       <div class="empty-log-state">
         <span class="pulse-indicator"></span>
-        <p>NO TRANSMISSIONS YET // BE THE FIRST TO SIGN</p>
+        <p>NO OPERATIVES LOGGED // BE THE FIRST TO REGISTER ACCESS</p>
       </div>
     `;
     return;
@@ -378,7 +430,7 @@ function renderLogbook(entries) {
     return `
       <li class="log-entry-item">
         <div class="log-entry-header">
-          <span class="entry-index">#${String(entries.length - index).padStart(3, '0')}</span>
+          <span class="entry-index">OP_ID #${String(entries.length - index).padStart(3, '0')}</span>
           <span class="entry-timestamp">${formattedTime}</span>
         </div>
         <div class="entry-name">${sanitizedName}</div>
@@ -417,11 +469,11 @@ function subscribeToLogbook() {
         });
         renderLogbook(entries);
       }, (fallbackErr) => {
-        console.error("Failed to load logbook:", fallbackErr);
+        console.error("Failed to load access log:", fallbackErr);
         if (logbookList) {
           logbookList.innerHTML = `
             <div class="error-log-state">
-              <p>UNABLE TO CONNECT TO QUANTUM DATABASE // CHECK FIRESTORE RULES</p>
+              <p>ACCESS DATABASE DISCONNECTED // CHECK SECURITY PROTOCOLS</p>
             </div>
           `;
         }
@@ -438,14 +490,14 @@ if (logbookForm) {
     
     const rawName = nameInput.value.trim();
     if (!rawName) {
-      showFeedback("PLEASE ENTER AN IDENTIFIER", "error");
+      showFeedback("ACCESS DENIED: ENTER OPERATIVE CALLSIGN", "error");
       nameInput.focus();
       return;
     }
 
     signBtn.disabled = true;
     signBtn.classList.add("loading");
-    signBtnText.textContent = "TRANSMITTING...";
+    signBtnText.textContent = "LOGGING ACCESS...";
     clearFeedback();
 
     try {
@@ -455,19 +507,19 @@ if (logbookForm) {
       });
 
       nameInput.value = "";
-      showFeedback("ENTRY RECORDED IN SYSTEM", "success");
-      signBtnText.textContent = "RECORDED ✓";
+      showFeedback("ACCESS RECORDED IN SYSTEM ARCHIVE", "success");
+      signBtnText.textContent = "LOGGED ✓";
       
       setTimeout(() => {
-        signBtnText.textContent = "SIGN LOGBOOK";
+        signBtnText.textContent = "LOG ACCESS";
         signBtn.disabled = false;
         signBtn.classList.remove("loading");
       }, 1800);
 
     } catch (error) {
-      console.error("Error signing logbook:", error);
-      showFeedback("TRANSMISSION FAILED: " + (error.message || "CHECK NETWORK"), "error");
-      signBtnText.textContent = "RETRY TRANSMISSION";
+      console.error("Error logging access:", error);
+      showFeedback("TRANSMISSION FAILED: " + (error.message || "SECURITY ERROR"), "error");
+      signBtnText.textContent = "RETRY ACCESS";
       signBtn.disabled = false;
       signBtn.classList.remove("loading");
     }

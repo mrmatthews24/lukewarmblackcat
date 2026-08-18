@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Personal webpage, quantum logbook, and personal journal of Mister Matthews.">
-  <title>Hello, Mister Matthews</title>
+  <meta name="description" content="Tactical HUD personal terminal, access log, and journal of Mister Matthews.">
+  <title>Hello, Mister Matthews // Tactical HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,68 +15,97 @@
   <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
   <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
 
+  <!-- Tactical HUD Grid Overlay & Coordinate Telemetry -->
+  <div class="hud-grid-overlay" aria-hidden="true"></div>
+  <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">WAYNETECH // TAC-HUD v4.2<br>COORD: 41.8781° N, 87.6298° W</div>
+  <div class="hud-telemetry hud-telemetry-tr" aria-hidden="true">SYSTEM STATUS: ARMED<br>DEFENSE MATRIX: ACTIVE</div>
+  <div class="hud-telemetry hud-telemetry-bl" aria-hidden="true">SEC_LEVEL: 01 // CLASSIFIED<br>FREQ: 1420.405 MHz</div>
+  <div class="hud-telemetry hud-telemetry-br" aria-hidden="true">CHRONO: SYS_SYNC<br>BAT-NET // NODE-7</div>
+
   <!-- Left Side Tab (Personal Journal / Notes) -->
-  <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Personal Journal">
+  <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Tactical Journal">
     <span class="tab-pulse-dot"></span>
+    <span class="tab-tag">[CHRONO]</span>
     <span class="tab-text">JOURNAL</span>
     <span class="tab-count-badge" id="journal-tab-badge">01</span>
   </button>
 
-  <!-- Right Side Tab (Quantum Logbook) -->
-  <button id="drawer-toggle-btn" class="drawer-trigger-tab right-tab" aria-expanded="false" aria-controls="logbook-drawer" title="Toggle Quantum Logbook">
+  <!-- Right Side Tab (Access Log) -->
+  <button id="drawer-toggle-btn" class="drawer-trigger-tab right-tab" aria-expanded="false" aria-controls="logbook-drawer" title="Toggle Access Log">
     <span class="tab-pulse-dot"></span>
-    <span class="tab-text">LOGBOOK</span>
+    <span class="tab-tag">[SECURITY]</span>
+    <span class="tab-text">ACCESS LOG</span>
     <span class="tab-count-badge" id="tab-count-badge">--</span>
   </button>
 
   <!-- Main Hero Card -->
-  <main class="container" id="main-content">
+  <main class="container hud-card" id="main-content">
+    <!-- Targeting Reticle Corner Brackets -->
+    <span class="reticle reticle-tl" aria-hidden="true"></span>
+    <span class="reticle reticle-tr" aria-hidden="true"></span>
+    <span class="reticle reticle-bl" aria-hidden="true"></span>
+    <span class="reticle reticle-br" aria-hidden="true"></span>
+
     <header class="header-section">
       <div class="system-status-pill">
         <span class="status-dot"></span>
-        <span class="status-text">SYS.ONLINE // MATTHEWS.NET</span>
+        <span class="status-text">SYSTEM ONLINE // SEC_LEVEL: 01</span>
       </div>
-      <h1 class="greeting-title" id="greeting">Hello, Mister Matthews</h1>
+      <div class="heading-wrapper">
+        <h1 class="greeting-title" id="greeting" data-text="Hello, Mister Matthews">
+          <span class="typewriter-text" id="typewriter-target"></span><span class="typewriter-cursor" aria-hidden="true">_</span>
+        </h1>
+      </div>
+      <div class="hud-status-tag">[TARGET_LOCK // IDENT_VERIFIED]</div>
     </header>
 
     <div class="illustration-wrapper" aria-hidden="true">
-      <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
-        <!-- Black Cat outline: contour lines -->
-        <!-- Head & Ears -->
-        <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
-        
-        <!-- Sleepy / Relaxed Eyes -->
-        <path class="cat-stroke" d="M78 88 Q86 94 94 88" />
-        <path class="cat-stroke" d="M106 88 Q114 94 122 88" />
-        
-        <!-- Nose & Mouth -->
-        <path class="cat-stroke" d="M100 96 L100 102" />
-        <path class="cat-stroke" d="M100 102 Q94 107 89 104" />
-        <path class="cat-stroke" d="M100 102 Q106 107 111 104" />
-        
-        <!-- Whiskers -->
-        <path class="cat-stroke whisker" d="M52 94 L72 96" />
-        <path class="cat-stroke whisker" d="M50 103 L70 102" />
-        <path class="cat-stroke whisker" d="M128 96 L148 94" />
-        <path class="cat-stroke whisker" d="M130 102 L150 103" />
+      <div class="cat-hud-frame">
+        <span class="cat-hud-reticle cat-reticle-tl"></span>
+        <span class="cat-hud-reticle cat-reticle-tr"></span>
+        <span class="cat-hud-reticle cat-reticle-bl"></span>
+        <span class="cat-hud-reticle cat-reticle-br"></span>
+        <span class="cat-hud-label">[SCAN: FELIS_NOIR]</span>
 
-        <!-- Body & Front Paws -->
-        <path class="cat-stroke" d="M72 148 C68 162 65 178 65 186 C65 188 67 190 70 190 H130 C133 190 135 188 135 186 C135 178 132 162 128 148" />
-        <path class="cat-stroke" d="M92 155 V190" />
-        <path class="cat-stroke" d="M108 155 V190" />
-        
-        <!-- Curled Tail -->
-        <path class="cat-stroke tail" d="M135 186 C152 186 166 176 166 160 C166 148 156 142 148 146 C142 150 144 158 150 158" />
-      </svg>
+        <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
+          <!-- Black Cat outline: contour lines -->
+          <!-- Head & Ears -->
+          <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
+          
+          <!-- Sleepy / Relaxed Eyes -->
+          <path class="cat-stroke" d="M78 88 Q86 94 94 88" />
+          <path class="cat-stroke" d="M106 88 Q114 94 122 88" />
+          
+          <!-- Nose & Mouth -->
+          <path class="cat-stroke" d="M100 96 L100 102" />
+          <path class="cat-stroke" d="M100 102 Q94 107 89 104" />
+          <path class="cat-stroke" d="M100 102 Q106 107 111 104" />
+          
+          <!-- Whiskers -->
+          <path class="cat-stroke whisker" d="M52 94 L72 96" />
+          <path class="cat-stroke whisker" d="M50 103 L70 102" />
+          <path class="cat-stroke whisker" d="M128 96 L148 94" />
+          <path class="cat-stroke whisker" d="M130 102 L150 103" />
+
+          <!-- Body & Front Paws -->
+          <path class="cat-stroke" d="M72 148 C68 162 65 178 65 186 C65 188 67 190 70 190 H130 C133 190 135 188 135 186 C135 178 132 162 128 148" />
+          <path class="cat-stroke" d="M92 155 V190" />
+          <path class="cat-stroke" d="M108 155 V190" />
+          
+          <!-- Curled Tail -->
+          <path class="cat-stroke tail" d="M135 186 C152 186 166 176 166 160 C166 148 156 142 148 146 C142 150 144 158 150 158" />
+        </svg>
+      </div>
     </div>
 
     <footer class="contact-section">
-      <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send email transmission">
-        <svg class="email-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="20" height="16" x="2" y="4" rx="2"/>
+      <div class="hud-status-tag sub-tag">[COMMS_CHANNEL: ENCRYPTED]</div>
+      <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send encrypted comms transmission">
+        <svg class="email-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="20" height="16" x="2" y="4"/>
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
         </svg>
-        mrlukejmatthews@gmail.com
+        <span>mrlukejmatthews@gmail.com</span>
       </a>
     </footer>
   </main>
@@ -90,18 +119,20 @@
       <div class="drawer-header">
         <div class="terminal-title-group">
           <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title">PERSONAL JOURNAL</h2>
+          <h2 class="terminal-title" data-typewriter="PERSONAL JOURNAL">PERSONAL JOURNAL</h2>
         </div>
         <div class="drawer-header-actions">
           <span class="log-count-badge" id="journal-count-badge">01 ENTRY</span>
           <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Journal Drawer">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
       </div>
+
+      <div class="drawer-hud-status">[JOURNAL_ARCHIVE: ONLINE // WRITE_AUTH: OK]</div>
 
       <div class="drawer-content">
         <!-- Journal Action Bar -->
@@ -113,11 +144,16 @@
         </div>
 
         <!-- Journal Composer Form (Collapsible) -->
-        <div id="journal-composer" class="journal-composer hidden">
+        <div id="journal-composer" class="journal-composer hud-card hidden">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
           <form id="journal-form" class="journal-form">
             <input type="hidden" id="journal-edit-id" value="">
             <div class="composer-header">
-              <span id="composer-mode-title" class="composer-mode-title">// COMPOSE LOG</span>
+              <span id="composer-mode-title" class="composer-mode-title">// COMPOSE LOG ENTRY</span>
             </div>
             <div class="input-container">
               <input 
@@ -145,8 +181,13 @@
           </form>
         </div>
 
-        <div class="journal-feed-container">
-          <div class="log-feed-label">CHRONOLOGICAL ARCHIVES</div>
+        <div class="journal-feed-container hud-card">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="log-feed-label">[CHRONOLOGICAL ARCHIVES // ENCRYPTED]</div>
           <div id="journal-entries-container" class="journal-entries-list">
             <!-- Rendered dynamically by app.js -->
           </div>
@@ -155,18 +196,18 @@
     </div>
   </aside>
 
-  <!-- Right Drawer: Quantum Logbook -->
-  <aside id="logbook-drawer" class="side-drawer right-drawer" role="dialog" aria-modal="true" aria-label="Quantum Logbook Drawer" aria-hidden="true">
+  <!-- Right Drawer: Quantum Access Log -->
+  <aside id="logbook-drawer" class="side-drawer right-drawer" role="dialog" aria-modal="true" aria-label="Access Log Drawer" aria-hidden="true">
     <div class="drawer-inner">
       <div class="drawer-header">
         <div class="terminal-title-group">
           <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title">QUANTUM LOGBOOK</h2>
+          <h2 class="terminal-title" data-typewriter="ACCESS LOG">ACCESS LOG</h2>
         </div>
         <div class="drawer-header-actions">
           <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
-          <button id="drawer-close-btn" class="drawer-close-btn" aria-label="Close Logbook Drawer">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button id="drawer-close-btn" class="drawer-close-btn" aria-label="Close Access Log Drawer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -174,21 +215,29 @@
         </div>
       </div>
 
+      <div class="drawer-hud-status">[LOGBOOK: ACTIVE // SEC_PROTOCOL: V4.2]</div>
+
       <div class="drawer-content">
-        <form id="logbook-form" class="logbook-form">
+        <form id="logbook-form" class="logbook-form hud-card">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="form-header-label">// OPERATIVE ACCESS REGISTRATION</div>
           <div class="input-container">
             <input 
               type="text" 
               id="name-input" 
               class="sci-fi-input" 
-              placeholder="ENTER CALLSIGN / IDENTIFIER..." 
+              placeholder="ENTER CALLSIGN / OPERATIVE ID..." 
               maxlength="60" 
               autocomplete="off" 
               required
             >
             <button type="submit" id="sign-btn" class="sci-fi-btn">
-              <span id="sign-btn-text">SIGN LOGBOOK</span>
-              <svg class="btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+              <span id="sign-btn-text">LOG ACCESS</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </button>
@@ -196,13 +245,18 @@
           <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
         </form>
 
-        <!-- Signers Stream Feed -->
-        <div class="log-feed-container">
-          <div class="log-feed-label">TRANSMISSION ARCHIVE</div>
+        <!-- Access Entries Feed -->
+        <div class="log-feed-container hud-card">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="log-feed-label">[AUTHENTICATED ACCESS ARCHIVE]</div>
           <ul id="logbook-list" class="logbook-list">
             <div class="empty-log-state">
               <span class="pulse-indicator"></span>
-              <p>SYNCING WITH FIRESTORE...</p>
+              <p>QUERYING ACCESS ARCHIVE...</p>
             </div>
           </ul>
         </div>

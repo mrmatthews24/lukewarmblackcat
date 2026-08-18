@@ -1,37 +1,41 @@
 /* ==========================================================================
-   Design System & Sci-Fi Crimson / Red Theming Tokens
+   Batman HUD Tactical Design System (Crimson / Obsidian)
    ========================================================================== */
 :root {
-  --bg-color: #090a0d;
-  --panel-bg: rgba(17, 18, 23, 0.85);
-  --panel-border: rgba(239, 68, 68, 0.2);
-  --panel-border-hover: rgba(239, 68, 68, 0.45);
+  --bg-color: #07080a;
+  --panel-bg: rgba(14, 15, 20, 0.9);
+  --panel-border: rgba(239, 68, 68, 0.28);
+  --panel-border-hover: rgba(239, 68, 68, 0.65);
   
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
   
-  /* Cat: Deep Black with atmospheric crimson rim glow */
-  --cat-color: #050507;
+  /* Cat: Deep Tactical Black with Red Targeting Silhouette */
+  --cat-color: #030405;
   --cat-hover: #000000;
-  --cat-glow: rgba(239, 68, 68, 0.4);
+  --cat-glow: rgba(239, 68, 68, 0.5);
   
-  /* Crimson / Red Accent Palette */
+  /* Tactical Crimson Palette */
   --accent-red: #ef4444;
   --accent-red-bright: #f87171;
   --accent-red-deep: #dc2626;
   --accent-red-dim: rgba(239, 68, 68, 0.12);
-  --accent-red-glow: rgba(239, 68, 68, 0.3);
+  --accent-red-glow: rgba(239, 68, 68, 0.35);
   
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, 'Fira Code', monospace;
+  --font-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
 }
 
-/* Reset & Global */
+/* ==========================================================================
+   Reset & Global (Strict Angular / No Rounded Corners)
+   ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 0 !important; /* Enforces sharp, tactical angular HUD geometry */
 }
 
 html, body {
@@ -47,7 +51,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2rem 1.25rem;
+  padding: 2.5rem 1.25rem;
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
@@ -55,19 +59,56 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ambient Background Lights (Red Sci-Fi Nebulae) */
+/* ==========================================================================
+   HUD Background Grid & Ambient Red Nebulae
+   ========================================================================== */
+
+/* Faint Tactical Coordinate Grid */
+.hud-grid-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(239, 68, 68, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(239, 68, 68, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Screen Corner Telemetry Readouts */
+.hud-telemetry {
+  position: fixed;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: rgba(239, 68, 68, 0.4);
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  z-index: 10;
+  text-transform: uppercase;
+}
+
+.hud-telemetry-tl { top: 18px; left: 24px; }
+.hud-telemetry-tr { top: 18px; right: 24px; text-align: right; }
+.hud-telemetry-bl { bottom: 18px; left: 24px; }
+.hud-telemetry-br { bottom: 18px; right: 24px; text-align: right; }
+
+@media (max-width: 768px) {
+  .hud-telemetry { display: none; }
+}
+
+/* Ambient Red Glows */
 .bg-glow {
   position: fixed;
-  border-radius: 50%;
   pointer-events: none;
-  filter: blur(110px);
+  filter: blur(120px);
   z-index: 0;
-  opacity: 0.16;
+  opacity: 0.18;
 }
 
 .bg-glow-1 {
-  width: 440px;
-  height: 440px;
+  width: 480px;
+  height: 480px;
   background: radial-gradient(circle, var(--accent-red), transparent 70%);
   top: 15%;
   left: 50%;
@@ -75,14 +116,69 @@ body {
 }
 
 .bg-glow-2 {
-  width: 480px;
-  height: 480px;
+  width: 520px;
+  height: 520px;
   background: radial-gradient(circle, #991b1b, transparent 70%);
   bottom: 10%;
   right: 15%;
 }
 
-/* Central Hero Card */
+/* ==========================================================================
+   Targeting Reticle Corner Brackets System
+   ========================================================================== */
+
+.hud-card {
+  position: relative;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+}
+
+.reticle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 5;
+  transition: all 0.25s ease;
+}
+
+.reticle-tl {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--accent-red-bright);
+  border-left: 2px solid var(--accent-red-bright);
+}
+
+.reticle-tr {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid var(--accent-red-bright);
+  border-right: 2px solid var(--accent-red-bright);
+}
+
+.reticle-bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid var(--accent-red-bright);
+  border-left: 2px solid var(--accent-red-bright);
+}
+
+.reticle-br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--accent-red-bright);
+  border-right: 2px solid var(--accent-red-bright);
+}
+
+.hud-card:hover .reticle {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px var(--accent-red-bright);
+}
+
+/* ==========================================================================
+   Main Hero Card
+   ========================================================================== */
+
 .container {
   position: relative;
   z-index: 1;
@@ -90,14 +186,11 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 480px;
+  max-width: 500px;
   width: 100%;
-  padding: 3.25rem 2.25rem;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
-              0 0 35px -5px var(--accent-red-glow);
+  padding: 3.5rem 2.5rem;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9),
+              0 0 30px -5px var(--accent-red-glow);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
@@ -105,18 +198,19 @@ body {
 
 .container:hover {
   border-color: var(--panel-border-hover);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9),
-              0 0 50px -5px rgba(239, 68, 68, 0.25);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.95),
+              0 0 50px -5px rgba(239, 68, 68, 0.3);
   transform: translateY(-2px);
 }
 
-/* Header & Status */
+/* Header & Status Tags */
 .header-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.85rem;
   margin-bottom: 1.75rem;
+  width: 100%;
 }
 
 .system-status-pill {
@@ -125,18 +219,17 @@ body {
   gap: 0.5rem;
   padding: 0.35rem 0.85rem;
   background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 9999px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--accent-red-bright);
+  text-transform: uppercase;
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
   background-color: var(--accent-red);
   box-shadow: 0 0 8px var(--accent-red);
   animation: pulse-dot 2s infinite ease-in-out;
@@ -147,14 +240,69 @@ body {
   50% { opacity: 0.35; transform: scale(0.8); }
 }
 
-.greeting-title {
-  font-size: 2rem;
+/* Tactical HUD Status Tags */
+.hud-status-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
+  letter-spacing: 0.12em;
+  color: var(--accent-red-bright);
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 0.25rem 0.65rem;
+  text-transform: uppercase;
 }
 
-/* SVG Black Cat Illustration */
+.hud-status-tag.sub-tag {
+  margin-bottom: 0.65rem;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.drawer-hud-status {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-red-bright);
+  background: rgba(239, 68, 68, 0.06);
+  border-left: 2px solid var(--accent-red);
+  padding: 0.35rem 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Typewriter Heading with Bold Display Font */
+.heading-wrapper {
+  min-height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.greeting-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.typewriter-cursor {
+  color: var(--accent-red-bright);
+  font-weight: 900;
+  animation: cursor-blink 0.8s infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==========================================================================
+   Tactical Reticle Cat Frame & Outline
+   ========================================================================== */
+
 .illustration-wrapper {
   display: flex;
   justify-content: center;
@@ -162,29 +310,54 @@ body {
   margin: 0.5rem 0 2.25rem;
 }
 
+.cat-hud-frame {
+  position: relative;
+  padding: 1.25rem 1.75rem 1.5rem;
+  border: 1px dashed rgba(239, 68, 68, 0.25);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.cat-hud-reticle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+
+.cat-reticle-tl { top: -1px; left: -1px; border-top: 2px solid var(--accent-red); border-left: 2px solid var(--accent-red); }
+.cat-reticle-tr { top: -1px; right: -1px; border-top: 2px solid var(--accent-red); border-right: 2px solid var(--accent-red); }
+.cat-reticle-bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--accent-red); border-left: 2px solid var(--accent-red); }
+.cat-reticle-br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--accent-red); border-right: 2px solid var(--accent-red); }
+
+.cat-hud-label {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: rgba(239, 68, 68, 0.6);
+}
+
 .cat-outline {
   width: 145px;
   height: 145px;
   overflow: visible;
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.45)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.45)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.85));
 }
 
 .illustration-wrapper:hover .cat-outline {
   transform: scale(1.06) rotate(1deg);
-  filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.65)) drop-shadow(0 6px 24px rgba(0, 0, 0, 0.9));
+  filter: drop-shadow(0 0 18px rgba(239, 68, 68, 0.7)) drop-shadow(0 6px 24px rgba(0, 0, 0, 0.95));
 }
 
 .cat-stroke {
   stroke: var(--cat-color);
   stroke-width: 2.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
   transition: stroke 0.3s ease;
-}
-
-.illustration-wrapper:hover .cat-stroke {
-  stroke: var(--cat-hover);
 }
 
 .whisker {
@@ -201,10 +374,15 @@ body {
   transform: rotate(4deg);
 }
 
-/* Contact Section */
+/* ==========================================================================
+   Contact / Email Section
+   ========================================================================== */
+
 .contact-section {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .email-link {
@@ -214,17 +392,17 @@ body {
   color: var(--text-secondary);
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 0.88rem;
-  font-weight: 400;
-  padding: 0.6rem 1.2rem;
-  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.65rem 1.25rem;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.25s ease;
 }
 
 .email-icon {
-  opacity: 0.7;
+  opacity: 0.75;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -232,7 +410,7 @@ body {
 .email-link:focus-visible {
   color: #ffffff;
   background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.5);
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
   transform: translateY(-1px);
   outline: none;
@@ -244,7 +422,7 @@ body {
 }
 
 /* ==========================================================================
-   Collapsible Side Tabs (Left & Right)
+   Collapsible Side Tabs (Left & Right - Angular Batman HUD)
    ========================================================================== */
 
 .drawer-trigger-tab {
@@ -254,9 +432,9 @@ body {
   z-index: 80;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1.1rem;
-  background: rgba(18, 20, 26, 0.92);
+  gap: 0.55rem;
+  padding: 0.85rem 1.15rem;
+  background: rgba(14, 15, 20, 0.95);
   border: 1px solid var(--panel-border);
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
   backdrop-filter: blur(12px);
@@ -264,24 +442,29 @@ body {
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   cursor: pointer;
+  text-transform: uppercase;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Right Tab (Logbook) */
+.tab-tag {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+/* Right Tab (Access Log) */
 .right-tab {
   right: 0;
   border-right: none;
-  border-radius: 14px 0 0 14px;
-  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(239, 68, 68, 0.15);
+  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(239, 68, 68, 0.2);
 }
 
 .right-tab:hover {
-  background: rgba(24, 26, 34, 0.98);
+  background: rgba(20, 22, 30, 0.98);
   border-color: var(--accent-red-bright);
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.35);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(239, 68, 68, 0.4);
   transform: translateY(-50%) translateX(-4px);
 }
 
@@ -289,21 +472,19 @@ body {
 .left-tab {
   left: 0;
   border-left: none;
-  border-radius: 0 14px 14px 0;
-  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(239, 68, 68, 0.15);
+  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(239, 68, 68, 0.2);
 }
 
 .left-tab:hover {
-  background: rgba(24, 26, 34, 0.98);
+  background: rgba(20, 22, 30, 0.98);
   border-color: var(--accent-red-bright);
-  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.35);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(239, 68, 68, 0.4);
   transform: translateY(-50%) translateX(4px);
 }
 
 .tab-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+  width: 6px;
+  height: 6px;
   background-color: var(--accent-red);
   box-shadow: 0 0 8px var(--accent-red);
   animation: pulse-dot 1.8s infinite ease-in-out;
@@ -316,17 +497,17 @@ body {
 .tab-count-badge {
   padding: 0.15rem 0.45rem;
   background: rgba(239, 68, 68, 0.18);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
   color: var(--accent-red-bright);
   font-size: 0.7rem;
+  font-family: var(--font-mono);
 }
 
 /* Backdrop */
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5, 6, 9, 0.72);
+  background: rgba(4, 5, 7, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   opacity: 0;
@@ -344,7 +525,7 @@ body.logbook-open .drawer-backdrop {
 }
 
 /* ==========================================================================
-   Side Drawer Panels (Left: Journal, Right: Logbook)
+   Side Drawer Panels (Left: Journal, Right: Access Log)
    ========================================================================== */
 
 .side-drawer {
@@ -353,7 +534,7 @@ body.logbook-open .drawer-backdrop {
   bottom: 0;
   width: 480px;
   max-width: 92vw;
-  background: rgba(14, 15, 20, 0.95);
+  background: rgba(11, 12, 16, 0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: 100;
@@ -362,12 +543,11 @@ body.logbook-open .drawer-backdrop {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
-/* Left Drawer Positioning */
+/* Left Drawer */
 .left-drawer {
   left: 0;
   border-right: 1px solid var(--panel-border);
-  box-shadow: 25px 0 60px rgba(0, 0, 0, 0.85),
-              0 0 35px rgba(239, 68, 68, 0.15);
+  box-shadow: 25px 0 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(239, 68, 68, 0.15);
   transform: translateX(-100%);
 }
 
@@ -376,12 +556,11 @@ body.journal-open .left-drawer {
   border-right-color: var(--panel-border-hover);
 }
 
-/* Right Drawer Positioning */
+/* Right Drawer */
 .right-drawer {
   right: 0;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -25px 0 60px rgba(0, 0, 0, 0.85),
-              0 0 35px rgba(239, 68, 68, 0.15);
+  box-shadow: -25px 0 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(239, 68, 68, 0.15);
   transform: translateX(100%);
 }
 
@@ -403,9 +582,9 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  margin-bottom: 1rem;
 }
 
 .terminal-title-group {
@@ -417,16 +596,17 @@ body.logbook-open .right-drawer {
 .terminal-prompt {
   font-family: var(--font-mono);
   color: var(--accent-red-bright);
-  font-weight: 700;
-  font-size: 1.15rem;
+  font-weight: 800;
+  font-size: 1.2rem;
 }
 
 .terminal-title {
-  font-family: var(--font-mono);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   color: var(--text-primary);
+  text-transform: uppercase;
 }
 
 .drawer-header-actions {
@@ -438,22 +618,21 @@ body.logbook-open .right-drawer {
 .log-count-badge {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   padding: 0.25rem 0.65rem;
-  border-radius: 4px;
   background: rgba(239, 68, 68, 0.1);
   color: var(--accent-red-bright);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  text-transform: uppercase;
 }
 
 .drawer-close-btn {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-secondary);
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -463,9 +642,9 @@ body.logbook-open .right-drawer {
 
 .drawer-close-btn:hover {
   color: #ffffff;
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
-  transform: rotate(90deg);
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: scale(1.05);
 }
 
 .drawer-content {
@@ -475,7 +654,7 @@ body.logbook-open .right-drawer {
 }
 
 /* ==========================================================================
-   Personal Journal Section Styling
+   Personal Journal Section (Batman HUD Styling)
    ========================================================================== */
 
 .journal-controls {
@@ -485,23 +664,20 @@ body.logbook-open .right-drawer {
 }
 
 .small-btn {
-  padding: 0.55rem 1rem;
+  padding: 0.6rem 1.1rem;
   font-size: 0.78rem;
 }
 
 .btn-icon {
-  font-weight: 700;
-  margin-right: 0.2rem;
+  font-weight: 800;
+  margin-right: 0.25rem;
 }
 
-/* Journal Composer (Collapsible Form) */
+/* Journal Composer */
 .journal-composer {
-  background: rgba(9, 10, 14, 0.85);
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.15);
   animation: fadeIn 0.25s ease-in-out;
 }
 
@@ -520,16 +696,16 @@ body.logbook-open .right-drawer {
 
 .composer-mode-title {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   color: var(--accent-red-bright);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .sci-fi-textarea {
-  min-height: 100px;
+  min-height: 110px;
   resize: vertical;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .composer-actions {
@@ -541,21 +717,18 @@ body.logbook-open .right-drawer {
 
 .secondary-btn {
   background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.14);
   color: var(--text-secondary);
 }
 
 .secondary-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
   color: #ffffff;
   box-shadow: none;
 }
 
 .journal-feed-container {
-  background: rgba(9, 10, 14, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -572,18 +745,15 @@ body.logbook-open .right-drawer {
 }
 
 .journal-card {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 3px solid var(--accent-red);
-  border-radius: 12px;
   padding: 1.25rem;
+  border-left: 3px solid var(--accent-red);
   transition: all 0.25s ease;
 }
 
 .journal-card:hover {
-  background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(239, 68, 68, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transform: translateY(-2px);
 }
 
@@ -598,25 +768,27 @@ body.logbook-open .right-drawer {
 
 .journal-tag {
   color: var(--accent-red-bright);
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .journal-date {
   color: var(--text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .journal-title {
-  font-family: var(--font-sans);
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
 
 .journal-body {
+  font-family: var(--font-sans);
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.65;
@@ -629,7 +801,7 @@ body.logbook-open .right-drawer {
 .journal-card-footer {
   margin-top: 1.1rem;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -647,7 +819,6 @@ body.logbook-open .right-drawer {
 .mini-status-dot {
   width: 5px;
   height: 5px;
-  border-radius: 50%;
   background-color: var(--accent-red);
   box-shadow: 0 0 6px var(--accent-red);
 }
@@ -659,34 +830,45 @@ body.logbook-open .right-drawer {
 
 .journal-action-btn {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 0.68rem;
+  font-weight: 600;
   padding: 0.25rem 0.55rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .journal-action-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.45);
   color: #ffffff;
 }
 
 .journal-action-btn.delete:hover {
-  background: rgba(220, 38, 38, 0.25);
-  border-color: rgba(220, 38, 38, 0.5);
+  background: rgba(220, 38, 38, 0.3);
+  border-color: rgba(220, 38, 38, 0.6);
   color: #fca5a5;
 }
 
 /* ==========================================================================
-   Logbook Section Styling
+   Access Log Section (Reframed)
    ========================================================================== */
 
 .logbook-form {
-  margin-bottom: 1.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-header-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
 }
 
 .input-container {
@@ -697,13 +879,12 @@ body.logbook-open .right-drawer {
 
 .sci-fi-input {
   width: 100%;
-  background: rgba(9, 10, 14, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  background: rgba(7, 8, 11, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   padding: 0.85rem 1rem;
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   transition: all 0.2s ease;
   outline: none;
 }
@@ -711,14 +892,14 @@ body.logbook-open .right-drawer {
 .sci-fi-input::placeholder {
   color: var(--text-muted);
   font-size: 0.76rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .sci-fi-input:focus {
   border-color: var(--accent-red-bright);
   box-shadow: 0 0 0 1px var(--accent-red-bright),
-              0 0 18px rgba(239, 68, 68, 0.25);
-  background: rgba(14, 15, 20, 0.98);
+              0 0 18px rgba(239, 68, 68, 0.3);
+  background: rgba(12, 13, 18, 0.98);
 }
 
 .sci-fi-btn {
@@ -727,15 +908,15 @@ body.logbook-open .right-drawer {
   justify-content: center;
   gap: 0.5rem;
   background: var(--accent-red-dim);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  border-radius: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
   color: var(--accent-red-bright);
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   padding: 0.85rem 1.25rem;
   cursor: pointer;
+  text-transform: uppercase;
   transition: all 0.2s ease;
 }
 
@@ -743,7 +924,7 @@ body.logbook-open .right-drawer {
   background: var(--accent-red);
   color: #ffffff;
   border-color: var(--accent-red-bright);
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
   transform: translateY(-1px);
 }
 
@@ -752,7 +933,7 @@ body.logbook-open .right-drawer {
 }
 
 .sci-fi-btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -767,7 +948,7 @@ body.logbook-open .right-drawer {
 .form-feedback {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   margin-top: 0.6rem;
   min-height: 1.1rem;
   transition: all 0.2s ease;
@@ -781,11 +962,8 @@ body.logbook-open .right-drawer {
   color: #fca5a5;
 }
 
-/* Signers List Feed */
+/* Access Log Feed */
 .log-feed-container {
-  background: rgba(9, 10, 14, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -796,10 +974,11 @@ body.logbook-open .right-drawer {
 .log-feed-label {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--text-muted);
+  color: var(--accent-red-bright);
   margin-bottom: 0.9rem;
+  text-transform: uppercase;
 }
 
 .logbook-list {
@@ -812,46 +991,43 @@ body.logbook-open .right-drawer {
   padding-right: 0.35rem;
 }
 
-/* Custom Scrollbars */
+/* Scrollbars */
 .logbook-list::-webkit-scrollbar,
 .journal-entries-list::-webkit-scrollbar,
 .drawer-inner::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 
 .logbook-list::-webkit-scrollbar-track,
 .journal-entries-list::-webkit-scrollbar-track,
 .drawer-inner::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 4px;
 }
 
 .logbook-list::-webkit-scrollbar-thumb,
 .journal-entries-list::-webkit-scrollbar-thumb,
 .drawer-inner::-webkit-scrollbar-thumb {
-  background: rgba(239, 68, 68, 0.25);
-  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.35);
 }
 
 .logbook-list::-webkit-scrollbar-thumb:hover,
 .journal-entries-list::-webkit-scrollbar-thumb:hover,
 .drawer-inner::-webkit-scrollbar-thumb:hover {
-  background: rgba(239, 68, 68, 0.45);
+  background: var(--accent-red-bright);
 }
 
 /* Single Log Entry Item */
 .log-entry-item {
   background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-left: 3px solid var(--accent-red);
-  border-radius: 8px;
   padding: 0.75rem 0.95rem;
   transition: all 0.2s ease;
 }
 
 .log-entry-item:hover {
   background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.35);
   transform: translateX(3px);
 }
 
@@ -866,7 +1042,7 @@ body.logbook-open .right-drawer {
 
 .entry-index {
   color: var(--accent-red-bright);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .entry-timestamp {
@@ -875,7 +1051,8 @@ body.logbook-open .right-drawer {
 }
 
 .entry-name {
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-weight: 600;
   font-size: 0.92rem;
   color: var(--text-primary);
   word-break: break-word;
@@ -891,14 +1068,14 @@ body.logbook-open .right-drawer {
   text-align: center;
   font-family: var(--font-mono);
   font-size: 0.76rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .pulse-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 6px;
+  height: 6px;
   background: var(--accent-red);
   box-shadow: 0 0 10px var(--accent-red);
   animation: pulse-dot 1.5s infinite ease-in-out;
@@ -914,11 +1091,10 @@ body.logbook-open .right-drawer {
 
   .container {
     padding: 2.5rem 1.5rem;
-    border-radius: 20px;
   }
 
   .greeting-title {
-    font-size: 1.65rem;
+    font-size: 1.45rem;
   }
 
   .cat-outline {
@@ -927,7 +1103,7 @@ body.logbook-open .right-drawer {
   }
 
   .drawer-trigger-tab {
-    padding: 0.7rem 0.85rem;
+    padding: 0.7rem 0.8rem;
     font-size: 0.72rem;
   }
 

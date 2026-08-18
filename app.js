@@ -44,52 +44,73 @@ const logCountBadge = document.getElementById("log-count-badge");
 const tabCountBadge = document.getElementById("tab-count-badge");
 const formFeedback = document.getElementById("form-feedback");
 
-// Drawer Elements
+// Drawer Elements: Logbook (Right)
 const drawerToggleBtn = document.getElementById("drawer-toggle-btn");
 const drawerCloseBtn = document.getElementById("drawer-close-btn");
-const drawerBackdrop = document.getElementById("drawer-backdrop");
 const logbookDrawer = document.getElementById("logbook-drawer");
 
-// --- Drawer Open / Close Logic ---
-function openDrawer() {
-  document.body.classList.add("drawer-open");
-  drawerToggleBtn.setAttribute("aria-expanded", "true");
-  logbookDrawer.setAttribute("aria-hidden", "false");
+// Drawer Elements: Journal (Left)
+const journalToggleBtn = document.getElementById("journal-toggle-btn");
+const journalCloseBtn = document.getElementById("journal-close-btn");
+const journalDrawer = document.getElementById("journal-drawer");
+
+// Shared Backdrop
+const drawerBackdrop = document.getElementById("drawer-backdrop");
+
+// --- Drawer Management Logic ---
+function closeAllDrawers() {
+  document.body.classList.remove("logbook-open", "journal-open");
+  if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "false");
+  if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "false");
+  if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "true");
+  if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "true");
+}
+
+function openLogbookDrawer() {
+  closeAllDrawers();
+  document.body.classList.add("logbook-open");
+  if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "true");
+  if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "false");
   setTimeout(() => {
-    nameInput.focus();
+    if (nameInput) nameInput.focus();
   }, 250);
 }
 
-function closeDrawer() {
-  document.body.classList.remove("drawer-open");
-  drawerToggleBtn.setAttribute("aria-expanded", "false");
-  logbookDrawer.setAttribute("aria-hidden", "true");
+function openJournalDrawer() {
+  closeAllDrawers();
+  document.body.classList.add("journal-open");
+  if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "true");
+  if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "false");
 }
 
-function toggleDrawer() {
-  const isOpen = document.body.classList.contains("drawer-open");
-  if (isOpen) {
-    closeDrawer();
+function toggleLogbookDrawer() {
+  if (document.body.classList.contains("logbook-open")) {
+    closeAllDrawers();
   } else {
-    openDrawer();
+    openLogbookDrawer();
   }
 }
 
-if (drawerToggleBtn) {
-  drawerToggleBtn.addEventListener("click", toggleDrawer);
+function toggleJournalDrawer() {
+  if (document.body.classList.contains("journal-open")) {
+    closeAllDrawers();
+  } else {
+    openJournalDrawer();
+  }
 }
 
-if (drawerCloseBtn) {
-  drawerCloseBtn.addEventListener("click", closeDrawer);
-}
+// Event Listeners for Drawers
+if (drawerToggleBtn) drawerToggleBtn.addEventListener("click", toggleLogbookDrawer);
+if (drawerCloseBtn) drawerCloseBtn.addEventListener("click", closeAllDrawers);
 
-if (drawerBackdrop) {
-  drawerBackdrop.addEventListener("click", closeDrawer);
-}
+if (journalToggleBtn) journalToggleBtn.addEventListener("click", toggleJournalDrawer);
+if (journalCloseBtn) journalCloseBtn.addEventListener("click", closeAllDrawers);
+
+if (drawerBackdrop) drawerBackdrop.addEventListener("click", closeAllDrawers);
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && document.body.classList.contains("drawer-open")) {
-    closeDrawer();
+  if (e.key === "Escape") {
+    closeAllDrawers();
   }
 });
 
@@ -183,55 +204,61 @@ function subscribeToLogbook() {
 }
 
 // Handle Form Submission
-logbookForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  
-  const rawName = nameInput.value.trim();
-  if (!rawName) {
-    showFeedback("PLEASE ENTER AN IDENTIFIER", "error");
-    nameInput.focus();
-    return;
-  }
-
-  // Set loading state
-  signBtn.disabled = true;
-  signBtn.classList.add("loading");
-  signBtnText.textContent = "TRANSMITTING...";
-  clearFeedback();
-
-  try {
-    await addDoc(logbookRef, {
-      name: rawName,
-      timestamp: serverTimestamp()
-    });
-
-    nameInput.value = "";
-    showFeedback("ENTRY RECORDED IN SYSTEM", "success");
-    signBtnText.textContent = "RECORDED ✓";
+if (logbookForm) {
+  logbookForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     
-    setTimeout(() => {
-      signBtnText.textContent = "SIGN LOGBOOK";
+    const rawName = nameInput.value.trim();
+    if (!rawName) {
+      showFeedback("PLEASE ENTER AN IDENTIFIER", "error");
+      nameInput.focus();
+      return;
+    }
+
+    // Set loading state
+    signBtn.disabled = true;
+    signBtn.classList.add("loading");
+    signBtnText.textContent = "TRANSMITTING...";
+    clearFeedback();
+
+    try {
+      await addDoc(logbookRef, {
+        name: rawName,
+        timestamp: serverTimestamp()
+      });
+
+      nameInput.value = "";
+      showFeedback("ENTRY RECORDED IN SYSTEM", "success");
+      signBtnText.textContent = "RECORDED ✓";
+      
+      setTimeout(() => {
+        signBtnText.textContent = "SIGN LOGBOOK";
+        signBtn.disabled = false;
+        signBtn.classList.remove("loading");
+      }, 1800);
+
+    } catch (error) {
+      console.error("Error signing logbook:", error);
+      showFeedback("TRANSMISSION FAILED: " + (error.message || "CHECK NETWORK"), "error");
+      signBtnText.textContent = "RETRY TRANSMISSION";
       signBtn.disabled = false;
       signBtn.classList.remove("loading");
-    }, 1800);
-
-  } catch (error) {
-    console.error("Error signing logbook:", error);
-    showFeedback("TRANSMISSION FAILED: " + (error.message || "CHECK NETWORK"), "error");
-    signBtnText.textContent = "RETRY TRANSMISSION";
-    signBtn.disabled = false;
-    signBtn.classList.remove("loading");
-  }
-});
+    }
+  });
+}
 
 function showFeedback(msg, type) {
-  formFeedback.textContent = msg;
-  formFeedback.className = `form-feedback ${type}`;
+  if (formFeedback) {
+    formFeedback.textContent = msg;
+    formFeedback.className = `form-feedback ${type}`;
+  }
 }
 
 function clearFeedback() {
-  formFeedback.textContent = "";
-  formFeedback.className = "form-feedback";
+  if (formFeedback) {
+    formFeedback.textContent = "";
+    formFeedback.className = "form-feedback";
+  }
 }
 
 // Start listening

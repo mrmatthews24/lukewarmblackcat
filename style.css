@@ -244,27 +244,23 @@ body {
 }
 
 /* ==========================================================================
-   Collapsible Side Drawer & Trigger Tab
+   Collapsible Side Tabs (Left & Right)
    ========================================================================== */
 
-/* Floating Tab Docked to Right Edge */
 .drawer-trigger-tab {
   position: fixed;
-  right: 0;
   top: 50%;
   transform: translateY(-50%);
   z-index: 80;
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.85rem 1.1rem 0.85rem 0.95rem;
+  padding: 0.85rem 1.1rem;
   background: rgba(18, 20, 26, 0.92);
   border: 1px solid var(--panel-border);
-  border-right: none;
-  border-radius: 14px 0 0 14px;
-  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.6),
-              0 0 15px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 0.78rem;
@@ -274,12 +270,34 @@ body {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.drawer-trigger-tab:hover {
+/* Right Tab (Logbook) */
+.right-tab {
+  right: 0;
+  border-right: none;
+  border-radius: 14px 0 0 14px;
+  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+.right-tab:hover {
   background: rgba(24, 26, 34, 0.98);
   border-color: var(--accent-red-bright);
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.8),
-              0 0 25px rgba(239, 68, 68, 0.35);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.35);
   transform: translateY(-50%) translateX(-4px);
+}
+
+/* Left Tab (Journal) */
+.left-tab {
+  left: 0;
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+.left-tab:hover {
+  background: rgba(24, 26, 34, 0.98);
+  border-color: var(--accent-red-bright);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.35);
+  transform: translateY(-50%) translateX(4px);
 }
 
 .tab-pulse-dot {
@@ -308,7 +326,7 @@ body {
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5, 6, 9, 0.7);
+  background: rgba(5, 6, 9, 0.72);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   opacity: 0;
@@ -318,34 +336,56 @@ body {
   z-index: 90;
 }
 
-body.drawer-open .drawer-backdrop {
+body.journal-open .drawer-backdrop,
+body.logbook-open .drawer-backdrop {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
-/* Slide-out Drawer Panel */
-.logbook-drawer {
+/* ==========================================================================
+   Side Drawer Panels (Left: Journal, Right: Logbook)
+   ========================================================================== */
+
+.side-drawer {
   position: fixed;
   top: 0;
-  right: 0;
   bottom: 0;
-  width: 450px;
+  width: 460px;
   max-width: 92vw;
-  background: rgba(14, 15, 20, 0.94);
-  border-left: 1px solid var(--panel-border);
-  box-shadow: -25px 0 60px rgba(0, 0, 0, 0.85),
-              0 0 35px rgba(239, 68, 68, 0.15);
+  background: rgba(14, 15, 20, 0.95);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
   z-index: 100;
   display: flex;
   flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
-body.drawer-open .logbook-drawer {
+/* Left Drawer Positioning */
+.left-drawer {
+  left: 0;
+  border-right: 1px solid var(--panel-border);
+  box-shadow: 25px 0 60px rgba(0, 0, 0, 0.85),
+              0 0 35px rgba(239, 68, 68, 0.15);
+  transform: translateX(-100%);
+}
+
+body.journal-open .left-drawer {
+  transform: translateX(0);
+  border-right-color: var(--panel-border-hover);
+}
+
+/* Right Drawer Positioning */
+.right-drawer {
+  right: 0;
+  border-left: 1px solid var(--panel-border);
+  box-shadow: -25px 0 60px rgba(0, 0, 0, 0.85),
+              0 0 35px rgba(239, 68, 68, 0.15);
+  transform: translateX(100%);
+}
+
+body.logbook-open .right-drawer {
   transform: translateX(0);
   border-left-color: var(--panel-border-hover);
 }
@@ -428,12 +468,119 @@ body.drawer-open .logbook-drawer {
   transform: rotate(90deg);
 }
 
-/* Drawer Content & Form */
 .drawer-content {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
+
+/* ==========================================================================
+   Personal Journal Section Styling
+   ========================================================================== */
+
+.journal-feed-container {
+  background: rgba(9, 10, 14, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.journal-entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
+  padding-right: 0.35rem;
+}
+
+.journal-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.journal-card:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.journal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.journal-tag {
+  color: var(--accent-red-bright);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.journal-date {
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.journal-title {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.journal-body {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.journal-card-footer {
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.journal-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-red-bright);
+}
+
+.mini-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--accent-red);
+  box-shadow: 0 0 6px var(--accent-red);
+}
+
+/* ==========================================================================
+   Logbook Section Styling
+   ========================================================================== */
 
 .logbook-form {
   margin-bottom: 1.75rem;
@@ -562,25 +709,29 @@ body.drawer-open .logbook-drawer {
   padding-right: 0.35rem;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbars */
 .logbook-list::-webkit-scrollbar,
+.journal-entries-list::-webkit-scrollbar,
 .drawer-inner::-webkit-scrollbar {
   width: 5px;
 }
 
 .logbook-list::-webkit-scrollbar-track,
+.journal-entries-list::-webkit-scrollbar-track,
 .drawer-inner::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 4px;
 }
 
 .logbook-list::-webkit-scrollbar-thumb,
+.journal-entries-list::-webkit-scrollbar-thumb,
 .drawer-inner::-webkit-scrollbar-thumb {
   background: rgba(239, 68, 68, 0.25);
   border-radius: 4px;
 }
 
 .logbook-list::-webkit-scrollbar-thumb:hover,
+.journal-entries-list::-webkit-scrollbar-thumb:hover,
 .drawer-inner::-webkit-scrollbar-thumb:hover {
   background: rgba(239, 68, 68, 0.45);
 }
@@ -673,11 +824,11 @@ body.drawer-open .logbook-drawer {
   }
 
   .drawer-trigger-tab {
-    padding: 0.7rem 0.9rem 0.7rem 0.8rem;
+    padding: 0.7rem 0.85rem;
     font-size: 0.72rem;
   }
 
-  .logbook-drawer {
+  .side-drawer {
     width: 100vw;
     max-width: 100vw;
   }

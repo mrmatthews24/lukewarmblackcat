@@ -1,15 +1,27 @@
-/* Design System & Tokens */
+/* ==========================================================================
+   Design System & Sci-Fi Theming Tokens
+   ========================================================================== */
 :root {
-  --bg-color: #151619;
-  --card-bg: rgba(255, 255, 255, 0.02);
-  --border-color: rgba(255, 255, 255, 0.06);
+  --bg-color: #0b0c0e;
+  --panel-bg: rgba(18, 20, 26, 0.75);
+  --panel-border: rgba(74, 222, 128, 0.15);
+  --panel-border-hover: rgba(74, 222, 128, 0.35);
+  
   --text-primary: #f3f4f6;
   --text-secondary: #9ca3af;
-  --accent-color: #e4e4e7;
-  --accent-hover: #38bdf8;
+  --text-muted: #6b7280;
+  
   --cat-color: #4ade80;
   --cat-hover: #86efac;
-  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cat-glow: rgba(74, 222, 128, 0.25);
+  
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-green-bright: #4ade80;
+  --accent-green-dim: rgba(74, 222, 128, 0.12);
+  
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, 'Fira Code', monospace;
 }
 
 /* Reset & Global */
@@ -20,55 +32,120 @@
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
-  font-family: var(--font-family);
+  font-family: var(--font-sans);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 2rem 1.5rem;
+  padding: 3rem 1.25rem;
   line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Central Card Layout */
+/* Ambient Background Lights */
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+  z-index: 0;
+  opacity: 0.18;
+}
+
+.bg-glow-1 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #22c55e, transparent 70%);
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bg-glow-2 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #0284c7, transparent 70%);
+  bottom: 5%;
+  right: 15%;
+}
+
+/* Central Cyber Container */
 .container {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 480px;
+  max-width: 520px;
   width: 100%;
-  padding: 3rem 2rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  padding: 2.75rem 2.25rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
   border-radius: 24px;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7),
+              0 0 35px -5px rgba(74, 222, 128, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .container:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+  border-color: var(--panel-border-hover);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8),
+              0 0 45px -5px rgba(74, 222, 128, 0.08);
 }
 
-/* Heading */
+/* Header & Status */
 .header-section {
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.system-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  background: rgba(74, 222, 128, 0.07);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-green-bright);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-green-bright);
+  box-shadow: 0 0 8px var(--accent-green-bright);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
 }
 
 .greeting-title {
-  font-size: 1.85rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
@@ -77,7 +154,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0.5rem 0 2.25rem;
+  margin: 0.25rem 0 2rem;
 }
 
 .cat-outline {
@@ -85,12 +162,12 @@ body {
   height: 140px;
   overflow: visible;
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  filter: drop-shadow(0 4px 16px rgba(74, 222, 128, 0.2));
+  filter: drop-shadow(0 4px 16px var(--cat-glow));
 }
 
 .illustration-wrapper:hover .cat-outline {
   transform: scale(1.06) rotate(1deg);
-  filter: drop-shadow(0 6px 20px rgba(74, 222, 128, 0.35));
+  filter: drop-shadow(0 6px 22px rgba(74, 222, 128, 0.45));
 }
 
 .cat-stroke {
@@ -123,41 +200,319 @@ body {
 .contact-section {
   display: flex;
   justify-content: center;
+  margin-bottom: 2.5rem;
 }
 
 .email-link {
   display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
   font-weight: 400;
-  letter-spacing: 0.01em;
-  padding: 0.6rem 1.1rem;
+  padding: 0.55rem 1.15rem;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.25s ease;
+}
+
+.email-icon {
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .email-link:hover,
 .email-link:focus-visible {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.15);
   transform: translateY(-1px);
   outline: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
+.email-link:hover .email-icon {
+  opacity: 1;
+  color: var(--accent-green-bright);
+}
+
+/* ==========================================================================
+   Sci-Fi Logbook Terminal Section
+   ========================================================================== */
+.logbook-section {
+  width: 100%;
+  text-align: left;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 2rem;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.terminal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.terminal-prompt {
+  font-family: var(--font-mono);
+  color: var(--accent-green-bright);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.log-count-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Logbook Form */
+.logbook-form {
+  margin-bottom: 1.5rem;
+}
+
+.input-container {
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.sci-fi-input {
+  flex: 1;
+  background: rgba(10, 12, 16, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.sci-fi-input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.sci-fi-input:focus {
+  border-color: var(--accent-green-bright);
+  box-shadow: 0 0 0 1px var(--accent-green-bright),
+              0 0 16px rgba(74, 222, 128, 0.2);
+  background: rgba(14, 17, 23, 0.95);
+}
+
+.sci-fi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: var(--accent-green-dim);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 12px;
+  color: var(--accent-green-bright);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0 1.2rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.sci-fi-btn:hover:not(:disabled) {
+  background: var(--accent-green-bright);
+  color: #0b0c0e;
+  border-color: var(--accent-green-bright);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+  transform: translateY(-1px);
+}
+
+.sci-fi-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sci-fi-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.sci-fi-btn:hover:not(:disabled) .btn-arrow {
+  transform: translateX(2px);
+}
+
+.form-feedback {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-top: 0.6rem;
+  min-height: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.form-feedback.success {
+  color: var(--accent-green-bright);
+}
+
+.form-feedback.error {
+  color: #f87171;
+}
+
+/* Signers List Feed */
+.log-feed-container {
+  background: rgba(10, 12, 16, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.1rem;
+}
+
+.log-feed-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+.logbook-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 230px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+/* Custom Scrollbar for Sci-Fi List */
+.logbook-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.logbook-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.logbook-list::-webkit-scrollbar-thumb {
+  background: rgba(74, 222, 128, 0.2);
+  border-radius: 4px;
+}
+
+.logbook-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 222, 128, 0.4);
+}
+
+/* Single Log Entry Item */
+.log-entry-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid var(--accent-green-bright);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.log-entry-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(74, 222, 128, 0.25);
+  transform: translateX(2px);
+}
+
+.log-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.entry-index {
+  color: var(--accent-green-bright);
+  font-weight: 600;
+}
+
+.entry-timestamp {
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.entry-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+/* Empty / Loading State */
+.empty-log-state, .error-log-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green-bright);
+  box-shadow: 0 0 10px var(--accent-green-bright);
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 540px) {
+  body {
+    padding: 1.5rem 0.75rem;
+  }
+
   .container {
-    padding: 2.25rem 1.25rem;
+    padding: 2rem 1.25rem;
     border-radius: 20px;
   }
 
   .greeting-title {
-    font-size: 1.55rem;
+    font-size: 1.6rem;
   }
 
   .cat-outline {
@@ -165,8 +520,16 @@ body {
     height: 120px;
   }
 
+  .input-container {
+    flex-direction: column;
+  }
+
+  .sci-fi-btn {
+    padding: 0.75rem;
+  }
+
   .email-link {
-    font-size: 0.875rem;
-    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.9rem;
   }
 }

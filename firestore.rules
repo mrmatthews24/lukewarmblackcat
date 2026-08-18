@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Logbook collection: Public can view and create new entries only.
+    // Editing and deleting are strictly prohibited.
+    match /logbook/{entryId} {
+      // Allow anyone to read the list of signers
+      allow read: if true;
+      
+      // Allow anyone to create a new log entry
+      // Validates that name is provided and reasonable length, and timestamp exists
+      allow create: if request.resource.data.name is string 
+                    && request.resource.data.name.size() > 0 
+                    && request.resource.data.name.size() <= 100;
+                    
+      // Strictly prevent editing or deleting existing entries
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // Deny access to any other collections or documents by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

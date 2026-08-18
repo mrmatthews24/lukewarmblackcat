@@ -1,0 +1,15 @@
+{
+  "name": "lukewarmblackcat",
+  "version": "1.0.0",
+  "description": "Personal sci-fi webpage and quantum logbook for Mister Matthews",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "firebase": "^10.12.2"
+  },
+  "author": "Luke Matthews",
+  "license": "MIT"
+}

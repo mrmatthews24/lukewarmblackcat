@@ -3,16 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Personal webpage of Mister Matthews.">
+  <meta name="description" content="Personal webpage and quantum logbook of Mister Matthews.">
   <title>Hello, Mister Matthews</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Ambient background glow elements -->
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
   <main class="container" id="main-content">
+    <!-- Hero Profile Section -->
     <header class="header-section">
+      <div class="system-status-pill">
+        <span class="status-dot"></span>
+        <span class="status-text">SYS.ONLINE // MATTHEWS.NET</span>
+      </div>
       <h1 class="greeting-title" id="greeting">Hello, Mister Matthews</h1>
     </header>
 
@@ -47,11 +56,60 @@
       </svg>
     </div>
 
-    <footer class="contact-section">
-      <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address">
+    <section class="contact-section">
+      <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send email transmission">
+        <svg class="email-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="20" height="16" x="2" y="4" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
         mrlukejmatthews@gmail.com
       </a>
-    </footer>
+    </section>
+
+    <!-- Sci-Fi Logbook Terminal Section -->
+    <section class="logbook-section" id="logbook-section">
+      <div class="terminal-header">
+        <div class="terminal-title-group">
+          <span class="terminal-prompt">&gt;</span>
+          <h2 class="terminal-title">QUANTUM LOGBOOK</h2>
+        </div>
+        <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
+      </div>
+
+      <form id="logbook-form" class="logbook-form">
+        <div class="input-container">
+          <input 
+            type="text" 
+            id="name-input" 
+            class="sci-fi-input" 
+            placeholder="ENTER CALLSIGN / IDENTIFIER..." 
+            maxlength="60" 
+            autocomplete="off" 
+            required
+          >
+          <button type="submit" id="sign-btn" class="sci-fi-btn">
+            <span id="sign-btn-text">SIGN LOGBOOK</span>
+            <svg class="btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+        <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+      </form>
+
+      <!-- Signers Stream -->
+      <div class="log-feed-container">
+        <div class="log-feed-label">RECENT TRANSMISSIONS</div>
+        <ul id="logbook-list" class="logbook-list">
+          <div class="empty-log-state">
+            <span class="pulse-indicator"></span>
+            <p>SYNCING WITH FIRESTORE...</p>
+          </div>
+        </ul>
+      </div>
+    </section>
   </main>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>

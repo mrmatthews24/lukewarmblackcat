@@ -110,6 +110,29 @@ if (document.readyState === "loading") {
 }
 
 // ==========================================================================
+// Live HUD Tactical Clock (Day of Week + Real-Time Military Clock)
+// ==========================================================================
+const hudDayOfWeek = document.getElementById("hud-day-of-week");
+const hudLiveTime = document.getElementById("hud-live-time");
+const DAYS_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+
+function updateHUDLiveClock() {
+  const now = new Date();
+  if (hudDayOfWeek) {
+    hudDayOfWeek.textContent = DAYS_OF_WEEK[now.getDay()];
+  }
+  if (hudLiveTime) {
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+    hudLiveTime.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+}
+
+updateHUDLiveClock();
+setInterval(updateHUDLiveClock, 1000);
+
+// ==========================================================================
 // Drawer Open / Close Logic
 // ==========================================================================
 function closeAllDrawers() {

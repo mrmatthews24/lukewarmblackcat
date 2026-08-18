@@ -81,7 +81,7 @@ body {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   line-height: 1.4;
-  color: rgba(239, 68, 68, 0.4);
+  color: rgba(239, 68, 68, 0.45);
   letter-spacing: 0.08em;
   pointer-events: none;
   z-index: 10;
@@ -89,12 +89,51 @@ body {
 }
 
 .hud-telemetry-tl { top: 18px; left: 24px; }
-.hud-telemetry-tr { top: 18px; right: 24px; text-align: right; }
+.hud-telemetry-tr {
+  top: 18px;
+  right: 24px;
+  text-align: right;
+  color: rgba(239, 68, 68, 0.85);
+}
+
+.hud-telemetry-tr #hud-live-time {
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.hud-telemetry-tr #hud-day-of-week {
+  color: var(--accent-red-bright);
+  font-weight: 700;
+}
+
+.hud-time-sub {
+  font-size: 0.58rem;
+  color: rgba(239, 68, 68, 0.4);
+}
+
+.hud-live-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+  background-color: var(--accent-red);
+  box-shadow: 0 0 6px var(--accent-red);
+  animation: pulse-dot 1s infinite ease-in-out;
+  vertical-align: middle;
+}
+
 .hud-telemetry-bl { bottom: 18px; left: 24px; }
 .hud-telemetry-br { bottom: 18px; right: 24px; text-align: right; }
 
 @media (max-width: 768px) {
-  .hud-telemetry { display: none; }
+  .hud-telemetry-tl, .hud-telemetry-bl, .hud-telemetry-br { display: none; }
+  .hud-telemetry-tr {
+    top: 10px;
+    right: 12px;
+    font-size: 0.6rem;
+  }
 }
 
 /* Ambient Red Glows */

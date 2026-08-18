@@ -351,7 +351,7 @@ body.logbook-open .drawer-backdrop {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 460px;
+  width: 480px;
   max-width: 92vw;
   background: rgba(14, 15, 20, 0.95);
   backdrop-filter: blur(24px);
@@ -405,7 +405,7 @@ body.logbook-open .right-drawer {
   align-items: center;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .terminal-title-group {
@@ -478,6 +478,80 @@ body.logbook-open .right-drawer {
    Personal Journal Section Styling
    ========================================================================== */
 
+.journal-controls {
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.small-btn {
+  padding: 0.55rem 1rem;
+  font-size: 0.78rem;
+}
+
+.btn-icon {
+  font-weight: 700;
+  margin-right: 0.2rem;
+}
+
+/* Journal Composer (Collapsible Form) */
+.journal-composer {
+  background: rgba(9, 10, 14, 0.85);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.15);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.journal-composer.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.composer-header {
+  margin-bottom: 0.85rem;
+}
+
+.composer-mode-title {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.08em;
+}
+
+.sci-fi-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  box-shadow: none;
+}
+
 .journal-feed-container {
   background: rgba(9, 10, 14, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -493,7 +567,7 @@ body.logbook-open .right-drawer {
   flex-direction: column;
   gap: 1.25rem;
   overflow-y: auto;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 280px);
   padding-right: 0.35rem;
 }
 
@@ -517,7 +591,7 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
   font-family: var(--font-mono);
   font-size: 0.72rem;
 }
@@ -546,6 +620,7 @@ body.logbook-open .right-drawer {
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.65;
+  white-space: pre-line;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -558,15 +633,14 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-muted);
 }
 
 .journal-status-indicator {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   color: var(--accent-red-bright);
 }
 
@@ -576,6 +650,35 @@ body.logbook-open .right-drawer {
   border-radius: 50%;
   background-color: var(--accent-red);
   box-shadow: 0 0 6px var(--accent-red);
+}
+
+.journal-item-actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.journal-action-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.journal-action-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #ffffff;
+}
+
+.journal-action-btn.delete:hover {
+  background: rgba(220, 38, 38, 0.25);
+  border-color: rgba(220, 38, 38, 0.5);
+  color: #fca5a5;
 }
 
 /* ==========================================================================

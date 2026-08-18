@@ -19,7 +19,7 @@
   <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Personal Journal">
     <span class="tab-pulse-dot"></span>
     <span class="tab-text">JOURNAL</span>
-    <span class="tab-count-badge">01</span>
+    <span class="tab-count-badge" id="journal-tab-badge">01</span>
   </button>
 
   <!-- Right Side Tab (Quantum Logbook) -->
@@ -93,7 +93,7 @@
           <h2 class="terminal-title">PERSONAL JOURNAL</h2>
         </div>
         <div class="drawer-header-actions">
-          <span class="log-count-badge">01 ENTRY</span>
+          <span class="log-count-badge" id="journal-count-badge">01 ENTRY</span>
           <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Journal Drawer">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -104,32 +104,51 @@
       </div>
 
       <div class="drawer-content">
+        <!-- Journal Action Bar -->
+        <div class="journal-controls">
+          <button type="button" id="toggle-composer-btn" class="sci-fi-btn small-btn">
+            <span class="btn-icon">+</span>
+            <span id="composer-btn-text">NEW LOG ENTRY</span>
+          </button>
+        </div>
+
+        <!-- Journal Composer Form (Collapsible) -->
+        <div id="journal-composer" class="journal-composer hidden">
+          <form id="journal-form" class="journal-form">
+            <input type="hidden" id="journal-edit-id" value="">
+            <div class="composer-header">
+              <span id="composer-mode-title" class="composer-mode-title">// COMPOSE LOG</span>
+            </div>
+            <div class="input-container">
+              <input 
+                type="text" 
+                id="journal-title-input" 
+                class="sci-fi-input" 
+                placeholder="LOG TITLE / SUBJECT..." 
+                maxlength="100" 
+                required
+              >
+              <textarea 
+                id="journal-body-input" 
+                class="sci-fi-input sci-fi-textarea" 
+                placeholder="ENTER LOG TRANSMISSION CONTENT..." 
+                rows="4" 
+                required
+              ></textarea>
+            </div>
+            <div class="composer-actions">
+              <button type="button" id="cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
+              <button type="submit" id="save-journal-btn" class="sci-fi-btn">
+                <span id="save-journal-text">SAVE ENTRY</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div class="journal-feed-container">
           <div class="log-feed-label">CHRONOLOGICAL ARCHIVES</div>
-          
-          <div class="journal-entries-list">
-            <!-- Placeholder Journal Entry -->
-            <article class="journal-card">
-              <div class="journal-card-header">
-                <span class="journal-tag">LOG // 001</span>
-                <time class="journal-date" datetime="2026-08-17T20:45:00">2026.08.17 // 20:45</time>
-              </div>
-              <h3 class="journal-title">SYSTEM INITIALIZATION & TELEMETRY</h3>
-              <div class="journal-body">
-                <p>
-                  Quantum communication relays and visitor subscriber channels have been successfully established. The cosmic backdrop is quiet tonight.
-                </p>
-                <p>
-                  Calibrated the sub-light sensory arrays, initialized the dark-theme terminal interface, and verified all core subroutines. Monitoring signals across all local sectors.
-                </p>
-              </div>
-              <div class="journal-card-footer">
-                <span class="journal-status-indicator">
-                  <span class="mini-status-dot"></span> ENCRYPTED TRANSMISSION
-                </span>
-                <span class="journal-id">AUTH: MATTHEWS-SEC-1</span>
-              </div>
-            </article>
+          <div id="journal-entries-container" class="journal-entries-list">
+            <!-- Rendered dynamically by app.js -->
           </div>
         </div>
       </div>

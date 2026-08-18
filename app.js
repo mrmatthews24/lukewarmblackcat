@@ -34,7 +34,11 @@ try {
 const db = getFirestore(app);
 const logbookRef = collection(db, "logbook");
 
+// ==========================================================================
 // DOM Elements
+// ==========================================================================
+
+// Logbook (Right Drawer)
 const logbookForm = document.getElementById("logbook-form");
 const nameInput = document.getElementById("name-input");
 const signBtn = document.getElementById("sign-btn");
@@ -43,21 +47,34 @@ const logbookList = document.getElementById("logbook-list");
 const logCountBadge = document.getElementById("log-count-badge");
 const tabCountBadge = document.getElementById("tab-count-badge");
 const formFeedback = document.getElementById("form-feedback");
-
-// Drawer Elements: Logbook (Right)
 const drawerToggleBtn = document.getElementById("drawer-toggle-btn");
 const drawerCloseBtn = document.getElementById("drawer-close-btn");
 const logbookDrawer = document.getElementById("logbook-drawer");
 
-// Drawer Elements: Journal (Left)
+// Journal (Left Drawer)
 const journalToggleBtn = document.getElementById("journal-toggle-btn");
 const journalCloseBtn = document.getElementById("journal-close-btn");
 const journalDrawer = document.getElementById("journal-drawer");
+const journalTabBadge = document.getElementById("journal-tab-badge");
+const journalCountBadge = document.getElementById("journal-count-badge");
+const journalEntriesContainer = document.getElementById("journal-entries-container");
+const toggleComposerBtn = document.getElementById("toggle-composer-btn");
+const composerBtnText = document.getElementById("composer-btn-text");
+const journalComposer = document.getElementById("journal-composer");
+const journalForm = document.getElementById("journal-form");
+const journalEditId = document.getElementById("journal-edit-id");
+const journalTitleInput = document.getElementById("journal-title-input");
+const journalBodyInput = document.getElementById("journal-body-input");
+const cancelComposeBtn = document.getElementById("cancel-compose-btn");
+const composerModeTitle = document.getElementById("composer-mode-title");
+const saveJournalText = document.getElementById("save-journal-text");
 
 // Shared Backdrop
 const drawerBackdrop = document.getElementById("drawer-backdrop");
 
-// --- Drawer Management Logic ---
+// ==========================================================================
+// Drawer Open / Close Logic
+// ==========================================================================
 function closeAllDrawers() {
   document.body.classList.remove("logbook-open", "journal-open");
   if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "false");
@@ -99,7 +116,6 @@ function toggleJournalDrawer() {
   }
 }
 
-// Event Listeners for Drawers
 if (drawerToggleBtn) drawerToggleBtn.addEventListener("click", toggleLogbookDrawer);
 if (drawerCloseBtn) drawerCloseBtn.addEventListener("click", closeAllDrawers);
 
@@ -114,7 +130,222 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// --- Helper: Format Timestamp ---
+// ==========================================================================
+// Personal Journal Storage & CRUD
+// ==========================================================================
+const JOURNAL_STORAGE_KEY = "matthews_personal_journal_v1";
+
+const DEFAULT_JOURNAL_ENTRIES = [
+  {
+    id: "initial-log-1",
+    date: "2026.08.17 // 20:45",
+    timestamp: 1787013900000,
+    title: "SYSTEM INITIALIZATION & TELEMETRY",
+    body: "Quantum communication relays and visitor subscriber channels have been successfully established. The cosmic backdrop is quiet tonight.\n\nCalibrated the sub-light sensory arrays, initialized the dark-theme terminal interface, and verified all core subroutines. Monitoring signals across all local sectors."
+  }
+];
+
+function loadJournalEntries() {
+  try {
+    const raw = localStorage.getItem(JOURNAL_STORAGE_KEY);
+    if (!raw) {
+      localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(DEFAULT_JOURNAL_ENTRIES));
+      return DEFAULT_JOURNAL_ENTRIES;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to load journal entries from storage:", e);
+    return DEFAULT_JOURNAL_ENTRIES;
+  }
+}
+
+function saveJournalEntries(entries) {
+  try {
+    localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(entries));
+  } catch (e) {
+    console.error("Failed to save journal entries to storage:", e);
+  }
+}
+
+function formatCurrentJournalDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}.${month}.${day} // ${hours}:${minutes}`;
+}
+
+function renderJournal() {
+  const entries = loadJournalEntries();
+  const total = entries.length;
+
+  if (journalTabBadge) journalTabBadge.textContent = String(total).padStart(2, "0");
+  if (journalCountBadge) journalCountBadge.textContent = `${String(total).padStart(2, "0")} ${total === 1 ? 'ENTRY' : 'ENTRIES'}`;
+
+  if (!journalEntriesContainer) return;
+
+  if (total === 0) {
+    journalEntriesContainer.innerHTML = `
+      <div class="empty-log-state">
+        <span class="pulse-indicator"></span>
+        <p>NO JOURNAL ENTRIES RECORDED // CLICK "NEW LOG ENTRY" ABOVE</p>
+      </div>
+    `;
+    return;
+  }
+
+  journalEntriesContainer.innerHTML = entries.map((entry, index) => {
+    const logNumber = String(total - index).padStart(3, "0");
+    const sanitizedTitle = escapeHTML(entry.title);
+    const sanitizedBody = escapeHTML(entry.body);
+
+    return `
+      <article class="journal-card" data-entry-id="${entry.id}">
+        <div class="journal-card-header">
+          <span class="journal-tag">LOG // ${logNumber}</span>
+          <time class="journal-date">${entry.date || "UNKNOWN TIME"}</time>
+        </div>
+        <h3 class="journal-title">${sanitizedTitle}</h3>
+        <div class="journal-body">${sanitizedBody}</div>
+        <div class="journal-card-footer">
+          <span class="journal-status-indicator">
+            <span class="mini-status-dot"></span> ENCRYPTED TRANSMISSION
+          </span>
+          <div class="journal-item-actions">
+            <button type="button" class="journal-action-btn edit-btn" data-id="${entry.id}">EDIT</button>
+            <button type="button" class="journal-action-btn delete-btn delete" data-id="${entry.id}">DELETE</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  // Attach Edit & Delete Listeners
+  journalEntriesContainer.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id");
+      startEditJournalEntry(id);
+    });
+  });
+
+  journalEntriesContainer.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id");
+      deleteJournalEntry(id);
+    });
+  });
+}
+
+function openComposer(mode = "new", entry = null) {
+  if (!journalComposer) return;
+  journalComposer.classList.remove("hidden");
+
+  if (mode === "edit" && entry) {
+    composerModeTitle.textContent = "// EDIT LOG ENTRY";
+    saveJournalText.textContent = "UPDATE ENTRY";
+    composerBtnText.textContent = "CLOSE COMPOSER";
+    journalEditId.value = entry.id;
+    journalTitleInput.value = entry.title;
+    journalBodyInput.value = entry.body;
+  } else {
+    composerModeTitle.textContent = "// COMPOSE NEW LOG";
+    saveJournalText.textContent = "SAVE ENTRY";
+    composerBtnText.textContent = "CLOSE COMPOSER";
+    journalEditId.value = "";
+    journalTitleInput.value = "";
+    journalBodyInput.value = "";
+  }
+
+  journalTitleInput.focus();
+}
+
+function closeComposer() {
+  if (!journalComposer) return;
+  journalComposer.classList.add("hidden");
+  composerBtnText.textContent = "NEW LOG ENTRY";
+  journalEditId.value = "";
+  journalTitleInput.value = "";
+  journalBodyInput.value = "";
+}
+
+function startEditJournalEntry(id) {
+  const entries = loadJournalEntries();
+  const entry = entries.find((item) => item.id === id);
+  if (!entry) return;
+  openComposer("edit", entry);
+}
+
+function deleteJournalEntry(id) {
+  if (!confirm("CONFIRM DELETION: Purge this journal log from the quantum archive?")) {
+    return;
+  }
+  let entries = loadJournalEntries();
+  entries = entries.filter((item) => item.id !== id);
+  saveJournalEntries(entries);
+  renderJournal();
+}
+
+if (toggleComposerBtn) {
+  toggleComposerBtn.addEventListener("click", () => {
+    if (journalComposer.classList.contains("hidden")) {
+      openComposer("new");
+    } else {
+      closeComposer();
+    }
+  });
+}
+
+if (cancelComposeBtn) {
+  cancelComposeBtn.addEventListener("click", closeComposer);
+}
+
+if (journalForm) {
+  journalForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = journalTitleInput.value.trim();
+    const body = journalBodyInput.value.trim();
+    const editId = journalEditId.value;
+
+    if (!title || !body) return;
+
+    let entries = loadJournalEntries();
+
+    if (editId) {
+      // Edit existing entry
+      entries = entries.map((item) => {
+        if (item.id === editId) {
+          return {
+            ...item,
+            title,
+            body
+          };
+        }
+        return item;
+      });
+    } else {
+      // Create new entry (added to top)
+      const newEntry = {
+        id: `log-${Date.now()}`,
+        date: formatCurrentJournalDate(),
+        timestamp: Date.now(),
+        title,
+        body
+      };
+      entries.unshift(newEntry);
+    }
+
+    saveJournalEntries(entries);
+    renderJournal();
+    closeComposer();
+  });
+}
+
+// ==========================================================================
+// Quantum Logbook (Firestore Realtime)
+// ==========================================================================
+
 function formatLogDate(timestamp) {
   if (!timestamp) return "JUST NOW";
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -126,7 +357,6 @@ function formatLogDate(timestamp) {
   }).toUpperCase();
 }
 
-// --- Render Logbook Entries ---
 function renderLogbook(entries) {
   const countText = `${entries.length} LOGGED`;
   if (logCountBadge) logCountBadge.textContent = countText;
@@ -157,14 +387,12 @@ function renderLogbook(entries) {
   }).join("");
 }
 
-// HTML sanitizer for user input
 function escapeHTML(str) {
   const div = document.createElement("div");
   div.textContent = str || "";
   return div.innerHTML;
 }
 
-// Real-time listener for Firestore logbook
 function subscribeToLogbook() {
   try {
     const logQuery = query(logbookRef, orderBy("timestamp", "desc"));
@@ -177,7 +405,6 @@ function subscribeToLogbook() {
       renderLogbook(entries);
     }, (error) => {
       console.warn("Firestore query with orderBy failed, falling back to unordered query:", error);
-      // Fallback in case timestamp index is initializing
       onSnapshot(logbookRef, (snapshot) => {
         const entries = [];
         snapshot.forEach((doc) => {
@@ -191,11 +418,13 @@ function subscribeToLogbook() {
         renderLogbook(entries);
       }, (fallbackErr) => {
         console.error("Failed to load logbook:", fallbackErr);
-        logbookList.innerHTML = `
-          <div class="error-log-state">
-            <p>UNABLE TO CONNECT TO QUANTUM DATABASE // CHECK FIRESTORE RULES</p>
-          </div>
-        `;
+        if (logbookList) {
+          logbookList.innerHTML = `
+            <div class="error-log-state">
+              <p>UNABLE TO CONNECT TO QUANTUM DATABASE // CHECK FIRESTORE RULES</p>
+            </div>
+          `;
+        }
       });
     });
   } catch (err) {
@@ -203,7 +432,6 @@ function subscribeToLogbook() {
   }
 }
 
-// Handle Form Submission
 if (logbookForm) {
   logbookForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -215,7 +443,6 @@ if (logbookForm) {
       return;
     }
 
-    // Set loading state
     signBtn.disabled = true;
     signBtn.classList.add("loading");
     signBtnText.textContent = "TRANSMITTING...";
@@ -261,5 +488,6 @@ function clearFeedback() {
   }
 }
 
-// Start listening
+// Initialize Everything
+renderJournal();
 subscribeToLogbook();

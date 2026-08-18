@@ -11,12 +11,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Ambient background glow elements -->
+  <!-- Ambient background glow elements (Crimson / Red Sci-Fi Aura) -->
   <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
   <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
 
+  <!-- Main Hero Card -->
   <main class="container" id="main-content">
-    <!-- Hero Profile Section -->
     <header class="header-section">
       <div class="system-status-pill">
         <span class="status-dot"></span>
@@ -26,8 +26,8 @@
     </header>
 
     <div class="illustration-wrapper" aria-hidden="true">
-      <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a cat">
-        <!-- Cat outline: contour lines -->
+      <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
+        <!-- Black Cat outline: contour lines -->
         <!-- Head & Ears -->
         <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
         
@@ -56,7 +56,7 @@
       </svg>
     </div>
 
-    <section class="contact-section">
+    <footer class="contact-section">
       <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send email transmission">
         <svg class="email-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect width="20" height="16" x="2" y="4" rx="2"/>
@@ -64,51 +64,73 @@
         </svg>
         mrlukejmatthews@gmail.com
       </a>
-    </section>
+    </footer>
+  </main>
 
-    <!-- Sci-Fi Logbook Terminal Section -->
-    <section class="logbook-section" id="logbook-section">
-      <div class="terminal-header">
+  <!-- Collapsible Side Tab Button (Docked to Edge) -->
+  <button id="drawer-toggle-btn" class="drawer-trigger-tab" aria-expanded="false" aria-controls="logbook-drawer" title="Toggle Quantum Logbook">
+    <span class="tab-pulse-dot"></span>
+    <span class="tab-text">LOGBOOK</span>
+    <span class="tab-count-badge" id="tab-count-badge">--</span>
+  </button>
+
+  <!-- Backdrop Overlay -->
+  <div id="drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
+
+  <!-- Collapsible Slide-Out Drawer -->
+  <aside id="logbook-drawer" class="logbook-drawer" role="dialog" aria-modal="true" aria-label="Quantum Logbook Drawer" aria-hidden="true">
+    <div class="drawer-inner">
+      <div class="drawer-header">
         <div class="terminal-title-group">
           <span class="terminal-prompt">&gt;</span>
           <h2 class="terminal-title">QUANTUM LOGBOOK</h2>
         </div>
-        <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
-      </div>
-
-      <form id="logbook-form" class="logbook-form">
-        <div class="input-container">
-          <input 
-            type="text" 
-            id="name-input" 
-            class="sci-fi-input" 
-            placeholder="ENTER CALLSIGN / IDENTIFIER..." 
-            maxlength="60" 
-            autocomplete="off" 
-            required
-          >
-          <button type="submit" id="sign-btn" class="sci-fi-btn">
-            <span id="sign-btn-text">SIGN LOGBOOK</span>
-            <svg class="btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+        <div class="drawer-header-actions">
+          <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
+          <button id="drawer-close-btn" class="drawer-close-btn" aria-label="Close Logbook Drawer">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
-        <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
-      </form>
-
-      <!-- Signers Stream -->
-      <div class="log-feed-container">
-        <div class="log-feed-label">RECENT TRANSMISSIONS</div>
-        <ul id="logbook-list" class="logbook-list">
-          <div class="empty-log-state">
-            <span class="pulse-indicator"></span>
-            <p>SYNCING WITH FIRESTORE...</p>
-          </div>
-        </ul>
       </div>
-    </section>
-  </main>
+
+      <div class="drawer-content">
+        <form id="logbook-form" class="logbook-form">
+          <div class="input-container">
+            <input 
+              type="text" 
+              id="name-input" 
+              class="sci-fi-input" 
+              placeholder="ENTER CALLSIGN / IDENTIFIER..." 
+              maxlength="60" 
+              autocomplete="off" 
+              required
+            >
+            <button type="submit" id="sign-btn" class="sci-fi-btn">
+              <span id="sign-btn-text">SIGN LOGBOOK</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+        </form>
+
+        <!-- Signers Stream Feed -->
+        <div class="log-feed-container">
+          <div class="log-feed-label">TRANSMISSION ARCHIVE</div>
+          <ul id="logbook-list" class="logbook-list">
+            <div class="empty-log-state">
+              <span class="pulse-indicator"></span>
+              <p>SYNCING WITH FIRESTORE...</p>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <script type="module" src="app.js"></script>
 </body>

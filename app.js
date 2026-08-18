@@ -41,9 +41,59 @@ const signBtn = document.getElementById("sign-btn");
 const signBtnText = document.getElementById("sign-btn-text");
 const logbookList = document.getElementById("logbook-list");
 const logCountBadge = document.getElementById("log-count-badge");
+const tabCountBadge = document.getElementById("tab-count-badge");
 const formFeedback = document.getElementById("form-feedback");
 
-// Helper: Format Timestamp
+// Drawer Elements
+const drawerToggleBtn = document.getElementById("drawer-toggle-btn");
+const drawerCloseBtn = document.getElementById("drawer-close-btn");
+const drawerBackdrop = document.getElementById("drawer-backdrop");
+const logbookDrawer = document.getElementById("logbook-drawer");
+
+// --- Drawer Open / Close Logic ---
+function openDrawer() {
+  document.body.classList.add("drawer-open");
+  drawerToggleBtn.setAttribute("aria-expanded", "true");
+  logbookDrawer.setAttribute("aria-hidden", "false");
+  setTimeout(() => {
+    nameInput.focus();
+  }, 250);
+}
+
+function closeDrawer() {
+  document.body.classList.remove("drawer-open");
+  drawerToggleBtn.setAttribute("aria-expanded", "false");
+  logbookDrawer.setAttribute("aria-hidden", "true");
+}
+
+function toggleDrawer() {
+  const isOpen = document.body.classList.contains("drawer-open");
+  if (isOpen) {
+    closeDrawer();
+  } else {
+    openDrawer();
+  }
+}
+
+if (drawerToggleBtn) {
+  drawerToggleBtn.addEventListener("click", toggleDrawer);
+}
+
+if (drawerCloseBtn) {
+  drawerCloseBtn.addEventListener("click", closeDrawer);
+}
+
+if (drawerBackdrop) {
+  drawerBackdrop.addEventListener("click", closeDrawer);
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.body.classList.contains("drawer-open")) {
+    closeDrawer();
+  }
+});
+
+// --- Helper: Format Timestamp ---
 function formatLogDate(timestamp) {
   if (!timestamp) return "JUST NOW";
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -55,9 +105,11 @@ function formatLogDate(timestamp) {
   }).toUpperCase();
 }
 
-// Render Logbook entries
+// --- Render Logbook Entries ---
 function renderLogbook(entries) {
-  logCountBadge.textContent = `${entries.length} LOGGED`;
+  const countText = `${entries.length} LOGGED`;
+  if (logCountBadge) logCountBadge.textContent = countText;
+  if (tabCountBadge) tabCountBadge.textContent = String(entries.length);
 
   if (entries.length === 0) {
     logbookList.innerHTML = `

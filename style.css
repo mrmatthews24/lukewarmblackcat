@@ -3,7 +3,7 @@
    ========================================================================== */
 :root {
   --bg-color: #07080a;
-  --panel-bg: rgba(14, 15, 20, 0.9);
+  --panel-bg: rgba(14, 15, 20, 0.92);
   --panel-border: rgba(239, 68, 68, 0.28);
   --panel-border-hover: rgba(239, 68, 68, 0.65);
   
@@ -346,7 +346,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0.5rem 0 2.25rem;
+  margin: 0.5rem 0 1.5rem;
 }
 
 .cat-hud-frame {
@@ -411,6 +411,62 @@ body {
 
 .illustration-wrapper:hover .tail {
   transform: rotate(4deg);
+}
+
+/* ==========================================================================
+   Subtle Access Workspace Trigger Button below Cat
+   ========================================================================== */
+
+.workspace-access-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+  width: 100%;
+}
+
+.workspace-access-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.38rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.workspace-access-btn .lock-icon {
+  opacity: 0.7;
+  color: var(--accent-red-bright);
+  transition: transform 0.2s ease;
+}
+
+.workspace-access-btn:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+.workspace-access-btn:hover .lock-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.workspace-access-btn.authenticated {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
+}
+
+.workspace-access-btn.authenticated .lock-icon {
+  color: #4ade80;
 }
 
 /* ==========================================================================
@@ -1033,25 +1089,29 @@ body.logbook-open .right-drawer {
 /* Scrollbars */
 .logbook-list::-webkit-scrollbar,
 .journal-entries-list::-webkit-scrollbar,
-.drawer-inner::-webkit-scrollbar {
+.drawer-inner::-webkit-scrollbar,
+.workspace-modal-content::-webkit-scrollbar {
   width: 4px;
 }
 
 .logbook-list::-webkit-scrollbar-track,
 .journal-entries-list::-webkit-scrollbar-track,
-.drawer-inner::-webkit-scrollbar-track {
+.drawer-inner::-webkit-scrollbar-track,
+.workspace-modal-content::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
 }
 
 .logbook-list::-webkit-scrollbar-thumb,
 .journal-entries-list::-webkit-scrollbar-thumb,
-.drawer-inner::-webkit-scrollbar-thumb {
+.drawer-inner::-webkit-scrollbar-thumb,
+.workspace-modal-content::-webkit-scrollbar-thumb {
   background: rgba(239, 68, 68, 0.35);
 }
 
 .logbook-list::-webkit-scrollbar-thumb:hover,
 .journal-entries-list::-webkit-scrollbar-thumb:hover,
-.drawer-inner::-webkit-scrollbar-thumb:hover {
+.drawer-inner::-webkit-scrollbar-thumb:hover,
+.workspace-modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--accent-red-bright);
 }
 
@@ -1121,9 +1181,230 @@ body.logbook-open .right-drawer {
 }
 
 /* ==========================================================================
+   Tactical Modals (Authentication Gateway & Private Workspace)
+   ========================================================================== */
+
+.hud-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 1.5rem;
+}
+
+.hud-modal.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.hud-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 5, 8, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.hud-modal-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 480px;
+  padding: 2.25rem 2rem;
+  background: rgba(14, 15, 22, 0.97);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(239, 68, 68, 0.25);
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hud-modal.open .hud-modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.modal-tag {
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.auth-form {
+  margin-bottom: 1.25rem;
+}
+
+.auth-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.08em;
+  margin-top: 0.35rem;
+}
+
+.auth-btn {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1.25rem;
+}
+
+.auth-footer-note {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.85rem;
+}
+
+/* Private Workspace Modal Dashboard */
+.workspace-modal-content {
+  max-width: 680px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.workspace-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-badge {
+  background: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+}
+
+.logout-btn {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.72rem;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.logout-btn:hover {
+  background: rgba(220, 38, 38, 0.8);
+  color: #ffffff;
+}
+
+.workspace-user-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.user-strip-tag {
+  color: var(--text-muted);
+}
+
+.user-strip-email {
+  color: var(--accent-red-bright);
+  font-weight: 600;
+}
+
+.workspace-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.workspace-card {
+  padding: 1.25rem;
+  border-left: 3px solid var(--accent-red);
+}
+
+.workspace-card-header {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-red-bright);
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+}
+
+.workspace-card-body {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.telemetry-row:last-child {
+  border-bottom: none;
+}
+
+.telemetry-row span {
+  color: var(--text-muted);
+}
+
+.telemetry-row strong {
+  color: var(--text-primary);
+}
+
+.text-glow {
+  color: var(--accent-red-bright) !important;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.vault-placeholder-text {
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.vault-placeholder-text code {
+  font-family: var(--font-mono);
+  color: var(--accent-red-bright);
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.1rem 0.35rem;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.vault-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: #4ade80;
+}
+
+.vault-status-indicator .pulse-indicator {
+  background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   body {
     padding: 1.5rem 0.75rem;
   }
@@ -1153,5 +1434,13 @@ body.logbook-open .right-drawer {
 
   .drawer-inner {
     padding: 1.5rem 1.25rem;
+  }
+
+  .workspace-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hud-modal-content {
+    padding: 1.75rem 1.25rem;
   }
 }

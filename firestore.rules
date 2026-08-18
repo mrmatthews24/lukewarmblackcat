@@ -3,23 +3,32 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Logbook entries collection
+    // Public Access Log collection
     match /logbook/{entryId} {
-      // Allow reading so the app's display feed can load and render signers
+      // 1. Allow reading so the public feed displays signers
       allow read: if true;
       
-      // Allow creation of new logbook entries with strict field validation
+      // 2. Allow anyone to create new entries with strict validation
       allow create: if request.resource.data.name is string 
                     && request.resource.data.name.trim().size() > 0 
                     && request.resource.data.name.size() <= 100
                     && request.resource.data.keys().hasOnly(['name', 'timestamp']);
                     
-      // Strictly prevent editing, modifying, or deleting existing entries
+      // 3. Prevent any modifying or deleting of existing log entries
       allow update: if false;
       allow delete: if false;
     }
 
-    // Block all access to any other collections and documents in the entire database
+    // Private Workspace data: STRICTLY LOCKED to authenticated owner accounts
+    match /workspace/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /private/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Block all access to any other collections across the database
     match /{document=**} {
       allow read, write: if false;
     }

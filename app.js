@@ -10,6 +10,12 @@ import {
   orderBy, 
   onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -32,6 +38,7 @@ try {
 }
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 const logbookRef = collection(db, "logbook");
 
 // ==========================================================================
@@ -68,6 +75,25 @@ const journalBodyInput = document.getElementById("journal-body-input");
 const cancelComposeBtn = document.getElementById("cancel-compose-btn");
 const composerModeTitle = document.getElementById("composer-mode-title");
 const saveJournalText = document.getElementById("save-journal-text");
+
+// Authentication & Workspace Elements
+const workspaceTriggerBtn = document.getElementById("workspace-trigger-btn");
+const workspaceBtnLabel = document.getElementById("workspace-btn-label");
+const authModal = document.getElementById("auth-modal");
+const authModalBackdrop = document.getElementById("auth-modal-backdrop");
+const authCloseBtn = document.getElementById("auth-close-btn");
+const authForm = document.getElementById("auth-form");
+const authEmailInput = document.getElementById("auth-email-input");
+const authPasswordInput = document.getElementById("auth-password-input");
+const authSubmitBtn = document.getElementById("auth-submit-btn");
+const authSubmitText = document.getElementById("auth-submit-text");
+const authFeedback = document.getElementById("auth-feedback");
+
+const workspaceModal = document.getElementById("workspace-modal");
+const workspaceModalBackdrop = document.getElementById("workspace-modal-backdrop");
+const workspaceCloseBtn = document.getElementById("workspace-close-btn");
+const workspaceLogoutBtn = document.getElementById("workspace-logout-btn");
+const workspaceUserEmail = document.getElementById("workspace-user-email");
 
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
@@ -145,11 +171,12 @@ function closeAllDrawers() {
 
 function openLogbookDrawer() {
   closeAllDrawers();
+  closeAuthModal();
+  closeWorkspaceModal();
   document.body.classList.add("logbook-open");
   if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "true");
   if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "false");
   
-  // Trigger header typewriter animation
   const titleEl = logbookDrawer?.querySelector("[data-typewriter]");
   if (titleEl) {
     const rawText = titleEl.getAttribute("data-typewriter");
@@ -163,11 +190,12 @@ function openLogbookDrawer() {
 
 function openJournalDrawer() {
   closeAllDrawers();
+  closeAuthModal();
+  closeWorkspaceModal();
   document.body.classList.add("journal-open");
   if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "true");
   if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "false");
   
-  // Trigger header typewriter animation
   const titleEl = journalDrawer?.querySelector("[data-typewriter]");
   if (titleEl) {
     const rawText = titleEl.getAttribute("data-typewriter");
@@ -199,9 +227,153 @@ if (journalCloseBtn) journalCloseBtn.addEventListener("click", closeAllDrawers);
 
 if (drawerBackdrop) drawerBackdrop.addEventListener("click", closeAllDrawers);
 
+// ==========================================================================
+// Firebase Authentication & Private Workspace Logic
+// ==========================================================================
+
+function openAuthModal() {
+  closeAllDrawers();
+  if (authModal) {
+    authModal.classList.add("open");
+    authModal.setAttribute("aria-hidden", "false");
+    clearAuthFeedback();
+    setTimeout(() => {
+      if (authEmailInput) authEmailInput.focus();
+    }, 200);
+  }
+}
+
+function closeAuthModal() {
+  if (authModal) {
+    authModal.classList.remove("open");
+    authModal.setAttribute("aria-hidden", "true");
+  }
+}
+
+function openWorkspaceModal() {
+  closeAllDrawers();
+  closeAuthModal();
+  if (workspaceModal) {
+    workspaceModal.classList.add("open");
+    workspaceModal.setAttribute("aria-hidden", "false");
+  }
+}
+
+function closeWorkspaceModal() {
+  if (workspaceModal) {
+    workspaceModal.classList.remove("open");
+    workspaceModal.setAttribute("aria-hidden", "true");
+  }
+}
+
+// Workspace Trigger Click Handler
+if (workspaceTriggerBtn) {
+  workspaceTriggerBtn.addEventListener("click", () => {
+    if (auth.currentUser) {
+      openWorkspaceModal();
+    } else {
+      openAuthModal();
+    }
+  });
+}
+
+if (authCloseBtn) authCloseBtn.addEventListener("click", closeAuthModal);
+if (authModalBackdrop) authModalBackdrop.addEventListener("click", closeAuthModal);
+
+if (workspaceCloseBtn) workspaceCloseBtn.addEventListener("click", closeWorkspaceModal);
+if (workspaceModalBackdrop) workspaceModalBackdrop.addEventListener("click", closeWorkspaceModal);
+
+// Handle Login Submission
+if (authForm) {
+  authForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = authEmailInput.value.trim();
+    const password = authPasswordInput.value;
+
+    if (!email || !password) {
+      showAuthFeedback("ENTER CREDENTIALS", "error");
+      return;
+    }
+
+    authSubmitBtn.disabled = true;
+    authSubmitText.textContent = "VERIFYING CIPHER...";
+    clearAuthFeedback();
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showAuthFeedback("CLEARANCE VERIFIED // ACCESS GRANTED", "success");
+      authSubmitText.textContent = "ACCESS GRANTED ✓";
+      
+      setTimeout(() => {
+        authEmailInput.value = "";
+        authPasswordInput.value = "";
+        authSubmitBtn.disabled = false;
+        authSubmitText.textContent = "AUTHENTICATE ACCESS";
+        closeAuthModal();
+        openWorkspaceModal();
+      }, 900);
+    } catch (error) {
+      console.error("Auth error:", error);
+      let errorMsg = "AUTHENTICATION FAILED: INVALID CIPHER";
+      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+        errorMsg = "ACCESS DENIED: INVALID EMAIL OR PASSPHRASE";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMsg = "SECURITY LOCKOUT: TOO MANY ATTEMPTS. RETRY LATER.";
+      } else if (error.code === "auth/network-request-failed") {
+        errorMsg = "CONNECTION ERROR: CHECK NETWORK";
+      }
+      showAuthFeedback(errorMsg, "error");
+      authSubmitBtn.disabled = false;
+      authSubmitText.textContent = "RETRY AUTHENTICATION";
+    }
+  });
+}
+
+// Handle Logout
+if (workspaceLogoutBtn) {
+  workspaceLogoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      closeWorkspaceModal();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  });
+}
+
+// Track Auth State
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    if (workspaceBtnLabel) workspaceBtnLabel.textContent = "PRIVATE WORKSPACE";
+    if (workspaceTriggerBtn) workspaceTriggerBtn.classList.add("authenticated");
+    if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
+  } else {
+    if (workspaceBtnLabel) workspaceBtnLabel.textContent = "ACCESS WORKSPACE";
+    if (workspaceTriggerBtn) workspaceTriggerBtn.classList.remove("authenticated");
+    if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
+  }
+});
+
+function showAuthFeedback(msg, type) {
+  if (authFeedback) {
+    authFeedback.textContent = msg;
+    authFeedback.className = `form-feedback ${type}`;
+  }
+}
+
+function clearAuthFeedback() {
+  if (authFeedback) {
+    authFeedback.textContent = "";
+    authFeedback.className = "form-feedback";
+  }
+}
+
+// Global Keydown Handler (ESC closes drawers and modals)
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeAllDrawers();
+    closeAuthModal();
+    closeWorkspaceModal();
   }
 });
 
@@ -393,7 +565,6 @@ if (journalForm) {
     let entries = loadJournalEntries();
 
     if (editId) {
-      // Edit existing entry
       entries = entries.map((item) => {
         if (item.id === editId) {
           return {
@@ -405,7 +576,6 @@ if (journalForm) {
         return item;
       });
     } else {
-      // Create new entry
       const newEntry = {
         id: `log-${Date.now()}`,
         date: formatCurrentJournalDate(),

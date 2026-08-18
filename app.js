@@ -76,32 +76,37 @@ const typewriterTarget = document.getElementById("typewriter-target");
 // ==========================================================================
 // Tactical Typewriter Text Animation
 // ==========================================================================
-function startTypewriter(element, text, speed = 65) {
+function startTypewriter(element, text, speed = 55) {
   if (!element) return;
+  
+  if (element._typewriterTimer) {
+    clearTimeout(element._typewriterTimer);
+  }
+  
   element.textContent = "";
   let i = 0;
+  
   function typeChar() {
     if (i < text.length) {
       element.textContent += text.charAt(i);
       i++;
-      setTimeout(typeChar, speed);
+      element._typewriterTimer = setTimeout(typeChar, speed);
     }
   }
+  
   typeChar();
 }
 
-// Trigger Hero Typewriter on Load
-document.addEventListener("DOMContentLoaded", () => {
+function initHeroTypewriter() {
   const greetingHeading = document.getElementById("greeting");
   const fullGreeting = greetingHeading?.getAttribute("data-text") || "Hello, Mister Matthews";
-  startTypewriter(typewriterTarget, fullGreeting, 55);
-});
+  startTypewriter(typewriterTarget, fullGreeting, 50);
+}
 
-// Initial trigger if script loads after DOM ready
-if (document.readyState === "complete" || document.readyState === "interactive") {
-  const greetingHeading = document.getElementById("greeting");
-  const fullGreeting = greetingHeading?.getAttribute("data-text") || "Hello, Mister Matthews";
-  startTypewriter(typewriterTarget, fullGreeting, 55);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initHeroTypewriter, { once: true });
+} else {
+  initHeroTypewriter();
 }
 
 // ==========================================================================

@@ -19,7 +19,7 @@
        ========================================================================== -->
   <div id="public-view" class="view-wrapper">
     <!-- Screen Corner Telemetry Readouts -->
-    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.2</span><br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.3</span><br>COORD: 41.92556°N 111.47333°W</div>
     <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
       <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
@@ -398,7 +398,7 @@
       <div class="nav-brand-group">
         <span class="terminal-prompt">&gt;</span>
         <div class="nav-title-column">
-          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.2</span></h1>
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.3</span></h1>
           <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
@@ -601,6 +601,35 @@
             <div class="log-feed-label">[CHRONOLOGICAL QUANTUM ARCHIVE]</div>
             <div id="ws-journal-entries-container" class="journal-entries-list">
               <!-- Rendered dynamically by app.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- COLUMN 3: What Changed? / Git Deployment History Panel -->
+        <section class="workspace-panel hud-card" id="changelog-dashboard-panel">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="panel-header">
+            <div class="terminal-title-group">
+              <span class="terminal-prompt">&gt;</span>
+              <h2 class="terminal-title">WHAT CHANGED? // CHANGELOG</h2>
+            </div>
+            <button type="button" id="refresh-changelog-btn" class="sci-fi-btn small-btn" title="Refresh Git deployment log">
+              <span class="btn-icon">↻</span>
+              <span id="changelog-btn-text">SYNC</span>
+            </button>
+          </div>
+
+          <div class="ws-changelog-feed-wrapper">
+            <div class="log-feed-label">[GIT COMMIT ARCHIVE // RECENT DEPLOYMENTS]</div>
+            <div id="workspace-changelog-list" class="changelog-entries-list">
+              <div class="empty-log-state">
+                <span class="pulse-indicator"></span>
+                <p>SYNCING RECENT COMMIT HISTORY...</p>
+              </div>
             </div>
           </div>
         </section>

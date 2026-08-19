@@ -25,7 +25,7 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.2", // Automatically updates HUD corner readouts and workspace header
+  version: "v1.3", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"
@@ -206,6 +206,11 @@ const hwCarName = document.getElementById("hw-car-name");
 const hwCarFact = document.getElementById("hw-car-fact");
 const hwIndexTag = document.getElementById("hw-index-tag");
 
+// Changelog Elements (What Changed? Panel)
+const workspaceChangelogList = document.getElementById("workspace-changelog-list");
+const refreshChangelogBtn = document.getElementById("refresh-changelog-btn");
+const changelogBtnText = document.getElementById("changelog-btn-text");
+
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
 const typewriterTarget = document.getElementById("typewriter-target");
@@ -228,6 +233,7 @@ function showWorkspaceView() {
   if (workspaceView) workspaceView.classList.remove("hidden");
   window.location.hash = "workspace";
   renderJournal();
+  fetchWorkspaceChangelog();
 }
 
 // Workspace Trigger Click Handler
@@ -638,6 +644,105 @@ document.addEventListener("click", (e) => {
     }
   }
 });
+
+// ==========================================================================
+// What Changed? / Git Commit History Panel (Private Workspace)
+// ==========================================================================
+let changelogCache = null;
+
+async function fetchWorkspaceChangelog(forceRefresh = false) {
+  if (!workspaceChangelogList) return;
+
+  if (changelogCache && !forceRefresh) {
+    renderWorkspaceChangelog(changelogCache);
+    return;
+  }
+
+  if (changelogBtnText) changelogBtnText.textContent = "SYNCING...";
+  if (refreshChangelogBtn) refreshChangelogBtn.disabled = true;
+
+  try {
+    const response = await fetch("https://api.github.com/repos/mrmatthews24/lukewarmblackcat/commits?per_page=15", {
+      headers: {
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const commits = await response.json();
+    changelogCache = commits;
+    renderWorkspaceChangelog(commits);
+  } catch (err) {
+    console.error("Failed to fetch commit history:", err);
+    workspaceChangelogList.innerHTML = `
+      <div class="empty-log-state">
+        <p>UNABLE TO RETRIEVE COMMIT ARCHIVE // REPO ENCRYPTION ACTIVE</p>
+      </div>
+    `;
+  } finally {
+    if (changelogBtnText) changelogBtnText.textContent = "SYNC";
+    if (refreshChangelogBtn) refreshChangelogBtn.disabled = false;
+  }
+}
+
+function renderWorkspaceChangelog(commits) {
+  if (!workspaceChangelogList) return;
+
+  if (!commits || commits.length === 0) {
+    workspaceChangelogList.innerHTML = `
+      <div class="empty-log-state">
+        <p>NO RECORDED DEPLOYMENTS</p>
+      </div>
+    `;
+    return;
+  }
+
+  workspaceChangelogList.innerHTML = commits.map((item) => {
+    const rawMsg = item.commit?.message || "Deployment update";
+    const firstLine = rawMsg.split("\n")[0].trim();
+    const shaShort = item.sha ? item.sha.slice(0, 7) : "commit";
+    const dateRaw = item.commit?.author?.date || item.commit?.committer?.date;
+    
+    let formattedDate = "RECENT";
+    if (dateRaw) {
+      const d = new Date(dateRaw);
+      const yr = d.getFullYear();
+      const mo = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const hr = String(d.getHours()).padStart(2, "0");
+      const mn = String(d.getMinutes()).padStart(2, "0");
+      formattedDate = `${yr}.${mo}.${day} // ${hr}:${mn}`;
+    }
+
+    const authorName = item.commit?.author?.name || item.author?.login || "Operative";
+    const commitUrl = item.html_url || `https://github.com/mrmatthews24/lukewarmblackcat/commit/${item.sha}`;
+
+    return `
+      <article class="changelog-item">
+        <div class="changelog-header">
+          <span class="changelog-sha">#${shaShort}</span>
+          <time class="changelog-date">${formattedDate}</time>
+        </div>
+        <div class="changelog-message">${escapeHTML(firstLine)}</div>
+        <div class="changelog-footer">
+          <span class="changelog-author">// ${escapeHTML(authorName)}</span>
+          <a href="${commitUrl}" target="_blank" rel="noopener noreferrer" class="changelog-link" title="View commit on GitHub">
+            <span>DIFF</span> ↗
+          </a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+if (refreshChangelogBtn) {
+  refreshChangelogBtn.addEventListener("click", () => {
+    fetchWorkspaceChangelog(true);
+  });
+}
 
 // ==========================================================================
 // Tactical Tasks & Objectives Management (Private Workspace)

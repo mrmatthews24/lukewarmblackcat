@@ -25,17 +25,62 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.1", // Update this single variable to increment site version
+  version: "v1.2", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"
 };
+
+// ==========================================================================
+// Daily Rotating Quotes Database (Deterministic Date-Based Rotation)
+// Store items as: { quote: "Your quote text here", source: "Optional Author / Source" }
+// ==========================================================================
+export const QUOTES_DATABASE = [
+  // Leave empty for now. Add your quotes here whenever ready!
+];
+
+function renderDailyQuote() {
+  const quoteContainer = document.getElementById("hud-quote-container");
+  const quoteTextEl = document.getElementById("hud-quote-text");
+  const quoteSourceEl = document.getElementById("hud-quote-source");
+
+  if (!quoteContainer || !quoteTextEl) return;
+
+  if (!QUOTES_DATABASE || QUOTES_DATABASE.length === 0) {
+    quoteContainer.classList.add("hidden");
+    return;
+  }
+
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  const index = Math.abs(dayNumber) % QUOTES_DATABASE.length;
+  const currentQuote = QUOTES_DATABASE[index];
+
+  if (!currentQuote || !currentQuote.quote) {
+    quoteContainer.classList.add("hidden");
+    return;
+  }
+
+  quoteTextEl.textContent = `"${currentQuote.quote}"`;
+  if (quoteSourceEl) {
+    if (currentQuote.source) {
+      quoteSourceEl.textContent = `// ${currentQuote.source}`;
+      quoteSourceEl.classList.remove("hidden");
+    } else {
+      quoteSourceEl.textContent = "";
+      quoteSourceEl.classList.add("hidden");
+    }
+  }
+
+  quoteContainer.classList.remove("hidden");
+}
 
 function applyAppConfig() {
   const versionTags = document.querySelectorAll("#hud-version-tag, #ws-version-tag, .hud-version-tag");
   versionTags.forEach(el => {
     el.textContent = APP_CONFIG.version;
   });
+  renderDailyQuote();
 }
 
 if (document.readyState === "loading") {

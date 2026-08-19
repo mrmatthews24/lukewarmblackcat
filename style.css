@@ -460,6 +460,40 @@ html, body {
   opacity: 1;
 }
 
+/* Daily Rotating Quote (HUD-Styled) */
+.hud-daily-quote {
+  width: 100%;
+  max-width: 420px;
+  margin: 0.25rem 0 1.35rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid var(--accent-red);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  animation: fadeIn 0.3s ease;
+}
+
+.hud-quote-text {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.hud-quote-source {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  align-self: flex-end;
+}
+
 /* Contact / Email Section */
 .contact-section {
   display: flex;

@@ -11,455 +11,534 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Faint static background grid -->
+  <!-- Faint static background grid across entire viewport -->
   <div class="hud-grid-overlay" aria-hidden="true"></div>
 
-  <!-- Screen Corner Telemetry Readouts -->
-  <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD v1.0<br>COORD: 41.92556°N 111.47333°W</div>
-  <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
-    <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
-    <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
-  </div>
-  <div class="hud-telemetry hud-telemetry-bl" aria-hidden="true">SEC_LEVEL: 01 // CLASSIFIED<br>FREQ: 1420.405 MHz</div>
-  <div class="hud-telemetry hud-telemetry-br" aria-hidden="true">CHRONO: SYS_SYNC<br>SONNI DATABASE // NODE-7</div>
-
-  <!-- Left Side Tab (Personal Journal / Notes) -->
-  <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Tactical Journal">
-    <span class="tab-pulse-dot"></span>
-    <span class="tab-tag">[CHRONO]</span>
-    <span class="tab-text">JOURNAL</span>
-    <span class="tab-count-badge" id="journal-tab-badge">01</span>
-  </button>
-
-  <!-- Right Side Tab (Access Log) -->
-  <button id="drawer-toggle-btn" class="drawer-trigger-tab right-tab" aria-expanded="false" aria-controls="logbook-drawer" title="Toggle Access Log">
-    <span class="tab-pulse-dot"></span>
-    <span class="tab-tag">[SECURITY]</span>
-    <span class="tab-text">ACCESS LOG</span>
-    <span class="tab-count-badge" id="tab-count-badge">--</span>
-  </button>
-
-  <!-- Main Hero Card -->
-  <main class="container hud-card" id="main-content">
-    <!-- Subtle Reticle Corner Brackets on Main Card Only -->
-    <span class="reticle reticle-tl" aria-hidden="true"></span>
-    <span class="reticle reticle-tr" aria-hidden="true"></span>
-    <span class="reticle reticle-bl" aria-hidden="true"></span>
-    <span class="reticle reticle-br" aria-hidden="true"></span>
-
-    <header class="header-section">
-      <div class="system-status-pill">
-        <span class="status-dot"></span>
-        <span class="status-text">SYSTEM ONLINE // SEC_LEVEL: 01</span>
-      </div>
-      <div class="heading-wrapper">
-        <h1 class="greeting-title" id="greeting" data-text="Hello, Mister Matthews">
-          <span class="typewriter-text" id="typewriter-target"></span><span class="typewriter-cursor" aria-hidden="true">_</span>
-        </h1>
-      </div>
-      <div class="hud-status-tag">[TARGET_LOCK // IDENT_VERIFIED]</div>
-    </header>
-
-    <div class="illustration-wrapper" aria-hidden="true">
-      <div class="cat-hud-frame">
-        <span class="cat-hud-label">[SCAN: FELIS_NOIR]</span>
-
-        <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
-          <!-- Black Cat outline: contour lines -->
-          <!-- Head & Ears -->
-          <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
-          
-          <!-- Sleepy / Relaxed Eyes -->
-          <path class="cat-stroke" d="M78 88 Q86 94 94 88" />
-          <path class="cat-stroke" d="M106 88 Q114 94 122 88" />
-          
-          <!-- Nose & Mouth -->
-          <path class="cat-stroke" d="M100 96 L100 102" />
-          <path class="cat-stroke" d="M100 102 Q94 107 89 104" />
-          <path class="cat-stroke" d="M100 102 Q106 107 111 104" />
-          
-          <!-- Whiskers -->
-          <path class="cat-stroke whisker" d="M52 94 L72 96" />
-          <path class="cat-stroke whisker" d="M50 103 L70 102" />
-          <path class="cat-stroke whisker" d="M128 96 L148 94" />
-          <path class="cat-stroke whisker" d="M130 102 L150 103" />
-
-          <!-- Body & Front Paws -->
-          <path class="cat-stroke" d="M72 148 C68 162 65 178 65 186 C65 188 67 190 70 190 H130 C133 190 135 188 135 186 C135 178 132 162 128 148" />
-          <path class="cat-stroke" d="M92 155 V190" />
-          <path class="cat-stroke" d="M108 155 V190" />
-          
-          <!-- Curled Tail -->
-          <path class="cat-stroke tail" d="M135 186 C152 186 166 176 166 160 C166 148 156 142 148 146 C142 150 144 158 150 158" />
-        </svg>
-      </div>
+  <!-- ==========================================================================
+       VIEW 1: Public Landing Page
+       ========================================================================== -->
+  <div id="public-view" class="view-wrapper">
+    <!-- Screen Corner Telemetry Readouts -->
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD v1.0<br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
+      <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
+      <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
     </div>
+    <div class="hud-telemetry hud-telemetry-bl" aria-hidden="true">SEC_LEVEL: 01 // CLASSIFIED<br>FREQ: 1420.405 MHz</div>
+    <div class="hud-telemetry hud-telemetry-br" aria-hidden="true">CHRONO: SYS_SYNC<br>SONNI DATABASE // NODE-7</div>
 
-    <!-- Subtle Lock / Access Workspace Trigger Button below Cat -->
-    <div class="workspace-access-wrapper">
-      <button type="button" id="workspace-trigger-btn" class="workspace-access-btn" title="Access Private Workspace">
-        <svg class="lock-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        <span id="workspace-btn-label">ACCESS WORKSPACE</span>
-      </button>
-    </div>
+    <!-- Left Side Tab (Personal Journal / Notes) -->
+    <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Tactical Journal">
+      <span class="tab-pulse-dot"></span>
+      <span class="tab-tag">[CHRONO]</span>
+      <span class="tab-text">JOURNAL</span>
+      <span class="tab-count-badge" id="journal-tab-badge">01</span>
+    </button>
 
-    <footer class="contact-section">
-      <div class="hud-status-tag sub-tag">[COMMS_CHANNEL: ENCRYPTED]</div>
-      <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send encrypted comms transmission">
-        <svg class="email-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="20" height="16" x="2" y="4"/>
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-        </svg>
-        <span>mrlukejmatthews@gmail.com</span>
-      </a>
-    </footer>
-  </main>
+    <!-- Right Side Tab (Access Log) -->
+    <button id="drawer-toggle-btn" class="drawer-trigger-tab right-tab" aria-expanded="false" aria-controls="logbook-drawer" title="Toggle Access Log">
+      <span class="tab-pulse-dot"></span>
+      <span class="tab-tag">[SECURITY]</span>
+      <span class="tab-text">ACCESS LOG</span>
+      <span class="tab-count-badge" id="tab-count-badge">--</span>
+    </button>
 
-  <!-- Shared Backdrop Overlay -->
-  <div id="drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
+    <!-- Main Hero Card -->
+    <main class="container hud-card" id="main-content">
+      <!-- Reticle Corner Brackets on Main Card -->
+      <span class="reticle reticle-tl" aria-hidden="true"></span>
+      <span class="reticle reticle-tr" aria-hidden="true"></span>
+      <span class="reticle reticle-bl" aria-hidden="true"></span>
+      <span class="reticle reticle-br" aria-hidden="true"></span>
 
-  <!-- Left Drawer: Personal Journal / Notes -->
-  <aside id="journal-drawer" class="side-drawer left-drawer" role="dialog" aria-modal="true" aria-label="Personal Journal Drawer" aria-hidden="true">
-    <div class="drawer-inner">
-      <div class="drawer-header">
-        <div class="terminal-title-group">
-          <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title" data-typewriter="PERSONAL JOURNAL">PERSONAL JOURNAL</h2>
+      <header class="header-section">
+        <div class="system-status-pill">
+          <span class="status-dot"></span>
+          <span class="status-text">SYSTEM ONLINE // SEC_LEVEL: 01</span>
         </div>
-        <div class="drawer-header-actions">
-          <span class="log-count-badge" id="journal-count-badge">01 ENTRY</span>
-          <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Journal Drawer">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+        <div class="heading-wrapper">
+          <h1 class="greeting-title" id="greeting" data-text="Hello, Mister Matthews">
+            <span class="typewriter-text" id="typewriter-target"></span><span class="typewriter-cursor" aria-hidden="true">_</span>
+          </h1>
+        </div>
+        <div class="hud-status-tag">[TARGET_LOCK // IDENT_VERIFIED]</div>
+      </header>
+
+      <div class="illustration-wrapper" aria-hidden="true">
+        <div class="cat-hud-frame">
+          <span class="cat-hud-label">[SCAN: FELIS_NOIR]</span>
+
+          <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
+            <!-- Black Cat outline: contour lines -->
+            <!-- Head & Ears -->
+            <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
+            
+            <!-- Sleepy / Relaxed Eyes -->
+            <path class="cat-stroke" d="M78 88 Q86 94 94 88" />
+            <path class="cat-stroke" d="M106 88 Q114 94 122 88" />
+            
+            <!-- Nose & Mouth -->
+            <path class="cat-stroke" d="M100 96 L100 102" />
+            <path class="cat-stroke" d="M100 102 Q94 107 89 104" />
+            <path class="cat-stroke" d="M100 102 Q106 107 111 104" />
+            
+            <!-- Whiskers -->
+            <path class="cat-stroke whisker" d="M52 94 L72 96" />
+            <path class="cat-stroke whisker" d="M50 103 L70 102" />
+            <path class="cat-stroke whisker" d="M128 96 L148 94" />
+            <path class="cat-stroke whisker" d="M130 102 L150 103" />
+
+            <!-- Body & Front Paws -->
+            <path class="cat-stroke" d="M72 148 C68 162 65 178 65 186 C65 188 67 190 70 190 H130 C133 190 135 188 135 186 C135 178 132 162 128 148" />
+            <path class="cat-stroke" d="M92 155 V190" />
+            <path class="cat-stroke" d="M108 155 V190" />
+            
+            <!-- Curled Tail -->
+            <path class="cat-stroke tail" d="M135 186 C152 186 166 176 166 160 C166 148 156 142 148 146 C142 150 144 158 150 158" />
+          </svg>
         </div>
       </div>
 
-      <div class="drawer-hud-status">[JOURNAL_ARCHIVE: ONLINE // WRITE_AUTH: OK]</div>
+      <!-- Subtle Lock / Access Workspace Trigger Button below Cat -->
+      <div class="workspace-access-wrapper">
+        <button type="button" id="workspace-trigger-btn" class="workspace-access-btn" title="Access Private Workspace">
+          <svg class="lock-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span id="workspace-btn-label">ACCESS WORKSPACE</span>
+        </button>
+      </div>
 
-      <div class="drawer-content">
-        <!-- Journal Action Bar -->
-        <div class="journal-controls">
-          <button type="button" id="toggle-composer-btn" class="sci-fi-btn small-btn">
-            <span class="btn-icon">+</span>
-            <span id="composer-btn-text">NEW LOG ENTRY</span>
-          </button>
+      <footer class="contact-section">
+        <div class="hud-status-tag sub-tag">[COMMS_CHANNEL: ENCRYPTED]</div>
+        <a href="mailto:mrlukejmatthews@gmail.com" class="email-link" id="email-address" title="Send encrypted comms transmission">
+          <svg class="email-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+          <span>mrlukejmatthews@gmail.com</span>
+        </a>
+      </footer>
+    </main>
+
+    <!-- Shared Backdrop Overlay -->
+    <div id="drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
+
+    <!-- Left Drawer: Personal Journal / Notes -->
+    <aside id="journal-drawer" class="side-drawer left-drawer" role="dialog" aria-modal="true" aria-label="Personal Journal Drawer" aria-hidden="true">
+      <div class="drawer-inner">
+        <div class="drawer-header">
+          <div class="terminal-title-group">
+            <span class="terminal-prompt">&gt;</span>
+            <h2 class="terminal-title" data-typewriter="PERSONAL JOURNAL">PERSONAL JOURNAL</h2>
+          </div>
+          <div class="drawer-header-actions">
+            <span class="log-count-badge" id="journal-count-badge">01 ENTRY</span>
+            <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Journal Drawer">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <!-- Journal Composer Form (Collapsible) -->
-        <div id="journal-composer" class="journal-composer hud-card hidden">
-          <form id="journal-form" class="journal-form">
-            <input type="hidden" id="journal-edit-id" value="">
-            <div class="composer-header">
-              <span id="composer-mode-title" class="composer-mode-title">// COMPOSE LOG ENTRY</span>
-            </div>
-            <div class="input-container">
-              <input 
-                type="text" 
-                id="journal-title-input" 
-                class="sci-fi-input" 
-                placeholder="LOG TITLE / SUBJECT..." 
-                maxlength="100" 
-                required
-              >
-              <textarea 
-                id="journal-body-input" 
-                class="sci-fi-input sci-fi-textarea" 
-                placeholder="ENTER LOG TRANSMISSION CONTENT..." 
-                rows="4" 
-                required
-              ></textarea>
-            </div>
-            <div class="composer-actions">
-              <button type="button" id="cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
-              <button type="submit" id="save-journal-btn" class="sci-fi-btn">
-                <span id="save-journal-text">SAVE ENTRY</span>
-              </button>
-            </div>
-          </form>
-        </div>
+        <div class="drawer-hud-status">[JOURNAL_ARCHIVE: ONLINE // WRITE_AUTH: OK]</div>
 
-        <div class="journal-feed-container hud-card">
-          <div class="log-feed-label">[CHRONOLOGICAL ARCHIVES // ENCRYPTED]</div>
-          <div id="journal-entries-container" class="journal-entries-list">
-            <!-- Rendered dynamically by app.js -->
+        <div class="drawer-content">
+          <!-- Journal Action Bar -->
+          <div class="journal-controls">
+            <button type="button" id="toggle-composer-btn" class="sci-fi-btn small-btn">
+              <span class="btn-icon">+</span>
+              <span id="composer-btn-text">NEW LOG ENTRY</span>
+            </button>
+          </div>
+
+          <!-- Journal Composer Form (Collapsible) -->
+          <div id="journal-composer" class="journal-composer hud-card hidden">
+            <form id="journal-form" class="journal-form">
+              <input type="hidden" id="journal-edit-id" value="">
+              <div class="composer-header">
+                <span id="composer-mode-title" class="composer-mode-title">// COMPOSE LOG ENTRY</span>
+              </div>
+              <div class="input-container">
+                <input 
+                  type="text" 
+                  id="journal-title-input" 
+                  class="sci-fi-input" 
+                  placeholder="LOG TITLE / SUBJECT..." 
+                  maxlength="100" 
+                  required
+                >
+                <textarea 
+                  id="journal-body-input" 
+                  class="sci-fi-input sci-fi-textarea" 
+                  placeholder="ENTER LOG TRANSMISSION CONTENT..." 
+                  rows="4" 
+                  required
+                ></textarea>
+              </div>
+              <div class="composer-actions">
+                <button type="button" id="cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
+                <button type="submit" id="save-journal-btn" class="sci-fi-btn">
+                  <span id="save-journal-text">SAVE ENTRY</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="journal-feed-container hud-card">
+            <div class="log-feed-label">[CHRONOLOGICAL ARCHIVES // ENCRYPTED]</div>
+            <div id="journal-entries-container" class="journal-entries-list">
+              <!-- Rendered dynamically by app.js -->
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </aside>
+    </aside>
 
-  <!-- Right Drawer: Quantum Access Log -->
-  <aside id="logbook-drawer" class="side-drawer right-drawer" role="dialog" aria-modal="true" aria-label="Access Log Drawer" aria-hidden="true">
-    <div class="drawer-inner">
-      <div class="drawer-header">
-        <div class="terminal-title-group">
-          <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title" data-typewriter="ACCESS LOG">ACCESS LOG</h2>
+    <!-- Right Drawer: Quantum Access Log -->
+    <aside id="logbook-drawer" class="side-drawer right-drawer" role="dialog" aria-modal="true" aria-label="Access Log Drawer" aria-hidden="true">
+      <div class="drawer-inner">
+        <div class="drawer-header">
+          <div class="terminal-title-group">
+            <span class="terminal-prompt">&gt;</span>
+            <h2 class="terminal-title" data-typewriter="ACCESS LOG">ACCESS LOG</h2>
+          </div>
+          <div class="drawer-header-actions">
+            <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
+            <button id="drawer-close-btn" class="drawer-close-btn" aria-label="Close Access Log Drawer">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </div>
-        <div class="drawer-header-actions">
-          <span class="log-count-badge" id="log-count-badge">CONNECTING...</span>
-          <button id="drawer-close-btn" class="drawer-close-btn" aria-label="Close Access Log Drawer">
+
+        <div class="drawer-hud-status">[LOGBOOK: ACTIVE // SEC_PROTOCOL: V4.2]</div>
+
+        <div class="drawer-content">
+          <form id="logbook-form" class="logbook-form hud-card">
+            <div class="form-header-label">// OPERATIVE ACCESS REGISTRATION</div>
+            <div class="input-container">
+              <input 
+                type="text" 
+                id="name-input" 
+                class="sci-fi-input" 
+                placeholder="ENTER CALLSIGN / OPERATIVE ID..." 
+                maxlength="60" 
+                autocomplete="off" 
+                required
+              >
+              <button type="submit" id="sign-btn" class="sci-fi-btn">
+                <span id="sign-btn-text">LOG ACCESS</span>
+                <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+            <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+          </form>
+
+          <!-- Access Entries Feed -->
+          <div class="log-feed-container hud-card">
+            <div class="log-feed-label">[AUTHENTICATED ACCESS ARCHIVE]</div>
+            <ul id="logbook-list" class="logbook-list">
+              <div class="empty-log-state">
+                <span class="pulse-indicator"></span>
+                <p>QUERYING ACCESS ARCHIVE...</p>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Tactical Authentication Gateway Modal -->
+    <div id="auth-modal" class="hud-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <div class="hud-modal-overlay" id="auth-modal-backdrop"></div>
+      <div class="hud-modal-content hud-card">
+        <span class="reticle reticle-tl" aria-hidden="true"></span>
+        <span class="reticle reticle-tr" aria-hidden="true"></span>
+        <span class="reticle reticle-bl" aria-hidden="true"></span>
+        <span class="reticle reticle-br" aria-hidden="true"></span>
+
+        <div class="modal-header">
+          <div class="terminal-title-group">
+            <span class="terminal-prompt">&gt;</span>
+            <h2 class="terminal-title" id="auth-modal-title">GEORGE TECH SECURE GATEWAY</h2>
+          </div>
+          <button type="button" id="auth-close-btn" class="drawer-close-btn" aria-label="Close Gateway">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
-      </div>
 
-      <div class="drawer-hud-status">[LOGBOOK: ACTIVE // SEC_PROTOCOL: V4.2]</div>
+        <div class="hud-status-tag modal-tag">[RESTRICTED ACCESS // LEVEL 04 CLEARANCE REQUIRED]</div>
 
-      <div class="drawer-content">
-        <form id="logbook-form" class="logbook-form hud-card">
-          <div class="form-header-label">// OPERATIVE ACCESS REGISTRATION</div>
+        <form id="auth-form" class="auth-form">
           <div class="input-container">
+            <label for="auth-email-input" class="auth-label">// OPERATIVE EMAIL</label>
             <input 
-              type="text" 
-              id="name-input" 
+              type="email" 
+              id="auth-email-input" 
               class="sci-fi-input" 
-              placeholder="ENTER CALLSIGN / OPERATIVE ID..." 
-              maxlength="60" 
-              autocomplete="off" 
+              placeholder="OPERATIVE@EMAIL.COM" 
+              autocomplete="email" 
               required
             >
-            <button type="submit" id="sign-btn" class="sci-fi-btn">
-              <span id="sign-btn-text">LOG ACCESS</span>
+
+            <label for="auth-password-input" class="auth-label">// SECURITY PASSPHRASE</label>
+            <input 
+              type="password" 
+              id="auth-password-input" 
+              class="sci-fi-input" 
+              placeholder="••••••••••••" 
+              autocomplete="current-password" 
+              required
+            >
+
+            <button type="submit" id="auth-submit-btn" class="sci-fi-btn auth-btn">
+              <span id="auth-submit-text">AUTHENTICATE ACCESS</span>
               <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </button>
           </div>
-          <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+          <div id="auth-feedback" class="form-feedback" aria-live="polite"></div>
         </form>
-
-        <!-- Access Entries Feed -->
-        <div class="log-feed-container hud-card">
-          <div class="log-feed-label">[AUTHENTICATED ACCESS ARCHIVE]</div>
-          <ul id="logbook-list" class="logbook-list">
-            <div class="empty-log-state">
-              <span class="pulse-indicator"></span>
-              <p>QUERYING ACCESS ARCHIVE...</p>
-            </div>
-          </ul>
-        </div>
+        <div class="auth-footer-note">// SYSTEM WARNING: ALL ACCESS ATTEMPTS ARE LOGGED & ENCRYPTED</div>
       </div>
-    </div>
-  </aside>
-
-  <!-- Tactical Authentication Gateway Modal -->
-  <div id="auth-modal" class="hud-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-    <div class="hud-modal-overlay" id="auth-modal-backdrop"></div>
-    <div class="hud-modal-content hud-card">
-      <span class="reticle reticle-tl" aria-hidden="true"></span>
-      <span class="reticle reticle-tr" aria-hidden="true"></span>
-      <span class="reticle reticle-bl" aria-hidden="true"></span>
-      <span class="reticle reticle-br" aria-hidden="true"></span>
-
-      <div class="modal-header">
-        <div class="terminal-title-group">
-          <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title" id="auth-modal-title">GEORGE TECH SECURE GATEWAY</h2>
-        </div>
-        <button type="button" id="auth-close-btn" class="drawer-close-btn" aria-label="Close Gateway">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-
-      <div class="hud-status-tag modal-tag">[RESTRICTED ACCESS // LEVEL 04 CLEARANCE REQUIRED]</div>
-
-      <form id="auth-form" class="auth-form">
-        <div class="input-container">
-          <label for="auth-email-input" class="auth-label">// OPERATIVE EMAIL</label>
-          <input 
-            type="email" 
-            id="auth-email-input" 
-            class="sci-fi-input" 
-            placeholder="OPERATIVE@EMAIL.COM" 
-            autocomplete="email" 
-            required
-          >
-
-          <label for="auth-password-input" class="auth-label">// SECURITY PASSPHRASE</label>
-          <input 
-            type="password" 
-            id="auth-password-input" 
-            class="sci-fi-input" 
-            placeholder="••••••••••••" 
-            autocomplete="current-password" 
-            required
-          >
-
-          <button type="submit" id="auth-submit-btn" class="sci-fi-btn auth-btn">
-            <span id="auth-submit-text">AUTHENTICATE ACCESS</span>
-            <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </button>
-        </div>
-        <div id="auth-feedback" class="form-feedback" aria-live="polite"></div>
-      </form>
-      <div class="auth-footer-note">// SYSTEM WARNING: ALL ACCESS ATTEMPTS ARE LOGGED & ENCRYPTED</div>
     </div>
   </div>
 
-  <!-- Authenticated Private Workspace Modal / Dashboard Area -->
-  <div id="workspace-modal" class="hud-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="workspace-modal-title">
-    <div class="hud-modal-overlay" id="workspace-modal-backdrop"></div>
-    <div class="hud-modal-content workspace-modal-content hud-card">
+  <!-- ==========================================================================
+       VIEW 2: Full Dedicated Private Workspace Dashboard Page
+       ========================================================================== -->
+  <div id="workspace-view" class="workspace-page-view hidden" role="main">
+    <!-- Top HUD Navigation & Control Bar -->
+    <header class="workspace-nav-bar hud-card">
       <span class="reticle reticle-tl" aria-hidden="true"></span>
       <span class="reticle reticle-tr" aria-hidden="true"></span>
       <span class="reticle reticle-bl" aria-hidden="true"></span>
       <span class="reticle reticle-br" aria-hidden="true"></span>
 
-      <div class="modal-header">
-        <div class="terminal-title-group">
-          <span class="terminal-prompt">&gt;</span>
-          <h2 class="terminal-title" id="workspace-modal-title">PRIVATE WORKSPACE</h2>
-        </div>
-        <div class="workspace-header-actions">
-          <span class="log-count-badge admin-badge">ROOT_ADMIN</span>
-          <button type="button" id="workspace-logout-btn" class="sci-fi-btn small-btn logout-btn" title="Disconnect Session">
-            <span>DISCONNECT</span>
-          </button>
-          <button type="button" id="workspace-close-btn" class="drawer-close-btn" aria-label="Close Workspace">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+      <div class="nav-brand-group">
+        <span class="terminal-prompt">&gt;</span>
+        <div class="nav-title-column">
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE</h1>
+          <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
 
-      <div class="workspace-user-strip">
-        <span class="user-strip-tag">[AUTHENTICATED OPERATIVE]</span>
-        <span id="workspace-user-email" class="user-strip-email">AUTHENTICATING...</span>
+      <div class="nav-meta-group">
+        <!-- Live Workspace Clock -->
+        <div class="workspace-clock-badge">
+          <span class="hud-live-dot"></span>
+          <span id="ws-day-of-week">---</span> // <span id="ws-live-time">--:--:--</span>
+        </div>
+
+        <div class="workspace-operative-badge">
+          <span class="user-pill-tag">[ROOT_ADMIN]</span>
+          <span id="workspace-user-email" class="user-pill-email">AUTHENTICATING...</span>
+        </div>
+
+        <!-- Tactical Lockdown / Logout Action Button -->
+        <button type="button" id="workspace-lockdown-btn" class="lockdown-btn" title="Initiate system lockdown and return to public terminal">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>LOCKDOWN</span>
+        </button>
       </div>
+    </header>
 
-      <!-- Private Dashboard Content -->
-      <div class="workspace-dashboard-grid">
-        <div class="workspace-card hud-card">
-          <div class="workspace-card-header">// SYSTEM TELEMETRY</div>
-          <div class="workspace-card-body">
-            <div class="telemetry-row"><span>CORE KERNEL:</span> <strong class="text-glow">ONLINE</strong></div>
-            <div class="telemetry-row"><span>DATABASE UPLINK:</span> <strong>FIRESTORE_SECURED</strong></div>
-            <div class="telemetry-row"><span>CIPHER MATRIX:</span> <strong>AES-256-GCM</strong></div>
-            <div class="telemetry-row"><span>CLEARANCE LEVEL:</span> <strong class="text-glow">LEVEL 04 (OWNER)</strong></div>
-          </div>
+    <!-- Main Dashboard Grid Layout -->
+    <main class="workspace-main-content">
+      <!-- System Telemetry & Quick Metric Strip -->
+      <section class="workspace-metrics-strip">
+        <div class="metric-card hud-card">
+          <span class="metric-label">// SECURITY STATUS</span>
+          <span class="metric-val text-green">ROOT_ADMIN [ONLINE]</span>
         </div>
-
-        <div class="workspace-card hud-card">
-          <div class="workspace-card-header">// SECURE VAULT</div>
-          <div class="workspace-card-body">
-            <p class="vault-placeholder-text">
-              Private Workspace active. All private documents and tasks are strictly encrypted to your authenticated account UID.
-            </p>
-            <div class="vault-status-indicator">
-              <span class="pulse-indicator"></span> <span>SECURE DATA CHANNEL OPEN</span>
-            </div>
-          </div>
+        <div class="metric-card hud-card">
+          <span class="metric-label">// PENDING DIRECTIVES</span>
+          <span class="metric-val text-red" id="ws-pending-metric">0 ACTIVE</span>
         </div>
-      </div>
-
-      <!-- Tactical Tasks & Objectives Management Section -->
-      <section class="workspace-tasks-section" id="workspace-tasks-section">
-        <div class="tasks-section-header">
-          <div class="terminal-title-group">
-            <span class="terminal-prompt">&gt;</span>
-            <h3 class="terminal-title">TACTICAL OBJECTIVES // TASKS</h3>
-          </div>
-          <span class="log-count-badge" id="open-tasks-count-badge">0 PENDING</span>
+        <div class="metric-card hud-card">
+          <span class="metric-label">// ENCRYPTED LOGS</span>
+          <span class="metric-val" id="ws-journal-metric">0 RECORDED</span>
         </div>
-
-        <!-- Task Composer Card -->
-        <div class="task-composer-card hud-card">
-          <form id="task-form" class="task-form">
-            <div class="form-header-label">// INITIALIZE DIRECTIVE</div>
-            
-            <div class="input-container">
-              <input 
-                type="text" 
-                id="task-title-input" 
-                class="sci-fi-input" 
-                placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
-                maxlength="120" 
-                required
-              >
-
-              <div class="task-form-row">
-                <div class="task-field-group">
-                  <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
-                  <input 
-                    type="date" 
-                    id="task-due-date-input" 
-                    class="sci-fi-input task-date-input"
-                  >
-                </div>
-
-                <div class="task-field-group flex-2">
-                  <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL / NOTES [OPTIONAL]</label>
-                  <input 
-                    type="text" 
-                    id="task-notes-input" 
-                    class="sci-fi-input" 
-                    placeholder="MISSION BRIEF / TACTICAL NOTES..." 
-                    maxlength="200"
-                  >
-                </div>
-              </div>
-
-              <div class="task-form-actions">
-                <button type="submit" id="task-submit-btn" class="sci-fi-btn">
-                  <span id="task-submit-text">+ ASSIGN DIRECTIVE</span>
-                  <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div id="task-form-feedback" class="form-feedback" aria-live="polite"></div>
-          </form>
-        </div>
-
-        <!-- Open Tasks List -->
-        <div class="tasks-feed-container hud-card">
-          <div class="log-feed-label">[ACTIVE DIRECTIVES // SORTED BY TIMELINE]</div>
-          <ul id="open-tasks-list" class="tasks-list">
-            <div class="empty-log-state">
-              <span class="pulse-indicator"></span>
-              <p>NO ACTIVE DIRECTIVES RECORDED</p>
-            </div>
-          </ul>
-        </div>
-
-        <!-- Completed Tasks Collapsible Section -->
-        <div class="completed-tasks-wrapper">
-          <details id="completed-tasks-details" class="completed-tasks-details hud-card">
-            <summary class="completed-tasks-summary">
-              <span class="summary-left">
-                <span class="summary-icon">▼</span>
-                <span>COMPLETED DIRECTIVES</span>
-              </span>
-              <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
-            </summary>
-            
-            <div class="completed-tasks-body">
-              <ul id="completed-tasks-list" class="tasks-list completed-list">
-                <!-- Rendered dynamically by app.js -->
-              </ul>
-            </div>
-          </details>
+        <div class="metric-card hud-card">
+          <span class="metric-label">// CIPHER ENCRYPTION</span>
+          <span class="metric-val">AES-256-GCM</span>
         </div>
       </section>
-    </div>
+
+      <!-- Multi-Column Operational Panels Grid -->
+      <div class="workspace-panels-grid">
+        
+        <!-- COLUMN 1: Tactical Objectives / Tasks Management -->
+        <section class="workspace-panel hud-card" id="tasks-dashboard-panel">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="panel-header">
+            <div class="terminal-title-group">
+              <span class="terminal-prompt">&gt;</span>
+              <h2 class="terminal-title">TACTICAL OBJECTIVES // TASKS</h2>
+            </div>
+            <span class="log-count-badge" id="open-tasks-count-badge">0 PENDING</span>
+          </div>
+
+          <!-- Task Composer Form -->
+          <div class="task-composer-box">
+            <form id="task-form" class="task-form">
+              <div class="form-header-label">// INITIALIZE NEW DIRECTIVE</div>
+              <div class="input-container">
+                <input 
+                  type="text" 
+                  id="task-title-input" 
+                  class="sci-fi-input" 
+                  placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
+                  maxlength="120" 
+                  required
+                >
+
+                <div class="task-form-row">
+                  <div class="task-field-group">
+                    <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
+                    <input 
+                      type="date" 
+                      id="task-due-date-input" 
+                      class="sci-fi-input task-date-input"
+                    >
+                  </div>
+
+                  <div class="task-field-group flex-2">
+                    <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL [OPTIONAL]</label>
+                    <input 
+                      type="text" 
+                      id="task-notes-input" 
+                      class="sci-fi-input" 
+                      placeholder="MISSION BRIEF / TACTICAL NOTES..." 
+                      maxlength="200"
+                    >
+                  </div>
+                </div>
+
+                <div class="task-form-actions">
+                  <button type="submit" id="task-submit-btn" class="sci-fi-btn">
+                    <span id="task-submit-text">+ ASSIGN DIRECTIVE</span>
+                    <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div id="task-form-feedback" class="form-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <!-- Active Tasks Stream -->
+          <div class="tasks-stream-wrapper">
+            <div class="log-feed-label">[ACTIVE DIRECTIVES // TIMELINE PRIORITY]</div>
+            <ul id="open-tasks-list" class="tasks-list">
+              <div class="empty-log-state">
+                <span class="pulse-indicator"></span>
+                <p>NO ACTIVE DIRECTIVES RECORDED</p>
+              </div>
+            </ul>
+          </div>
+
+          <!-- Completed Tasks Archive -->
+          <div class="completed-tasks-wrapper">
+            <details id="completed-tasks-details" class="completed-tasks-details hud-card">
+              <summary class="completed-tasks-summary">
+                <span class="summary-left">
+                  <span class="summary-icon">▼</span>
+                  <span>COMPLETED DIRECTIVES</span>
+                </span>
+                <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
+              </summary>
+              <div class="completed-tasks-body">
+                <ul id="completed-tasks-list" class="tasks-list completed-list">
+                  <!-- Rendered dynamically by app.js -->
+                </ul>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- COLUMN 2: Workspace Notes & Journal Panel -->
+        <section class="workspace-panel hud-card" id="journal-dashboard-panel">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="panel-header">
+            <div class="terminal-title-group">
+              <span class="terminal-prompt">&gt;</span>
+              <h2 class="terminal-title">PERSONAL LOGS // JOURNAL</h2>
+            </div>
+            <button type="button" id="ws-toggle-composer-btn" class="sci-fi-btn small-btn">
+              <span class="btn-icon">+</span>
+              <span id="ws-composer-btn-text">NEW LOG</span>
+            </button>
+          </div>
+
+          <!-- In-Dashboard Journal Composer -->
+          <div id="ws-journal-composer" class="journal-composer hud-card hidden">
+            <form id="ws-journal-form" class="journal-form">
+              <input type="hidden" id="ws-journal-edit-id" value="">
+              <div class="composer-header">
+                <span id="ws-composer-mode-title" class="composer-mode-title">// COMPOSE LOG TRANSMISSION</span>
+              </div>
+              <div class="input-container">
+                <input 
+                  type="text" 
+                  id="ws-journal-title-input" 
+                  class="sci-fi-input" 
+                  placeholder="LOG TITLE / SUBJECT..." 
+                  maxlength="100" 
+                  required
+                >
+                <textarea 
+                  id="ws-journal-body-input" 
+                  class="sci-fi-input sci-fi-textarea" 
+                  placeholder="ENTER LOG TRANSMISSION CONTENT..." 
+                  rows="4" 
+                  required
+                ></textarea>
+              </div>
+              <div class="composer-actions">
+                <button type="button" id="ws-cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
+                <button type="submit" id="ws-save-journal-btn" class="sci-fi-btn">
+                  <span id="ws-save-journal-text">SAVE ENTRY</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Journal Logs Feed in Dashboard -->
+          <div class="ws-journal-feed-wrapper">
+            <div class="log-feed-label">[CHRONOLOGICAL QUANTUM ARCHIVE]</div>
+            <div id="ws-journal-entries-container" class="journal-entries-list">
+              <!-- Rendered dynamically by app.js -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
   </div>
 
   <script type="module" src="app.js"></script>

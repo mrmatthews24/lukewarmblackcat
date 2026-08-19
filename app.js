@@ -50,6 +50,10 @@ const tasksRef = collection(db, "tasks");
 // DOM Elements
 // ==========================================================================
 
+// Page Views
+const publicView = document.getElementById("public-view");
+const workspaceView = document.getElementById("workspace-view");
+
 // Access Log (Right Drawer)
 const logbookForm = document.getElementById("logbook-form");
 const nameInput = document.getElementById("name-input");
@@ -81,7 +85,7 @@ const cancelComposeBtn = document.getElementById("cancel-compose-btn");
 const composerModeTitle = document.getElementById("composer-mode-title");
 const saveJournalText = document.getElementById("save-journal-text");
 
-// Authentication & Workspace Elements
+// Authentication Elements
 const workspaceTriggerBtn = document.getElementById("workspace-trigger-btn");
 const workspaceBtnLabel = document.getElementById("workspace-btn-label");
 const authModal = document.getElementById("auth-modal");
@@ -94,13 +98,13 @@ const authSubmitBtn = document.getElementById("auth-submit-btn");
 const authSubmitText = document.getElementById("auth-submit-text");
 const authFeedback = document.getElementById("auth-feedback");
 
-const workspaceModal = document.getElementById("workspace-modal");
-const workspaceModalBackdrop = document.getElementById("workspace-modal-backdrop");
-const workspaceCloseBtn = document.getElementById("workspace-close-btn");
-const workspaceLogoutBtn = document.getElementById("workspace-logout-btn");
+// Workspace Header & Metrics
 const workspaceUserEmail = document.getElementById("workspace-user-email");
+const workspaceLockdownBtn = document.getElementById("workspace-lockdown-btn");
+const wsPendingMetric = document.getElementById("ws-pending-metric");
+const wsJournalMetric = document.getElementById("ws-journal-metric");
 
-// Tasks Management Elements
+// Tasks Elements
 const taskForm = document.getElementById("task-form");
 const taskTitleInput = document.getElementById("task-title-input");
 const taskDueDateInput = document.getElementById("task-due-date-input");
@@ -113,9 +117,53 @@ const openTasksCountBadge = document.getElementById("open-tasks-count-badge");
 const completedTasksList = document.getElementById("completed-tasks-list");
 const completedTasksCountBadge = document.getElementById("completed-tasks-count-badge");
 
+// Workspace In-Page Journal Elements
+const wsToggleComposerBtn = document.getElementById("ws-toggle-composer-btn");
+const wsComposerBtnText = document.getElementById("ws-composer-btn-text");
+const wsJournalComposer = document.getElementById("ws-journal-composer");
+const wsJournalForm = document.getElementById("ws-journal-form");
+const wsJournalEditId = document.getElementById("ws-journal-edit-id");
+const wsJournalTitleInput = document.getElementById("ws-journal-title-input");
+const wsJournalBodyInput = document.getElementById("ws-journal-body-input");
+const wsCancelComposeBtn = document.getElementById("ws-cancel-compose-btn");
+const wsComposerModeTitle = document.getElementById("ws-composer-mode-title");
+const wsSaveJournalText = document.getElementById("ws-save-journal-text");
+const wsJournalEntriesContainer = document.getElementById("ws-journal-entries-container");
+
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
 const typewriterTarget = document.getElementById("typewriter-target");
+
+// ==========================================================================
+// View Routing & Navigation (Public View vs Dedicated Workspace View)
+// ==========================================================================
+function showPublicView() {
+  if (workspaceView) workspaceView.classList.add("hidden");
+  if (publicView) publicView.classList.remove("hidden");
+  if (window.location.hash === "#workspace") {
+    history.replaceState(null, "", window.location.pathname);
+  }
+}
+
+function showWorkspaceView() {
+  closeAllDrawers();
+  closeAuthModal();
+  if (publicView) publicView.classList.add("hidden");
+  if (workspaceView) workspaceView.classList.remove("hidden");
+  window.location.hash = "workspace";
+  renderJournal();
+}
+
+// Workspace Trigger Click Handler
+if (workspaceTriggerBtn) {
+  workspaceTriggerBtn.addEventListener("click", () => {
+    if (auth.currentUser) {
+      showWorkspaceView();
+    } else {
+      openAuthModal();
+    }
+  });
+}
 
 // ==========================================================================
 // Tactical Typewriter Text Animation
@@ -154,23 +202,26 @@ if (document.readyState === "loading") {
 }
 
 // ==========================================================================
-// Live HUD Tactical Clock (Day of Week + Real-Time Military Clock)
+// Live HUD Tactical Chronometer (Public View + Dedicated Workspace View)
 // ==========================================================================
 const hudDayOfWeek = document.getElementById("hud-day-of-week");
 const hudLiveTime = document.getElementById("hud-live-time");
+const wsDayOfWeek = document.getElementById("ws-day-of-week");
+const wsLiveTime = document.getElementById("ws-live-time");
 const DAYS_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 function updateHUDLiveClock() {
   const now = new Date();
-  if (hudDayOfWeek) {
-    hudDayOfWeek.textContent = DAYS_OF_WEEK[now.getDay()];
-  }
-  if (hudLiveTime) {
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    hudLiveTime.textContent = `${hours}:${minutes}:${seconds}`;
-  }
+  const dayName = DAYS_OF_WEEK[now.getDay()];
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+  const timeStr = `${hours}:${minutes}:${seconds}`;
+
+  if (hudDayOfWeek) hudDayOfWeek.textContent = dayName;
+  if (hudLiveTime) hudLiveTime.textContent = timeStr;
+  if (wsDayOfWeek) wsDayOfWeek.textContent = dayName;
+  if (wsLiveTime) wsLiveTime.textContent = timeStr;
 }
 
 updateHUDLiveClock();
@@ -190,7 +241,6 @@ function closeAllDrawers() {
 function openLogbookDrawer() {
   closeAllDrawers();
   closeAuthModal();
-  closeWorkspaceModal();
   document.body.classList.add("logbook-open");
   if (drawerToggleBtn) drawerToggleBtn.setAttribute("aria-expanded", "true");
   if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "false");
@@ -209,7 +259,6 @@ function openLogbookDrawer() {
 function openJournalDrawer() {
   closeAllDrawers();
   closeAuthModal();
-  closeWorkspaceModal();
   document.body.classList.add("journal-open");
   if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "true");
   if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "false");
@@ -246,9 +295,8 @@ if (journalCloseBtn) journalCloseBtn.addEventListener("click", closeAllDrawers);
 if (drawerBackdrop) drawerBackdrop.addEventListener("click", closeAllDrawers);
 
 // ==========================================================================
-// Firebase Authentication & Private Workspace Logic
+// Authentication Gateway
 // ==========================================================================
-
 function openAuthModal() {
   closeAllDrawers();
   if (authModal) {
@@ -268,38 +316,8 @@ function closeAuthModal() {
   }
 }
 
-function openWorkspaceModal() {
-  closeAllDrawers();
-  closeAuthModal();
-  if (workspaceModal) {
-    workspaceModal.classList.add("open");
-    workspaceModal.setAttribute("aria-hidden", "false");
-  }
-}
-
-function closeWorkspaceModal() {
-  if (workspaceModal) {
-    workspaceModal.classList.remove("open");
-    workspaceModal.setAttribute("aria-hidden", "true");
-  }
-}
-
-// Workspace Trigger Click Handler
-if (workspaceTriggerBtn) {
-  workspaceTriggerBtn.addEventListener("click", () => {
-    if (auth.currentUser) {
-      openWorkspaceModal();
-    } else {
-      openAuthModal();
-    }
-  });
-}
-
 if (authCloseBtn) authCloseBtn.addEventListener("click", closeAuthModal);
 if (authModalBackdrop) authModalBackdrop.addEventListener("click", closeAuthModal);
-
-if (workspaceCloseBtn) workspaceCloseBtn.addEventListener("click", closeWorkspaceModal);
-if (workspaceModalBackdrop) workspaceModalBackdrop.addEventListener("click", closeWorkspaceModal);
 
 // Handle Login Submission
 if (authForm) {
@@ -328,8 +346,8 @@ if (authForm) {
         authSubmitBtn.disabled = false;
         authSubmitText.textContent = "AUTHENTICATE ACCESS";
         closeAuthModal();
-        openWorkspaceModal();
-      }, 900);
+        showWorkspaceView();
+      }, 700);
     } catch (error) {
       console.error("Auth error:", error);
       let errorMsg = "AUTHENTICATION FAILED: INVALID CIPHER";
@@ -347,30 +365,34 @@ if (authForm) {
   });
 }
 
-// Handle Logout
-if (workspaceLogoutBtn) {
-  workspaceLogoutBtn.addEventListener("click", async () => {
+// Tactical Lockdown / Disconnect Handler
+if (workspaceLockdownBtn) {
+  workspaceLockdownBtn.addEventListener("click", async () => {
     try {
       await signOut(auth);
-      closeWorkspaceModal();
+      showPublicView();
     } catch (err) {
       console.error("Logout error:", err);
     }
   });
 }
 
-// Track Auth State
+// Track Auth State & Synchronize Dashboard
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    if (workspaceBtnLabel) workspaceBtnLabel.textContent = "PRIVATE WORKSPACE";
+    if (workspaceBtnLabel) workspaceBtnLabel.textContent = "OPEN WORKSPACE";
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.add("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
     subscribeToTasks(user.uid);
+    if (window.location.hash === "#workspace") {
+      showWorkspaceView();
+    }
   } else {
     if (workspaceBtnLabel) workspaceBtnLabel.textContent = "ACCESS WORKSPACE";
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.remove("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
     unsubscribeFromTasks();
+    showPublicView();
   }
 });
 
@@ -393,7 +415,6 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeAllDrawers();
     closeAuthModal();
-    closeWorkspaceModal();
   }
 });
 
@@ -463,6 +484,7 @@ function renderTasks(tasks) {
 
   if (openTasksCountBadge) openTasksCountBadge.textContent = `${openTasks.length} PENDING`;
   if (completedTasksCountBadge) completedTasksCountBadge.textContent = `${completedTasks.length} COMPLETED`;
+  if (wsPendingMetric) wsPendingMetric.textContent = `${openTasks.length} ACTIVE`;
 
   if (openTasksList) {
     if (openTasks.length === 0) {
@@ -500,7 +522,7 @@ function renderTasks(tasks) {
         });
       } catch (err) {
         console.error("Error updating task status:", err);
-        e.target.checked = !isChecked; // revert on error
+        e.target.checked = !isChecked;
       }
     });
   });
@@ -585,7 +607,7 @@ if (taskForm) {
     }
 
     taskSubmitBtn.disabled = true;
-    taskSubmitText.textContent = "TRANSMITTING DIRECTIVE...";
+    taskSubmitText.textContent = "TRANSMITTING...";
     clearTaskFeedback();
 
     try {
@@ -632,7 +654,7 @@ function clearTaskFeedback() {
 }
 
 // ==========================================================================
-// Personal Journal Storage & CRUD (Batman HUD Themed)
+// Personal Journal Storage & Management (Shared across Drawer & Dashboard)
 // ==========================================================================
 const JOURNAL_STORAGE_KEY = "matthews_personal_journal_v1";
 
@@ -684,20 +706,14 @@ function renderJournal() {
 
   if (journalTabBadge) journalTabBadge.textContent = String(total).padStart(2, "0");
   if (journalCountBadge) journalCountBadge.textContent = `${String(total).padStart(2, "0")} ${total === 1 ? 'ENTRY' : 'ENTRIES'}`;
+  if (wsJournalMetric) wsJournalMetric.textContent = `${total} RECORDED`;
 
-  if (!journalEntriesContainer) return;
-
-  if (total === 0) {
-    journalEntriesContainer.innerHTML = `
-      <div class="empty-log-state">
-        <span class="pulse-indicator"></span>
-        <p>NO JOURNAL ENTRIES RECORDED // CLICK "NEW LOG ENTRY" ABOVE</p>
-      </div>
-    `;
-    return;
-  }
-
-  journalEntriesContainer.innerHTML = entries.map((entry, index) => {
+  const renderedHTML = total === 0 ? `
+    <div class="empty-log-state">
+      <span class="pulse-indicator"></span>
+      <p>NO JOURNAL ENTRIES RECORDED</p>
+    </div>
+  ` : entries.map((entry, index) => {
     const logNumber = String(total - index).padStart(3, "0");
     const sanitizedTitle = escapeHTML(entry.title);
     const sanitizedBody = escapeHTML(entry.body);
@@ -723,15 +739,18 @@ function renderJournal() {
     `;
   }).join("");
 
-  // Attach Edit & Delete Listeners
-  journalEntriesContainer.querySelectorAll(".edit-btn").forEach((btn) => {
+  if (journalEntriesContainer) journalEntriesContainer.innerHTML = renderedHTML;
+  if (wsJournalEntriesContainer) wsJournalEntriesContainer.innerHTML = renderedHTML;
+
+  // Attach Edit & Delete Listeners across all containers
+  document.querySelectorAll(".journal-action-btn.edit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-id");
       startEditJournalEntry(id);
     });
   });
 
-  journalEntriesContainer.querySelectorAll(".delete-btn").forEach((btn) => {
+  document.querySelectorAll(".journal-action-btn.delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-id");
       deleteJournalEntry(id);
@@ -739,43 +758,62 @@ function renderJournal() {
   });
 }
 
-function openComposer(mode = "new", entry = null) {
-  if (!journalComposer) return;
-  journalComposer.classList.remove("hidden");
+function openComposer(mode = "new", entry = null, target = "drawer") {
+  const composer = target === "workspace" ? wsJournalComposer : journalComposer;
+  const modeTitle = target === "workspace" ? wsComposerModeTitle : composerModeTitle;
+  const saveText = target === "workspace" ? wsSaveJournalText : saveJournalText;
+  const btnText = target === "workspace" ? wsComposerBtnText : composerBtnText;
+  const editId = target === "workspace" ? wsJournalEditId : journalEditId;
+  const titleInput = target === "workspace" ? wsJournalTitleInput : journalTitleInput;
+  const bodyInput = target === "workspace" ? wsJournalBodyInput : journalBodyInput;
+
+  if (!composer) return;
+  composer.classList.remove("hidden");
 
   if (mode === "edit" && entry) {
-    composerModeTitle.textContent = "// EDIT LOG ENTRY";
-    saveJournalText.textContent = "UPDATE ENTRY";
-    composerBtnText.textContent = "CLOSE COMPOSER";
-    journalEditId.value = entry.id;
-    journalTitleInput.value = entry.title;
-    journalBodyInput.value = entry.body;
+    if (modeTitle) modeTitle.textContent = "// EDIT LOG ENTRY";
+    if (saveText) saveText.textContent = "UPDATE ENTRY";
+    if (btnText) btnText.textContent = "CLOSE";
+    if (editId) editId.value = entry.id;
+    if (titleInput) titleInput.value = entry.title;
+    if (bodyInput) bodyInput.value = entry.body;
   } else {
-    composerModeTitle.textContent = "// COMPOSE NEW LOG";
-    saveJournalText.textContent = "SAVE ENTRY";
-    composerBtnText.textContent = "CLOSE COMPOSER";
-    journalEditId.value = "";
-    journalTitleInput.value = "";
-    journalBodyInput.value = "";
+    if (modeTitle) modeTitle.textContent = "// COMPOSE LOG ENTRY";
+    if (saveText) saveText.textContent = "SAVE ENTRY";
+    if (btnText) btnText.textContent = "CLOSE";
+    if (editId) editId.value = "";
+    if (titleInput) titleInput.value = "";
+    if (bodyInput) bodyInput.value = "";
   }
 
-  journalTitleInput.focus();
+  if (titleInput) titleInput.focus();
 }
 
-function closeComposer() {
-  if (!journalComposer) return;
-  journalComposer.classList.add("hidden");
-  composerBtnText.textContent = "NEW LOG ENTRY";
-  journalEditId.value = "";
-  journalTitleInput.value = "";
-  journalBodyInput.value = "";
+function closeComposer(target = "drawer") {
+  const composer = target === "workspace" ? wsJournalComposer : journalComposer;
+  const btnText = target === "workspace" ? wsComposerBtnText : composerBtnText;
+  const editId = target === "workspace" ? wsJournalEditId : journalEditId;
+  const titleInput = target === "workspace" ? wsJournalTitleInput : journalTitleInput;
+  const bodyInput = target === "workspace" ? wsJournalBodyInput : journalBodyInput;
+
+  if (!composer) return;
+  composer.classList.add("hidden");
+  if (btnText) btnText.textContent = target === "workspace" ? "NEW LOG" : "NEW LOG ENTRY";
+  if (editId) editId.value = "";
+  if (titleInput) titleInput.value = "";
+  if (bodyInput) bodyInput.value = "";
 }
 
 function startEditJournalEntry(id) {
   const entries = loadJournalEntries();
   const entry = entries.find((item) => item.id === id);
   if (!entry) return;
-  openComposer("edit", entry);
+
+  if (workspaceView && !workspaceView.classList.contains("hidden")) {
+    openComposer("edit", entry, "workspace");
+  } else {
+    openComposer("edit", entry, "drawer");
+  }
 }
 
 function deleteJournalEntry(id) {
@@ -788,63 +826,78 @@ function deleteJournalEntry(id) {
   renderJournal();
 }
 
+// Drawer Composer Controls
 if (toggleComposerBtn) {
   toggleComposerBtn.addEventListener("click", () => {
     if (journalComposer.classList.contains("hidden")) {
-      openComposer("new");
+      openComposer("new", null, "drawer");
     } else {
-      closeComposer();
+      closeComposer("drawer");
     }
   });
 }
+if (cancelComposeBtn) cancelComposeBtn.addEventListener("click", () => closeComposer("drawer"));
 
-if (cancelComposeBtn) {
-  cancelComposeBtn.addEventListener("click", closeComposer);
+// Workspace Dashboard Composer Controls
+if (wsToggleComposerBtn) {
+  wsToggleComposerBtn.addEventListener("click", () => {
+    if (wsJournalComposer.classList.contains("hidden")) {
+      openComposer("new", null, "workspace");
+    } else {
+      closeComposer("workspace");
+    }
+  });
+}
+if (wsCancelComposeBtn) wsCancelComposeBtn.addEventListener("click", () => closeComposer("workspace"));
+
+function handleJournalFormSubmit(e, editIdEl, titleEl, bodyEl, target) {
+  e.preventDefault();
+  const title = titleEl.value.trim();
+  const body = bodyEl.value.trim();
+  const editId = editIdEl.value;
+
+  if (!title || !body) return;
+
+  let entries = loadJournalEntries();
+
+  if (editId) {
+    entries = entries.map((item) => {
+      if (item.id === editId) {
+        return { ...item, title, body };
+      }
+      return item;
+    });
+  } else {
+    const newEntry = {
+      id: `log-${Date.now()}`,
+      date: formatCurrentJournalDate(),
+      timestamp: Date.now(),
+      title,
+      body
+    };
+    entries.unshift(newEntry);
+  }
+
+  saveJournalEntries(entries);
+  renderJournal();
+  closeComposer(target);
 }
 
 if (journalForm) {
   journalForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const title = journalTitleInput.value.trim();
-    const body = journalBodyInput.value.trim();
-    const editId = journalEditId.value;
+    handleJournalFormSubmit(e, journalEditId, journalTitleInput, journalBodyInput, "drawer");
+  });
+}
 
-    if (!title || !body) return;
-
-    let entries = loadJournalEntries();
-
-    if (editId) {
-      entries = entries.map((item) => {
-        if (item.id === editId) {
-          return {
-            ...item,
-            title,
-            body
-          };
-        }
-        return item;
-      });
-    } else {
-      const newEntry = {
-        id: `log-${Date.now()}`,
-        date: formatCurrentJournalDate(),
-        timestamp: Date.now(),
-        title,
-        body
-      };
-      entries.unshift(newEntry);
-    }
-
-    saveJournalEntries(entries);
-    renderJournal();
-    closeComposer();
+if (wsJournalForm) {
+  wsJournalForm.addEventListener("submit", (e) => {
+    handleJournalFormSubmit(e, wsJournalEditId, wsJournalTitleInput, wsJournalBodyInput, "workspace");
   });
 }
 
 // ==========================================================================
 // Quantum Access Log (Firestore Realtime)
 // ==========================================================================
-
 function formatLogDate(timestamp) {
   if (!timestamp) return "JUST NOW";
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -898,16 +951,16 @@ function subscribeToLogbook() {
     
     onSnapshot(logQuery, (snapshot) => {
       const entries = [];
-      snapshot.forEach((doc) => {
-        entries.push({ id: doc.id, ...doc.data() });
+      snapshot.forEach((docSnap) => {
+        entries.push({ id: docSnap.id, ...docSnap.data() });
       });
       renderLogbook(entries);
     }, (error) => {
       console.warn("Firestore query with orderBy failed, falling back to unordered query:", error);
       onSnapshot(logbookRef, (snapshot) => {
         const entries = [];
-        snapshot.forEach((doc) => {
-          entries.push({ id: doc.id, ...doc.data() });
+        snapshot.forEach((docSnap) => {
+          entries.push({ id: docSnap.id, ...docSnap.data() });
         });
         entries.sort((a, b) => {
           const tA = a.timestamp?.seconds || 0;
@@ -987,6 +1040,8 @@ function clearFeedback() {
   }
 }
 
-// Initialize Everything
+// ==========================================================================
+// Initialize Everything on Load
+// ==========================================================================
 renderJournal();
 subscribeToLogbook();

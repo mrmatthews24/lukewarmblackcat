@@ -1391,6 +1391,18 @@ body.logbook-open .right-drawer {
   text-transform: uppercase;
 }
 
+.ws-version-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent-red-bright);
+  padding: 0.1rem 0.35rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
 .nav-brand-sub {
   font-family: var(--font-mono);
   font-size: 0.62rem;

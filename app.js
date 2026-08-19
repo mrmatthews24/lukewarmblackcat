@@ -21,6 +21,29 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// ==========================================================================
+// Central System Configuration (Single Source of Truth for Version & Metadata)
+// ==========================================================================
+export const APP_CONFIG = {
+  version: "v1.1", // Update this single variable to increment site version
+  organization: "GEORGE TECH",
+  coordinates: "41.92556°N 111.47333°W",
+  facility: "LOGAN CANYON, UT"
+};
+
+function applyAppConfig() {
+  const versionTags = document.querySelectorAll("#hud-version-tag, #ws-version-tag, .hud-version-tag");
+  versionTags.forEach(el => {
+    el.textContent = APP_CONFIG.version;
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", applyAppConfig, { once: true });
+} else {
+  applyAppConfig();
+}
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCgvWmArDCe15PfminipRlssuVX-ZIRZA0",

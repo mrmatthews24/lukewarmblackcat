@@ -394,7 +394,7 @@
           <div class="workspace-card-header">// SECURE VAULT</div>
           <div class="workspace-card-body">
             <p class="vault-placeholder-text">
-              Private Workspace active. All private documents in the <code>/workspace</code> Firestore collection are locked to your authenticated account UID.
+              Private Workspace active. All private documents and tasks are strictly encrypted to your authenticated account UID.
             </p>
             <div class="vault-status-indicator">
               <span class="pulse-indicator"></span> <span>SECURE DATA CHANNEL OPEN</span>
@@ -402,6 +402,112 @@
           </div>
         </div>
       </div>
+
+      <!-- Tactical Tasks & Objectives Management Section -->
+      <section class="workspace-tasks-section" id="workspace-tasks-section">
+        <div class="tasks-section-header">
+          <div class="terminal-title-group">
+            <span class="terminal-prompt">&gt;</span>
+            <h3 class="terminal-title">TACTICAL OBJECTIVES // TASKS</h3>
+          </div>
+          <span class="log-count-badge" id="open-tasks-count-badge">0 PENDING</span>
+        </div>
+
+        <!-- Task Composer Card -->
+        <div class="task-composer-card hud-card">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <form id="task-form" class="task-form">
+            <div class="form-header-label">// INITIALIZE DIRECTIVE</div>
+            
+            <div class="input-container">
+              <input 
+                type="text" 
+                id="task-title-input" 
+                class="sci-fi-input" 
+                placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
+                maxlength="120" 
+                required
+              >
+
+              <div class="task-form-row">
+                <div class="task-field-group">
+                  <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
+                  <input 
+                    type="date" 
+                    id="task-due-date-input" 
+                    class="sci-fi-input task-date-input"
+                  >
+                </div>
+
+                <div class="task-field-group flex-2">
+                  <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL / NOTES [OPTIONAL]</label>
+                  <input 
+                    type="text" 
+                    id="task-notes-input" 
+                    class="sci-fi-input" 
+                    placeholder="MISSION BRIEF / TACTICAL NOTES..." 
+                    maxlength="200"
+                  >
+                </div>
+              </div>
+
+              <div class="task-form-actions">
+                <button type="submit" id="task-submit-btn" class="sci-fi-btn">
+                  <span id="task-submit-text">+ ASSIGN DIRECTIVE</span>
+                  <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div id="task-form-feedback" class="form-feedback" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <!-- Open Tasks List -->
+        <div class="tasks-feed-container hud-card">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="log-feed-label">[ACTIVE DIRECTIVES // SORTED BY TIMELINE]</div>
+          <ul id="open-tasks-list" class="tasks-list">
+            <div class="empty-log-state">
+              <span class="pulse-indicator"></span>
+              <p>NO ACTIVE DIRECTIVES RECORDED</p>
+            </div>
+          </ul>
+        </div>
+
+        <!-- Completed Tasks Collapsible Section -->
+        <div class="completed-tasks-wrapper">
+          <details id="completed-tasks-details" class="completed-tasks-details hud-card">
+            <span class="reticle reticle-tl" aria-hidden="true"></span>
+            <span class="reticle reticle-tr" aria-hidden="true"></span>
+            <span class="reticle reticle-bl" aria-hidden="true"></span>
+            <span class="reticle reticle-br" aria-hidden="true"></span>
+
+            <summary class="completed-tasks-summary">
+              <span class="summary-left">
+                <span class="summary-icon">▼</span>
+                <span>COMPLETED DIRECTIVES</span>
+              </span>
+              <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
+            </summary>
+            
+            <div class="completed-tasks-body">
+              <ul id="completed-tasks-list" class="tasks-list completed-list">
+                <!-- Rendered dynamically by app.js -->
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
     </div>
   </div>
 

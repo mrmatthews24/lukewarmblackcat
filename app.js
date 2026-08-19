@@ -5,8 +5,12 @@ import {
   getFirestore, 
   collection, 
   addDoc, 
+  doc,
+  updateDoc,
+  deleteDoc,
   serverTimestamp, 
   query, 
+  where,
   orderBy, 
   onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -40,6 +44,7 @@ try {
 const db = getFirestore(app);
 const auth = getAuth(app);
 const logbookRef = collection(db, "logbook");
+const tasksRef = collection(db, "tasks");
 
 // ==========================================================================
 // DOM Elements
@@ -94,6 +99,19 @@ const workspaceModalBackdrop = document.getElementById("workspace-modal-backdrop
 const workspaceCloseBtn = document.getElementById("workspace-close-btn");
 const workspaceLogoutBtn = document.getElementById("workspace-logout-btn");
 const workspaceUserEmail = document.getElementById("workspace-user-email");
+
+// Tasks Management Elements
+const taskForm = document.getElementById("task-form");
+const taskTitleInput = document.getElementById("task-title-input");
+const taskDueDateInput = document.getElementById("task-due-date-input");
+const taskNotesInput = document.getElementById("task-notes-input");
+const taskSubmitBtn = document.getElementById("task-submit-btn");
+const taskSubmitText = document.getElementById("task-submit-text");
+const taskFormFeedback = document.getElementById("task-form-feedback");
+const openTasksList = document.getElementById("open-tasks-list");
+const openTasksCountBadge = document.getElementById("open-tasks-count-badge");
+const completedTasksList = document.getElementById("completed-tasks-list");
+const completedTasksCountBadge = document.getElementById("completed-tasks-count-badge");
 
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
@@ -347,10 +365,12 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceBtnLabel) workspaceBtnLabel.textContent = "PRIVATE WORKSPACE";
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.add("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
+    subscribeToTasks(user.uid);
   } else {
     if (workspaceBtnLabel) workspaceBtnLabel.textContent = "ACCESS WORKSPACE";
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.remove("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
+    unsubscribeFromTasks();
   }
 });
 
@@ -376,6 +396,240 @@ window.addEventListener("keydown", (e) => {
     closeWorkspaceModal();
   }
 });
+
+// ==========================================================================
+// Tactical Tasks & Objectives Management (Private Workspace)
+// ==========================================================================
+let unsubscribeTasks = null;
+
+function subscribeToTasks(userId) {
+  if (unsubscribeTasks) unsubscribeTasks();
+
+  const q = query(tasksRef, where("userId", "==", userId));
+  
+  unsubscribeTasks = onSnapshot(q, (snapshot) => {
+    const tasks = [];
+    snapshot.forEach((docSnap) => {
+      tasks.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    renderTasks(tasks);
+  }, (error) => {
+    console.error("Tasks subscription error:", error);
+    if (openTasksList) {
+      openTasksList.innerHTML = `
+        <div class="error-log-state">
+          <p>FAILED TO QUERY OBJECTIVES // CHECK SECURITY PROTOCOLS</p>
+        </div>
+      `;
+    }
+  });
+}
+
+function unsubscribeFromTasks() {
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+  renderTasks([]);
+}
+
+function renderTasks(tasks) {
+  const openTasks = tasks.filter(t => !t.completed);
+  const completedTasks = tasks.filter(t => t.completed);
+
+  // Sort open tasks: by due date ascending (no due date goes to bottom), secondary by createdAt desc
+  openTasks.sort((a, b) => {
+    const dateA = a.dueDate || "";
+    const dateB = b.dueDate || "";
+
+    if (!dateA && dateB) return 1;
+    if (dateA && !dateB) return -1;
+    if (dateA && dateB) {
+      const cmp = dateA.localeCompare(dateB);
+      if (cmp !== 0) return cmp;
+    }
+
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA;
+  });
+
+  // Sort completed tasks by createdAt desc
+  completedTasks.sort((a, b) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA;
+  });
+
+  if (openTasksCountBadge) openTasksCountBadge.textContent = `${openTasks.length} PENDING`;
+  if (completedTasksCountBadge) completedTasksCountBadge.textContent = `${completedTasks.length} COMPLETED`;
+
+  if (openTasksList) {
+    if (openTasks.length === 0) {
+      openTasksList.innerHTML = `
+        <div class="empty-log-state">
+          <span class="pulse-indicator"></span>
+          <p>NO ACTIVE DIRECTIVES // ALL OBJECTIVES FULFILLED</p>
+        </div>
+      `;
+    } else {
+      openTasksList.innerHTML = openTasks.map(t => renderTaskItemHTML(t, false)).join("");
+    }
+  }
+
+  if (completedTasksList) {
+    if (completedTasks.length === 0) {
+      completedTasksList.innerHTML = `
+        <div class="empty-log-state">
+          <p>NO COMPLETED DIRECTIVES RECORDED</p>
+        </div>
+      `;
+    } else {
+      completedTasksList.innerHTML = completedTasks.map(t => renderTaskItemHTML(t, true)).join("");
+    }
+  }
+
+  // Attach Checkbox Toggle Handlers
+  document.querySelectorAll(".task-hud-checkbox").forEach((checkbox) => {
+    checkbox.addEventListener("change", async (e) => {
+      const taskId = e.target.getAttribute("data-id");
+      const isChecked = e.target.checked;
+      try {
+        await updateDoc(doc(db, "tasks", taskId), {
+          completed: isChecked
+        });
+      } catch (err) {
+        console.error("Error updating task status:", err);
+        e.target.checked = !isChecked; // revert on error
+      }
+    });
+  });
+
+  // Attach Delete Handlers
+  document.querySelectorAll(".task-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const taskId = btn.getAttribute("data-id");
+      if (!confirm("CONFIRM DELETION: Purge this objective directive from the database?")) {
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, "tasks", taskId));
+      } catch (err) {
+        console.error("Error deleting task:", err);
+      }
+    });
+  });
+}
+
+function renderTaskItemHTML(task, isCompleted) {
+  const sanitizedTitle = escapeHTML(task.title);
+  const sanitizedNotes = task.notes ? escapeHTML(task.notes) : "";
+  
+  let dueBadgeHTML = '';
+  if (task.dueDate) {
+    const todayStr = new Date().toISOString().split("T")[0];
+    const isOverdue = !isCompleted && task.dueDate < todayStr;
+    const isToday = !isCompleted && task.dueDate === todayStr;
+    const badgeClass = isOverdue ? "task-due-badge overdue" : (isToday ? "task-due-badge overdue" : "task-due-badge");
+    const label = isOverdue ? `OVERDUE: ${task.dueDate}` : (isToday ? `DUE TODAY: ${task.dueDate}` : `DUE: ${task.dueDate}`);
+    dueBadgeHTML = `<span class="${badgeClass}">${label}</span>`;
+  } else {
+    dueBadgeHTML = `<span class="task-due-badge no-due">NO DEADLINE</span>`;
+  }
+
+  const notesHTML = sanitizedNotes ? `<div class="task-notes">${sanitizedNotes}</div>` : '';
+
+  return `
+    <li class="task-item" data-id="${task.id}">
+      <div class="task-checkbox-container">
+        <input 
+          type="checkbox" 
+          class="task-hud-checkbox" 
+          data-id="${task.id}" 
+          ${isCompleted ? 'checked' : ''} 
+          aria-label="Toggle task completion"
+        >
+      </div>
+      <div class="task-content">
+        <div class="task-title">${sanitizedTitle}</div>
+        <div class="task-meta-row">
+          ${dueBadgeHTML}
+        </div>
+        ${notesHTML}
+      </div>
+      <div class="task-actions">
+        <button type="button" class="task-delete-btn" data-id="${task.id}" title="Permanently delete objective">
+          PURGE [✕]
+        </button>
+      </div>
+    </li>
+  `;
+}
+
+// Handle Task Form Submission
+if (taskForm) {
+  taskForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!auth.currentUser) {
+      showTaskFeedback("AUTHENTICATION REQUIRED TO ASSIGN DIRECTIVES", "error");
+      return;
+    }
+
+    const title = taskTitleInput.value.trim();
+    const dueDate = taskDueDateInput.value || null;
+    const notes = taskNotesInput.value.trim() || null;
+
+    if (!title) {
+      showTaskFeedback("ENTER DIRECTIVE TITLE", "error");
+      return;
+    }
+
+    taskSubmitBtn.disabled = true;
+    taskSubmitText.textContent = "TRANSMITTING DIRECTIVE...";
+    clearTaskFeedback();
+
+    try {
+      await addDoc(tasksRef, {
+        title,
+        dueDate,
+        notes,
+        completed: false,
+        createdAt: serverTimestamp(),
+        userId: auth.currentUser.uid
+      });
+
+      taskTitleInput.value = "";
+      taskDueDateInput.value = "";
+      taskNotesInput.value = "";
+      showTaskFeedback("OBJECTIVE INITIALIZED IN DATABASE", "success");
+      taskSubmitText.textContent = "RECORDED ✓";
+
+      setTimeout(() => {
+        taskSubmitText.textContent = "+ ASSIGN DIRECTIVE";
+        taskSubmitBtn.disabled = false;
+      }, 1200);
+    } catch (err) {
+      console.error("Error creating task:", err);
+      showTaskFeedback("TRANSMISSION ERROR: " + (err.message || "SECURITY FAILURE"), "error");
+      taskSubmitBtn.disabled = false;
+      taskSubmitText.textContent = "+ ASSIGN DIRECTIVE";
+    }
+  });
+}
+
+function showTaskFeedback(msg, type) {
+  if (taskFormFeedback) {
+    taskFormFeedback.textContent = msg;
+    taskFormFeedback.className = `form-feedback ${type}`;
+  }
+}
+
+function clearTaskFeedback() {
+  if (taskFormFeedback) {
+    taskFormFeedback.textContent = "";
+    taskFormFeedback.className = "form-feedback";
+  }
+}
 
 // ==========================================================================
 // Personal Journal Storage & CRUD (Batman HUD Themed)

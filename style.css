@@ -130,10 +130,61 @@ html, body {
 }
 
 .hud-telemetry-bl { bottom: 18px; left: 24px; }
-.hud-telemetry-br { bottom: 18px; right: 24px; text-align: right; }
+.hud-telemetry-br {
+  bottom: 18px;
+  right: 24px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+/* H.W. Directive Trigger Button */
+.hw-directive-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  pointer-events: auto;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.hw-btn-dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--accent-red);
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+.hw-directive-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+.sonni-database-label {
+  pointer-events: none;
+}
 
 @media (max-width: 768px) {
-  .hud-telemetry-tl, .hud-telemetry-bl, .hud-telemetry-br { display: none; }
+  .hud-telemetry-tl, .hud-telemetry-bl { display: none; }
+  .hud-telemetry-br {
+    bottom: 12px;
+    right: 12px;
+  }
+  .sonni-database-label { display: none; }
   .hud-telemetry-tr {
     top: 10px;
     right: 12px;
@@ -1119,6 +1170,174 @@ body.logbook-open .right-drawer {
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding-top: 0.75rem;
+}
+
+/* ==========================================================================
+   H.W. Directive Easter Egg Popup (Car of the Day)
+   ========================================================================== */
+
+.hw-popup {
+  position: fixed;
+  bottom: 60px;
+  right: 24px;
+  width: 320px;
+  max-width: 90vw;
+  padding: 1.15rem 1.15rem 0.9rem;
+  background: rgba(13, 14, 20, 0.98);
+  border: 1px solid var(--panel-border-accent);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 95;
+  animation: popupSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popupSlideIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hw-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.hw-protocol-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.08em;
+}
+
+.hw-close-btn {
+  width: 24px;
+  height: 24px;
+}
+
+/* Car Line Art Graphic (Matching Cat Line-Art Aesthetic) */
+.hw-car-graphic-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.hw-car-frame {
+  position: relative;
+  padding: 0.85rem 1.25rem;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.car-outline {
+  width: 155px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.8));
+}
+
+.car-stroke {
+  stroke: var(--cat-color);
+  stroke-width: 2.2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.window-pillar {
+  stroke-width: 1.5;
+  opacity: 0.8;
+}
+
+.aero-line {
+  stroke-width: 1.2;
+  opacity: 0.7;
+}
+
+.car-wheel {
+  fill: #060709;
+  stroke: #030405;
+  stroke-width: 2;
+}
+
+.car-wheel-hub {
+  fill: var(--accent-red);
+  stroke: var(--accent-red-bright);
+  stroke-width: 1;
+}
+
+.headlight, .taillight {
+  stroke: var(--accent-red-bright);
+  stroke-width: 2;
+}
+
+/* Popup Typography & Content */
+.hw-popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.65rem;
+}
+
+.hw-section-title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-red-bright);
+  text-transform: uppercase;
+}
+
+.hw-car-name {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.hw-car-fact {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.hw-popup-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-muted);
+}
+
+.hw-index-tag {
+  color: var(--accent-red-bright);
+  font-weight: 600;
+}
+
+@media (max-width: 680px) {
+  .hw-popup {
+    bottom: 50%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    width: 90vw;
+    animation: popupSlideInMobile 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes popupSlideInMobile {
+    from { opacity: 0; transform: translate(50%, calc(50% + 8px)) scale(0.98); }
+    to { opacity: 1; transform: translate(50%, 50%) scale(1); }
+  }
 }
 
 /* ==========================================================================

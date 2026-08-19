@@ -25,7 +25,13 @@
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
     </div>
     <div class="hud-telemetry hud-telemetry-bl" aria-hidden="true">SEC_LEVEL: 01 // CLASSIFIED<br>FREQ: 1420.405 MHz</div>
-    <div class="hud-telemetry hud-telemetry-br" aria-hidden="true">CHRONO: SYS_SYNC<br>SONNI DATABASE // NODE-7</div>
+    <div class="hud-telemetry hud-telemetry-br">
+      <button type="button" id="hw-directive-btn" class="hw-directive-btn" title="Open H.W. Directive (Car of the Day)">
+        <span class="hw-btn-dot"></span>
+        <span>H.W. DIRECTIVE</span>
+      </button>
+      <div class="sonni-database-label" aria-hidden="true">CHRONO: SYS_SYNC<br>SONNI DATABASE // NODE-7</div>
+    </div>
 
     <!-- Left Side Tab (Personal Journal / Notes) -->
     <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Tactical Journal">
@@ -312,6 +318,62 @@
           <div id="auth-feedback" class="form-feedback" aria-live="polite"></div>
         </form>
         <div class="auth-footer-note">// SYSTEM WARNING: ALL ACCESS ATTEMPTS ARE LOGGED & ENCRYPTED</div>
+      </div>
+    </div>
+
+    <!-- H.W. Directive Popup Panel (Car of the Day Easter Egg) -->
+    <div id="hw-popup" class="hw-popup hud-card hidden" role="dialog" aria-modal="true" aria-labelledby="hw-car-heading">
+      <span class="reticle reticle-tl" aria-hidden="true"></span>
+      <span class="reticle reticle-tr" aria-hidden="true"></span>
+      <span class="reticle reticle-bl" aria-hidden="true"></span>
+      <span class="reticle reticle-br" aria-hidden="true"></span>
+
+      <div class="hw-popup-header">
+        <div class="terminal-title-group">
+          <span class="terminal-prompt">&gt;</span>
+          <span class="hw-protocol-tag">DIRECTIVE: H.W.</span>
+        </div>
+        <button type="button" id="hw-close-btn" class="drawer-close-btn hw-close-btn" aria-label="Close H.W. Directive">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Line Art Car Graphic (Matching Cat Line-Art Aesthetic) -->
+      <div class="hw-car-graphic-wrapper">
+        <div class="cat-hud-frame hw-car-frame">
+          <span class="cat-hud-label">[SCAN: VEHICLE_SPEC]</span>
+          <svg class="car-outline" viewBox="0 0 200 90" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a sports car">
+            <!-- Roof & Greenhouse -->
+            <path class="car-stroke" d="M52 42 L80 22 H136 L164 42" />
+            <path class="car-stroke window-pillar" d="M112 23 L112 42" />
+            <!-- Beltline & Silhouette -->
+            <path class="car-stroke" d="M14 50 L28 44 L52 42 L164 42 L188 47 L194 54 L192 63 H166 C164 54 156 48 146 48 C136 48 128 54 126 63 H76 C74 54 66 48 56 48 C46 48 38 54 36 63 H10 L8 55 Z" />
+            <!-- Aero crease line -->
+            <path class="car-stroke aero-line" d="M28 44 L60 44 L88 52 H132" />
+            <!-- Wheels & Hubs -->
+            <circle class="car-wheel" cx="56" cy="63" r="12" />
+            <circle class="car-wheel-hub" cx="56" cy="63" r="4" />
+            <circle class="car-wheel" cx="146" cy="63" r="12" />
+            <circle class="car-wheel-hub" cx="146" cy="63" r="4" />
+            <!-- Headlights & Taillights -->
+            <path class="car-stroke headlight" d="M12 52 L22 49" />
+            <path class="car-stroke taillight" d="M190 50 L194 54" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="hw-popup-body">
+        <h3 id="hw-car-heading" class="hw-section-title">Car of the Day</h3>
+        <div id="hw-car-name" class="hw-car-name">CALCULATING...</div>
+        <p id="hw-car-fact" class="hw-car-fact">QUERYING AUTOMOTIVE ARCHIVES...</p>
+      </div>
+
+      <div class="hw-popup-footer">
+        <span class="hw-rotation-tag">// ROTATES DAILY AT MIDNIGHT</span>
+        <span class="hw-index-tag" id="hw-index-tag">SPEC #01</span>
       </div>
     </div>
   </div>

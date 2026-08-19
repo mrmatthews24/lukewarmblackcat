@@ -130,6 +130,14 @@ const wsComposerModeTitle = document.getElementById("ws-composer-mode-title");
 const wsSaveJournalText = document.getElementById("ws-save-journal-text");
 const wsJournalEntriesContainer = document.getElementById("ws-journal-entries-container");
 
+// H.W. Directive Elements
+const hwDirectiveBtn = document.getElementById("hw-directive-btn");
+const hwPopup = document.getElementById("hw-popup");
+const hwCloseBtn = document.getElementById("hw-close-btn");
+const hwCarName = document.getElementById("hw-car-name");
+const hwCarFact = document.getElementById("hw-car-fact");
+const hwIndexTag = document.getElementById("hw-index-tag");
+
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
 const typewriterTarget = document.getElementById("typewriter-target");
@@ -410,11 +418,156 @@ function clearAuthFeedback() {
   }
 }
 
-// Global Keydown Handler (ESC closes drawers and modals)
+// Global Keydown Handler (ESC closes drawers, modals, and H.W. easter egg)
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeAllDrawers();
     closeAuthModal();
+    closeHWPopup();
+  }
+});
+
+// ==========================================================================
+// H.W. Directive (Car of the Day Easter Egg - Daily Deterministic Rotation)
+// ==========================================================================
+const CARS_DATABASE = [
+  {
+    name: "1969 Dodge Charger R/T",
+    fact: "The legendary 426 Hemi engine produced so much torque that Chrysler engineers had to reinforce the car's unibody frame to keep it from flexing under hard acceleration."
+  },
+  {
+    name: "1989 Nissan Skyline GT-R (R32)",
+    fact: "Earned the nickname 'Godzilla' by the Australian motoring press after winning all 29 races it entered in the Japanese Touring Car Championship."
+  },
+  {
+    name: "1994 McLaren F1",
+    fact: "Designed with a center-mounted driver's seat for pure weight distribution, its engine bay was lined with 0.8 ounces of pure gold foil for thermal heat shielding."
+  },
+  {
+    name: "1967 Toyota 2000GT",
+    fact: "Japan's first true supercar; only 351 were ever built, and two custom open-top convertible models were crafted specifically for Sean Connery in the James Bond film 'You Only Live Twice'."
+  },
+  {
+    name: "1987 Ferrari F40",
+    fact: "The final supercar personally signed off by Enzo Ferrari, it was the first road-legal production car to break the 200 mph barrier (clocking 201 mph) using carbon-kevlar bodywork."
+  },
+  {
+    name: "1993 Mazda RX-7 (FD3S)",
+    fact: "Powered by a sequential twin-turbocharged 13B rotary engine, it achieved a perfect 50:50 front-to-rear weight balance and remains one of the purest handling chassis ever made."
+  },
+  {
+    name: "1963 Chevrolet Corvette Sting Ray",
+    fact: "Designed by Larry Shinoda and Bill Mitchell with a distinctive split rear window that was only produced for the 1963 model year, making it an ultra-rare collector grail."
+  },
+  {
+    name: "1974 Porsche 911 Turbo (930)",
+    fact: "Dubbed the 'Widowmaker' due to massive turbo lag followed by explosive rear-engine snap-oversteer, it pioneered turbocharging technology in production sports cars."
+  },
+  {
+    name: "1991 Acura NSX",
+    fact: "Honed with direct test-track feedback from Formula 1 world champion Ayrton Senna, it introduced the world's first all-aluminum monocoque chassis to production cars."
+  },
+  {
+    name: "1967 Shelby Cobra 427 S/C",
+    fact: "With a massive 7.0-liter Ford V8 shoehorned into a lightweight aluminum roadster body, it could rocket from 0 to 100 mph and brake back to a complete stop in under 14 seconds."
+  },
+  {
+    name: "2005 Ford GT",
+    fact: "Built to commemorate Ford's centennial and the GT40's 1966 Le Mans sweep, its superplastic-formed aluminum body housed a supercharged 5.4L V8 capable of 205 mph."
+  },
+  {
+    name: "1970 Plymouth Hemi 'Cuda",
+    fact: "One of the most valuable muscle cars in the world; only 14 convertible models were produced in 1971, with pristine examples commanding several million dollars at auction."
+  },
+  {
+    name: "1998 Subaru Impreza 22B STI",
+    fact: "Built to celebrate Subaru's 40th anniversary and three consecutive World Rally Championship titles, only 424 widebody units were made and all sold out in under 48 hours."
+  },
+  {
+    name: "1984 Audi Sport Quattro",
+    fact: "Engineered with a short-wheelbase chassis and Kevlar-carbon body panels to dominate Group B rallying, forever revolutionizing all-wheel-drive performance."
+  },
+  {
+    name: "1992 BMW M3 (E30 Sport Evolution)",
+    fact: "Born as a homologation special for touring car racing, almost every body panel except the hood and roof was modified from standard 3-Series models for aerodynamic downforce."
+  },
+  {
+    name: "2010 Lexus LFA",
+    fact: "Toyota spent a decade perfecting its carbon-fiber chassis and a naturally aspirated 4.8L V10 so fast-revving that analog tachometer needles couldn't keep up, requiring a digital display."
+  },
+  {
+    name: "1970 Datsun 240Z",
+    fact: "Revolutionized the American sports car market in 1970 by offering European styling and smooth overhead-cam straight-six performance at an accessible price point."
+  },
+  {
+    name: "1964 Aston Martin DB5",
+    fact: "Equipped with a 4.0-liter inline-six and immortalized as the ultimate gadget-laden 007 vehicle with revolving license plates and an ejector seat in 'Goldfinger'."
+  },
+  {
+    name: "1990 Mercedes-Benz 190E 2.5-16 Evo II",
+    fact: "Famous for its radical adjustable rear wing and flared arches, its Cosworth-developed high-revving 16-valve engine dominated German DTM touring car battles."
+  },
+  {
+    name: "2004 Porsche Carrera GT",
+    fact: "Powered by a howling 5.7L V10 derived from a cancelled Le Mans prototype program, it is revered as one of the purest, most demanding analog supercars in automotive history."
+  },
+  {
+    name: "1968 Ford Mustang GT Fastback",
+    fact: "Immortalized by Steve McQueen in the film 'Bullitt', creating what is widely considered the greatest and most influential car chase scene in cinematic history."
+  },
+  {
+    name: "1996 Dodge Viper GTS",
+    fact: "Recognized by its iconic double-bubble roof designed to fit racing helmets, its 8.0-liter aluminum V10 generated 450 horsepower with zero electronic driver aids."
+  }
+];
+
+function getCarOfTheDay() {
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  const index = Math.abs(dayNumber) % CARS_DATABASE.length;
+  return { car: CARS_DATABASE[index], index: index + 1 };
+}
+
+function openHWPopup() {
+  const { car, index } = getCarOfTheDay();
+  if (hwCarName) hwCarName.textContent = car.name;
+  if (hwCarFact) hwCarFact.textContent = car.fact;
+  if (hwIndexTag) hwIndexTag.textContent = `SPEC #${String(index).padStart(2, '0')}`;
+  if (hwPopup) hwPopup.classList.remove("hidden");
+}
+
+function closeHWPopup() {
+  if (hwPopup) hwPopup.classList.add("hidden");
+}
+
+function toggleHWPopup() {
+  if (hwPopup && !hwPopup.classList.contains("hidden")) {
+    closeHWPopup();
+  } else {
+    openHWPopup();
+  }
+}
+
+if (hwDirectiveBtn) {
+  hwDirectiveBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleHWPopup();
+  });
+}
+
+if (hwCloseBtn) {
+  hwCloseBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeHWPopup();
+  });
+}
+
+// Click outside closes H.W. Directive Popup
+document.addEventListener("click", (e) => {
+  if (hwPopup && !hwPopup.classList.contains("hidden")) {
+    if (!hwPopup.contains(e.target) && (!hwDirectiveBtn || !hwDirectiveBtn.contains(e.target))) {
+      closeHWPopup();
+    }
   }
 });
 

@@ -703,12 +703,7 @@ function renderJournal() {
     const sanitizedBody = escapeHTML(entry.body);
 
     return `
-      <article class="journal-card hud-card" data-entry-id="${entry.id}">
-        <span class="reticle reticle-tl" aria-hidden="true"></span>
-        <span class="reticle reticle-tr" aria-hidden="true"></span>
-        <span class="reticle reticle-bl" aria-hidden="true"></span>
-        <span class="reticle reticle-br" aria-hidden="true"></span>
-
+      <article class="journal-card" data-entry-id="${entry.id}">
         <div class="journal-card-header">
           <span class="journal-tag">LOG // ${logNumber}</span>
           <time class="journal-date">${entry.date || "UNKNOWN TIME"}</time>

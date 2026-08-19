@@ -1,27 +1,26 @@
 /* ==========================================================================
-   Batman HUD Tactical Design System (Crimson / Obsidian)
+   Sleek & Minimal Sci-Fi Design System (Dark Terminal / Clean Dashboard)
    ========================================================================== */
 :root {
-  --bg-color: #07080a;
-  --panel-bg: rgba(14, 15, 20, 0.92);
-  --panel-border: rgba(239, 68, 68, 0.28);
-  --panel-border-hover: rgba(239, 68, 68, 0.65);
+  --bg-color: #090a0f;
+  --panel-bg: rgba(14, 15, 20, 0.95);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-border-accent: rgba(239, 68, 68, 0.22);
+  --panel-border-hover: rgba(239, 68, 68, 0.45);
   
   --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
+  --text-secondary: #94a3b8;
   --text-muted: #64748b;
   
-  /* Cat: Deep Tactical Black with Red Targeting Silhouette */
-  --cat-color: #030405;
-  --cat-hover: #000000;
-  --cat-glow: rgba(239, 68, 68, 0.5);
+  /* Cat: Deep Matte Black with Crisp Silhouette */
+  --cat-color: #040507;
   
-  /* Tactical Crimson Palette */
+  /* Refined Tactical Crimson Palette (Subdued, High Contrast) */
   --accent-red: #ef4444;
   --accent-red-bright: #f87171;
-  --accent-red-deep: #dc2626;
-  --accent-red-dim: rgba(239, 68, 68, 0.12);
-  --accent-red-glow: rgba(239, 68, 68, 0.35);
+  --accent-red-deep: #b91c1c;
+  --accent-red-dim: rgba(239, 68, 68, 0.08);
+  --accent-red-glow: rgba(239, 68, 68, 0.25);
   
   --font-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
@@ -29,13 +28,13 @@
 }
 
 /* ==========================================================================
-   Reset & Global (Strict Angular / No Rounded Corners)
+   Reset & Global (Clean Angular Geometry)
    ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-radius: 0 !important; /* Enforces sharp, tactical angular HUD geometry */
+  border-radius: 0 !important;
 }
 
 html, body {
@@ -60,17 +59,17 @@ body {
 }
 
 /* ==========================================================================
-   HUD Background Grid & Ambient Red Nebulae
+   Subtle Background Grid & Ambient Space
    ========================================================================== */
 
-/* Faint Tactical Coordinate Grid */
+/* Faint static hairline grid for subtle texture */
 .hud-grid-overlay {
   position: fixed;
   inset: 0;
   background-image: 
-    linear-gradient(to right, rgba(239, 68, 68, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(239, 68, 68, 0.04) 1px, transparent 1px);
-  background-size: 36px 36px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
   z-index: 0;
 }
@@ -79,10 +78,10 @@ body {
 .hud-telemetry {
   position: fixed;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  line-height: 1.4;
-  color: rgba(239, 68, 68, 0.45);
-  letter-spacing: 0.08em;
+  font-size: 0.64rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.06em;
   pointer-events: none;
   z-index: 10;
   text-transform: uppercase;
@@ -93,34 +92,32 @@ body {
   top: 18px;
   right: 24px;
   text-align: right;
-  color: rgba(239, 68, 68, 0.85);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .hud-telemetry-tr #hud-live-time {
-  color: #ffffff;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  color: #f1f5f9;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .hud-telemetry-tr #hud-day-of-week {
   color: var(--accent-red-bright);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .hud-time-sub {
   font-size: 0.58rem;
-  color: rgba(239, 68, 68, 0.4);
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .hud-live-dot {
   display: inline-block;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   margin-right: 4px;
   background-color: var(--accent-red);
-  box-shadow: 0 0 6px var(--accent-red);
-  animation: pulse-dot 1s infinite ease-in-out;
+  animation: pulse-dot 1.5s infinite ease-in-out;
   vertical-align: middle;
 }
 
@@ -136,34 +133,8 @@ body {
   }
 }
 
-/* Ambient Red Glows */
-.bg-glow {
-  position: fixed;
-  pointer-events: none;
-  filter: blur(120px);
-  z-index: 0;
-  opacity: 0.18;
-}
-
-.bg-glow-1 {
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, var(--accent-red), transparent 70%);
-  top: 15%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.bg-glow-2 {
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle, #991b1b, transparent 70%);
-  bottom: 10%;
-  right: 15%;
-}
-
 /* ==========================================================================
-   Targeting Reticle Corner Brackets System
+   Subtle Corner Reticle Brackets (Primary Cards & Modals Only)
    ========================================================================== */
 
 .hud-card {
@@ -174,44 +145,39 @@ body {
 
 .reticle {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
   pointer-events: none;
   z-index: 5;
-  transition: all 0.25s ease;
+  transition: border-color 0.2s ease;
 }
 
 .reticle-tl {
   top: -1px;
   left: -1px;
-  border-top: 2px solid var(--accent-red-bright);
-  border-left: 2px solid var(--accent-red-bright);
+  border-top: 1px solid var(--accent-red-bright);
+  border-left: 1px solid var(--accent-red-bright);
 }
 
 .reticle-tr {
   top: -1px;
   right: -1px;
-  border-top: 2px solid var(--accent-red-bright);
-  border-right: 2px solid var(--accent-red-bright);
+  border-top: 1px solid var(--accent-red-bright);
+  border-right: 1px solid var(--accent-red-bright);
 }
 
 .reticle-bl {
   bottom: -1px;
   left: -1px;
-  border-bottom: 2px solid var(--accent-red-bright);
-  border-left: 2px solid var(--accent-red-bright);
+  border-bottom: 1px solid var(--accent-red-bright);
+  border-left: 1px solid var(--accent-red-bright);
 }
 
 .reticle-br {
   bottom: -1px;
   right: -1px;
-  border-bottom: 2px solid var(--accent-red-bright);
-  border-right: 2px solid var(--accent-red-bright);
-}
-
-.hud-card:hover .reticle {
-  border-color: #ffffff;
-  box-shadow: 0 0 8px var(--accent-red-bright);
+  border-bottom: 1px solid var(--accent-red-bright);
+  border-right: 1px solid var(--accent-red-bright);
 }
 
 /* ==========================================================================
@@ -225,20 +191,18 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 500px;
+  max-width: 480px;
   width: 100%;
-  padding: 3.5rem 2.5rem;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9),
-              0 0 30px -5px var(--accent-red-glow);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 3.25rem 2.25rem;
+  border: 1px solid var(--panel-border-accent);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
 .container:hover {
   border-color: var(--panel-border-hover);
-  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.95),
-              0 0 50px -5px rgba(239, 68, 68, 0.3);
   transform: translateY(-2px);
 }
 
@@ -247,71 +211,70 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
-  margin-bottom: 1.75rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   width: 100%;
 }
 
 .system-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  gap: 0.45rem;
+  padding: 0.25rem 0.65rem;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   color: var(--accent-red-bright);
   text-transform: uppercase;
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background-color: var(--accent-red);
-  box-shadow: 0 0 8px var(--accent-red);
   animation: pulse-dot 2s infinite ease-in-out;
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.8); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
-/* Tactical HUD Status Tags */
+/* Status Tags */
 .hud-status-tag {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--accent-red-bright);
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 0.25rem 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.2rem 0.55rem;
   text-transform: uppercase;
 }
 
 .hud-status-tag.sub-tag {
-  margin-bottom: 0.65rem;
-  font-size: 0.65rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.62rem;
   color: var(--text-muted);
 }
 
 .drawer-hud-status {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: var(--accent-red-bright);
-  background: rgba(239, 68, 68, 0.06);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
   border-left: 2px solid var(--accent-red);
-  padding: 0.35rem 0.65rem;
-  margin-bottom: 1.25rem;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 1.15rem;
 }
 
-/* Typewriter Heading with Bold Display Font */
+/* Heading with Display Font */
 .heading-wrapper {
-  min-height: 2.8rem;
+  min-height: 2.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,17 +282,16 @@ body {
 
 .greeting-title {
   font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: var(--text-primary);
   text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 .typewriter-cursor {
   color: var(--accent-red-bright);
-  font-weight: 900;
+  font-weight: 700;
   animation: cursor-blink 0.8s infinite;
 }
 
@@ -339,69 +301,55 @@ body {
 }
 
 /* ==========================================================================
-   Tactical Reticle Cat Frame & Outline
+   Cat Frame & Outline
    ========================================================================== */
 
 .illustration-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0.5rem 0 1.5rem;
+  margin: 0.5rem 0 1.25rem;
 }
 
 .cat-hud-frame {
   position: relative;
-  padding: 1.25rem 1.75rem 1.5rem;
-  border: 1px dashed rgba(239, 68, 68, 0.25);
-  background: rgba(0, 0, 0, 0.3);
+  padding: 1.25rem 1.75rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
 }
-
-.cat-hud-reticle {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
-}
-
-.cat-reticle-tl { top: -1px; left: -1px; border-top: 2px solid var(--accent-red); border-left: 2px solid var(--accent-red); }
-.cat-reticle-tr { top: -1px; right: -1px; border-top: 2px solid var(--accent-red); border-right: 2px solid var(--accent-red); }
-.cat-reticle-bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--accent-red); border-left: 2px solid var(--accent-red); }
-.cat-reticle-br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--accent-red); border-right: 2px solid var(--accent-red); }
 
 .cat-hud-label {
   position: absolute;
   bottom: 4px;
   right: 6px;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: rgba(239, 68, 68, 0.6);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
 }
 
 .cat-outline {
-  width: 145px;
-  height: 145px;
+  width: 135px;
+  height: 135px;
   overflow: visible;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
-  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.45)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.85));
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
 }
 
 .illustration-wrapper:hover .cat-outline {
-  transform: scale(1.06) rotate(1deg);
-  filter: drop-shadow(0 0 18px rgba(239, 68, 68, 0.7)) drop-shadow(0 6px 24px rgba(0, 0, 0, 0.95));
+  transform: scale(1.03);
 }
 
 .cat-stroke {
   stroke: var(--cat-color);
-  stroke-width: 2.75;
+  stroke-width: 2.5;
   stroke-linecap: square;
   stroke-linejoin: miter;
-  transition: stroke 0.3s ease;
 }
 
 .whisker {
-  stroke-width: 2;
-  opacity: 0.95;
+  stroke-width: 1.8;
+  opacity: 0.9;
 }
 
 .tail {
@@ -410,7 +358,7 @@ body {
 }
 
 .illustration-wrapper:hover .tail {
-  transform: rotate(4deg);
+  transform: rotate(3deg);
 }
 
 /* ==========================================================================
@@ -420,7 +368,7 @@ body {
 .workspace-access-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
   width: 100%;
 }
 
@@ -428,45 +376,45 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid rgba(239, 68, 68, 0.22);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 0.38rem 0.85rem;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.8rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 .workspace-access-btn .lock-icon {
-  opacity: 0.7;
-  color: var(--accent-red-bright);
-  transition: transform 0.2s ease;
+  opacity: 0.6;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
 }
 
 .workspace-access-btn:hover {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #ffffff;
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
-  transform: translateY(-1px);
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--text-primary);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
 }
 
 .workspace-access-btn:hover .lock-icon {
   opacity: 1;
-  transform: scale(1.1);
+  color: var(--accent-red-bright);
 }
 
 .workspace-access-btn.authenticated {
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.05);
   color: #4ade80;
 }
 
 .workspace-access-btn.authenticated .lock-icon {
   color: #4ade80;
+  opacity: 1;
 }
 
 /* ==========================================================================
@@ -483,30 +431,30 @@ body {
 .email-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   color: var(--text-secondary);
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 0.65rem 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.25s ease;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 1.15rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
 }
 
 .email-icon {
-  opacity: 0.75;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, color 0.2s ease;
 }
 
 .email-link:hover,
 .email-link:focus-visible {
   color: #ffffff;
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.5);
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.15);
   transform: translateY(-1px);
   outline: none;
 }
@@ -517,7 +465,7 @@ body {
 }
 
 /* ==========================================================================
-   Collapsible Side Tabs (Left & Right - Angular Batman HUD)
+   Collapsible Side Tabs (Left & Right)
    ========================================================================== */
 
 .drawer-trigger-tab {
@@ -527,74 +475,74 @@ body {
   z-index: 80;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.85rem 1.15rem;
-  background: rgba(14, 15, 20, 0.95);
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(14, 15, 20, 0.96);
   border: 1px solid var(--panel-border);
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   cursor: pointer;
   text-transform: uppercase;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tab-tag {
   color: var(--text-muted);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
 }
 
 /* Right Tab (Access Log) */
 .right-tab {
   right: 0;
   border-right: none;
-  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(239, 68, 68, 0.2);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5);
 }
 
 .right-tab:hover {
   background: rgba(20, 22, 30, 0.98);
   border-color: var(--accent-red-bright);
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(239, 68, 68, 0.4);
-  transform: translateY(-50%) translateX(-4px);
+  color: #ffffff;
+  box-shadow: -6px 0 20px rgba(0, 0, 0, 0.7), 0 0 12px rgba(239, 68, 68, 0.2);
+  transform: translateY(-50%) translateX(-3px);
 }
 
 /* Left Tab (Journal) */
 .left-tab {
   left: 0;
   border-left: none;
-  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(239, 68, 68, 0.2);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);
 }
 
 .left-tab:hover {
   background: rgba(20, 22, 30, 0.98);
   border-color: var(--accent-red-bright);
-  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(239, 68, 68, 0.4);
-  transform: translateY(-50%) translateX(4px);
+  color: #ffffff;
+  box-shadow: 6px 0 20px rgba(0, 0, 0, 0.7), 0 0 12px rgba(239, 68, 68, 0.2);
+  transform: translateY(-50%) translateX(3px);
 }
 
 .tab-pulse-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background-color: var(--accent-red);
-  box-shadow: 0 0 8px var(--accent-red);
   animation: pulse-dot 1.8s infinite ease-in-out;
 }
 
 .tab-text {
-  color: var(--text-primary);
+  color: inherit;
 }
 
 .tab-count-badge {
-  padding: 0.15rem 0.45rem;
-  background: rgba(239, 68, 68, 0.18);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 0.12rem 0.4rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: var(--accent-red-bright);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-family: var(--font-mono);
 }
 
@@ -602,13 +550,13 @@ body {
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 5, 7, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(4, 5, 8, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
   z-index: 90;
 }
 
@@ -629,46 +577,46 @@ body.logbook-open .drawer-backdrop {
   bottom: 0;
   width: 480px;
   max-width: 92vw;
-  background: rgba(11, 12, 16, 0.97);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(11, 12, 16, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 100;
   display: flex;
   flex-direction: column;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
 
 /* Left Drawer */
 .left-drawer {
   left: 0;
   border-right: 1px solid var(--panel-border);
-  box-shadow: 25px 0 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(239, 68, 68, 0.15);
+  box-shadow: 16px 0 40px rgba(0, 0, 0, 0.8);
   transform: translateX(-100%);
 }
 
 body.journal-open .left-drawer {
   transform: translateX(0);
-  border-right-color: var(--panel-border-hover);
+  border-right-color: var(--panel-border-accent);
 }
 
 /* Right Drawer */
 .right-drawer {
   right: 0;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -25px 0 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(239, 68, 68, 0.15);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.8);
   transform: translateX(100%);
 }
 
 body.logbook-open .right-drawer {
   transform: translateX(0);
-  border-left-color: var(--panel-border-hover);
+  border-left-color: var(--panel-border-accent);
 }
 
 .drawer-inner {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 2rem 1.75rem;
+  padding: 1.75rem 1.5rem;
   overflow-y: auto;
 }
 
@@ -677,29 +625,29 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0.85rem;
 }
 
 .terminal-title-group {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .terminal-prompt {
   font-family: var(--font-mono);
   color: var(--accent-red-bright);
-  font-weight: 800;
-  font-size: 1.2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .terminal-title {
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--text-primary);
   text-transform: uppercase;
 }
@@ -707,27 +655,27 @@ body.logbook-open .right-drawer {
 .drawer-header-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .log-count-badge {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 0.25rem 0.65rem;
-  background: rgba(239, 68, 68, 0.1);
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--accent-red-bright);
-  border: 1px solid rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   text-transform: uppercase;
 }
 
 .drawer-close-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -737,9 +685,8 @@ body.logbook-open .right-drawer {
 
 .drawer-close-btn:hover {
   color: #ffffff;
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.5);
-  transform: scale(1.05);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .drawer-content {
@@ -749,31 +696,31 @@ body.logbook-open .right-drawer {
 }
 
 /* ==========================================================================
-   Personal Journal Section (Batman HUD Styling)
+   Personal Journal Section
    ========================================================================== */
 
 .journal-controls {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: flex-start;
 }
 
 .small-btn {
-  padding: 0.6rem 1.1rem;
-  font-size: 0.78rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.74rem;
 }
 
 .btn-icon {
-  font-weight: 800;
+  font-weight: 700;
   margin-right: 0.25rem;
 }
 
 /* Journal Composer */
 .journal-composer {
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.15);
-  animation: fadeIn 0.25s ease-in-out;
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+  background: rgba(16, 18, 24, 0.85);
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .journal-composer.hidden {
@@ -781,50 +728,50 @@ body.logbook-open .right-drawer {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .composer-header {
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.75rem;
 }
 
 .composer-mode-title {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--accent-red-bright);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .sci-fi-textarea {
-  min-height: 110px;
+  min-height: 100px;
   resize: vertical;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .composer-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.6rem;
-  margin-top: 0.85rem;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
 }
 
 .secondary-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   box-shadow: none;
 }
 
 .journal-feed-container {
-  padding: 1.25rem;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -833,70 +780,69 @@ body.logbook-open .right-drawer {
 .journal-entries-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
   overflow-y: auto;
   max-height: calc(100vh - 280px);
-  padding-right: 0.35rem;
+  padding-right: 0.25rem;
 }
 
 .journal-card {
-  padding: 1.25rem;
-  border-left: 3px solid var(--accent-red);
-  transition: all 0.25s ease;
+  padding: 1.15rem;
+  border-left: 2px solid var(--accent-red);
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
 }
 
 .journal-card:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(239, 68, 68, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.035);
+  border-left-color: var(--accent-red-bright);
 }
 
 .journal-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.55rem;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
 }
 
 .journal-tag {
   color: var(--accent-red-bright);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 
 .journal-date {
   color: var(--text-muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
 }
 
 .journal-title {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
 }
 
 .journal-body {
   font-family: var(--font-sans);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.65;
+  line-height: 1.6;
   white-space: pre-line;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
 }
 
 .journal-card-footer {
-  margin-top: 1.1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 0.9rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -905,95 +851,92 @@ body.logbook-open .right-drawer {
 .journal-status-indicator {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--accent-red-bright);
+  font-size: 0.65rem;
+  color: var(--text-muted);
 }
 
 .mini-status-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background-color: var(--accent-red);
-  box-shadow: 0 0 6px var(--accent-red);
 }
 
 .journal-item-actions {
   display: flex;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .journal-action-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  padding: 0.25rem 0.55rem;
+  padding: 0.2rem 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .journal-action-btn:hover {
-  background: rgba(239, 68, 68, 0.18);
-  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
 }
 
 .journal-action-btn.delete:hover {
-  background: rgba(220, 38, 38, 0.3);
-  border-color: rgba(220, 38, 38, 0.6);
+  background: rgba(220, 38, 38, 0.25);
+  border-color: rgba(220, 38, 38, 0.5);
   color: #fca5a5;
 }
 
 /* ==========================================================================
-   Access Log Section (Reframed)
+   Access Log Section
    ========================================================================== */
 
 .logbook-form {
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+  background: rgba(16, 18, 24, 0.85);
 }
 
 .form-header-label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--accent-red-bright);
-  letter-spacing: 0.08em;
-  margin-bottom: 0.85rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
 }
 
 .input-container {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 
 .sci-fi-input {
   width: 100%;
-  background: rgba(7, 8, 11, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 0.85rem 1rem;
+  background: rgba(8, 9, 13, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 0.9rem;
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .sci-fi-input::placeholder {
   color: var(--text-muted);
-  font-size: 0.76rem;
-  letter-spacing: 0.06em;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
 }
 
 .sci-fi-input:focus {
   border-color: var(--accent-red-bright);
-  box-shadow: 0 0 0 1px var(--accent-red-bright),
-              0 0 18px rgba(239, 68, 68, 0.3);
   background: rgba(12, 13, 18, 0.98);
 }
 
@@ -1001,15 +944,15 @@ body.logbook-open .right-drawer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   background: var(--accent-red-dim);
-  border: 1px solid rgba(239, 68, 68, 0.45);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   color: var(--accent-red-bright);
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.85rem 1.25rem;
+  letter-spacing: 0.06em;
+  padding: 0.75rem 1.15rem;
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.2s ease;
@@ -1019,7 +962,7 @@ body.logbook-open .right-drawer {
   background: var(--accent-red);
   color: #ffffff;
   border-color: var(--accent-red-bright);
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
   transform: translateY(-1px);
 }
 
@@ -1028,7 +971,7 @@ body.logbook-open .right-drawer {
 }
 
 .sci-fi-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -1042,11 +985,10 @@ body.logbook-open .right-drawer {
 
 .form-feedback {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  margin-top: 0.6rem;
-  min-height: 1.1rem;
-  transition: all 0.2s ease;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  margin-top: 0.5rem;
+  min-height: 1rem;
 }
 
 .form-feedback.success {
@@ -1059,20 +1001,20 @@ body.logbook-open .right-drawer {
 
 /* Access Log Feed */
 .log-feed-container {
-  padding: 1.25rem;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 220px;
+  min-height: 200px;
 }
 
 .log-feed-label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--accent-red-bright);
-  margin-bottom: 0.9rem;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
   text-transform: uppercase;
 }
 
@@ -1080,10 +1022,10 @@ body.logbook-open .right-drawer {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.55rem;
   overflow-y: auto;
   max-height: calc(100vh - 380px);
-  padding-right: 0.35rem;
+  padding-right: 0.25rem;
 }
 
 /* Scrollbars */
@@ -1105,7 +1047,7 @@ body.logbook-open .right-drawer {
 .journal-entries-list::-webkit-scrollbar-thumb,
 .drawer-inner::-webkit-scrollbar-thumb,
 .workspace-modal-content::-webkit-scrollbar-thumb {
-  background: rgba(239, 68, 68, 0.35);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .logbook-list::-webkit-scrollbar-thumb:hover,
@@ -1117,42 +1059,39 @@ body.logbook-open .right-drawer {
 
 /* Single Log Entry Item */
 .log-entry-item {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 3px solid var(--accent-red);
-  padding: 0.75rem 0.95rem;
-  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid var(--accent-red);
+  padding: 0.65rem 0.85rem;
+  transition: background 0.15s ease;
 }
 
 .log-entry-item:hover {
-  background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(239, 68, 68, 0.35);
-  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .log-entry-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
 }
 
 .entry-index {
   color: var(--accent-red-bright);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .entry-timestamp {
   color: var(--text-muted);
-  letter-spacing: 0.04em;
 }
 
 .entry-name {
   font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 0.92rem;
+  font-weight: 500;
+  font-size: 0.88rem;
   color: var(--text-primary);
   word-break: break-word;
 }
@@ -1162,26 +1101,25 @@ body.logbook-open .right-drawer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 2rem 0.5rem;
+  gap: 0.55rem;
+  padding: 1.75rem 0.5rem;
   text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .pulse-indicator {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--accent-red);
-  box-shadow: 0 0 10px var(--accent-red);
   animation: pulse-dot 1.5s infinite ease-in-out;
 }
 
 /* ==========================================================================
-   Tactical Modals (Authentication Gateway & Private Workspace)
+   Modals (Authentication Gateway & Private Workspace)
    ========================================================================== */
 
 .hud-modal {
@@ -1194,7 +1132,7 @@ body.logbook-open .right-drawer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
   padding: 1.5rem;
 }
 
@@ -1207,21 +1145,22 @@ body.logbook-open .right-drawer {
 .hud-modal-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(4, 5, 8, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(4, 5, 8, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .hud-modal-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 480px;
-  padding: 2.25rem 2rem;
-  background: rgba(14, 15, 22, 0.97);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(239, 68, 68, 0.25);
-  transform: translateY(12px) scale(0.98);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 460px;
+  padding: 2rem 1.75rem;
+  background: rgba(13, 14, 20, 0.98);
+  border: 1px solid var(--panel-border-accent);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  transform: translateY(8px) scale(0.99);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hud-modal.open .hud-modal-content {
@@ -1232,45 +1171,45 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.75rem;
 }
 
 .modal-tag {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   display: inline-block;
 }
 
 .auth-form {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .auth-label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--accent-red-bright);
-  letter-spacing: 0.08em;
-  margin-top: 0.35rem;
+  letter-spacing: 0.06em;
+  margin-top: 0.3rem;
 }
 
 .auth-btn {
-  margin-top: 0.75rem;
-  padding: 0.9rem 1.25rem;
+  margin-top: 0.65rem;
+  padding: 0.8rem 1.15rem;
 }
 
 .auth-footer-note {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: var(--text-muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 0.85rem;
+  padding-top: 0.75rem;
 }
 
 /* Private Workspace Modal Dashboard */
 .workspace-modal-content {
-  max-width: 680px;
+  max-width: 660px;
   max-height: 88vh;
   overflow-y: auto;
 }
@@ -1278,20 +1217,20 @@ body.logbook-open .right-drawer {
 .workspace-header-actions {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 
 .admin-badge {
-  background: rgba(74, 222, 128, 0.12);
-  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
   color: #4ade80;
 }
 
 .logout-btn {
-  padding: 0.4rem 0.85rem;
-  font-size: 0.72rem;
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.68rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .logout-btn:hover {
@@ -1303,12 +1242,12 @@ body.logbook-open .right-drawer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.55rem 0.85rem;
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  margin-bottom: 1.5rem;
+  padding: 0.45rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
 }
 
 .user-strip-tag {
@@ -1323,34 +1262,34 @@ body.logbook-open .right-drawer {
 .workspace-dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .workspace-card {
-  padding: 1.25rem;
-  border-left: 3px solid var(--accent-red);
+  padding: 1.1rem;
+  border-left: 2px solid var(--accent-red);
 }
 
 .workspace-card-header {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--accent-red-bright);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
 }
 
 .workspace-card-body {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  line-height: 1.6;
+  font-size: 0.75rem;
+  line-height: 1.55;
 }
 
 .telemetry-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.35rem 0;
+  padding: 0.3rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -1368,50 +1307,48 @@ body.logbook-open .right-drawer {
 
 .text-glow {
   color: var(--accent-red-bright) !important;
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
 .vault-placeholder-text {
   font-family: var(--font-sans);
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
 }
 
 .vault-placeholder-text code {
   font-family: var(--font-mono);
   color: var(--accent-red-bright);
-  background: rgba(239, 68, 68, 0.1);
-  padding: 0.1rem 0.35rem;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  padding: 0.1rem 0.3rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .vault-status-indicator {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
+  gap: 0.45rem;
+  font-size: 0.68rem;
   font-family: var(--font-mono);
   color: #4ade80;
 }
 
 .vault-status-indicator .pulse-indicator {
   background: #4ade80;
-  box-shadow: 0 0 10px #4ade80;
 }
 
 /* ==========================================================================
-   Tactical Tasks & Objectives Management System (Batman HUD)
+   Tactical Tasks & Objectives Management System
    ========================================================================== */
 
 .workspace-tasks-section {
-  margin-top: 2rem;
-  padding-top: 1.75rem;
-  border-top: 1px solid rgba(239, 68, 68, 0.2);
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .tasks-section-header {
@@ -1422,19 +1359,20 @@ body.logbook-open .right-drawer {
 
 /* Task Composer */
 .task-composer-card {
-  padding: 1.25rem;
+  padding: 1.15rem;
+  background: rgba(16, 18, 24, 0.85);
 }
 
 .task-form-row {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
+  gap: 0.65rem;
+  margin-top: 0.2rem;
 }
 
 .task-field-group {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   flex: 1;
 }
 
@@ -1444,10 +1382,10 @@ body.logbook-open .right-drawer {
 
 .task-field-label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--accent-red-bright);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -1458,40 +1396,38 @@ body.logbook-open .right-drawer {
 .task-form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.5rem;
+  margin-top: 0.45rem;
 }
 
 /* Tasks Feed Container & Lists */
 .tasks-feed-container {
-  padding: 1.25rem;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
-  min-height: 180px;
+  min-height: 160px;
 }
 
 .tasks-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 
 /* Individual Task Item Card */
 .task-item {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 3px solid var(--accent-red);
-  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid var(--accent-red);
+  padding: 0.75rem 0.9rem;
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
-  transition: all 0.2s ease;
+  gap: 0.75rem;
+  transition: background 0.15s ease;
 }
 
 .task-item:hover {
-  background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(239, 68, 68, 0.35);
-  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .task-checkbox-container {
@@ -1501,19 +1437,18 @@ body.logbook-open .right-drawer {
 .task-hud-checkbox {
   appearance: none;
   -webkit-appearance: none;
-  width: 17px;
-  height: 17px;
+  width: 15px;
+  height: 15px;
   background: rgba(7, 8, 11, 0.9);
-  border: 1px solid rgba(239, 68, 68, 0.5);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   cursor: pointer;
   display: grid;
   place-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .task-hud-checkbox:hover {
   border-color: var(--accent-red-bright);
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
 }
 
 .task-hud-checkbox:checked {
@@ -1523,8 +1458,8 @@ body.logbook-open .right-drawer {
 
 .task-hud-checkbox:checked::before {
   content: "✓";
-  font-size: 0.75rem;
-  font-weight: 900;
+  font-size: 0.7rem;
+  font-weight: 800;
   color: #ffffff;
 }
 
@@ -1532,13 +1467,13 @@ body.logbook-open .right-drawer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .task-title {
   font-family: var(--font-sans);
-  font-size: 0.92rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 500;
   color: var(--text-primary);
   line-height: 1.4;
   word-break: break-word;
@@ -1548,45 +1483,44 @@ body.logbook-open .right-drawer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
 }
 
 .task-due-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.15rem 0.45rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  gap: 0.3rem;
+  padding: 0.12rem 0.4rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: var(--accent-red-bright);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .task-due-badge.overdue {
-  background: rgba(220, 38, 38, 0.25);
-  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
   color: #fca5a5;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
 }
 
 .task-due-badge.no-due {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
   color: var(--text-muted);
 }
 
 .task-notes {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--text-secondary);
-  background: rgba(0, 0, 0, 0.25);
-  border-left: 2px solid rgba(255, 255, 255, 0.12);
-  padding: 0.35rem 0.65rem;
-  margin-top: 0.2rem;
-  line-height: 1.45;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.55rem;
+  margin-top: 0.15rem;
+  line-height: 1.4;
   word-break: break-word;
 }
 
@@ -1597,41 +1531,41 @@ body.logbook-open .right-drawer {
 
 .task-delete-btn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  padding: 0.3rem 0.55rem;
+  font-size: 0.64rem;
+  padding: 0.25rem 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .task-delete-btn:hover {
-  background: rgba(220, 38, 38, 0.3);
-  border-color: rgba(220, 38, 38, 0.6);
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(220, 38, 38, 0.4);
   color: #fca5a5;
 }
 
 /* Completed Tasks Collapsible Details */
 .completed-tasks-wrapper {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .completed-tasks-details {
-  background: rgba(9, 10, 14, 0.65);
+  background: rgba(9, 10, 14, 0.5);
 }
 
 .completed-tasks-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9rem 1.25rem;
+  padding: 0.8rem 1.15rem;
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   user-select: none;
   list-style: none;
 }
@@ -1643,13 +1577,13 @@ body.logbook-open .right-drawer {
 .summary-left {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
 .summary-icon {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--accent-red-bright);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .completed-tasks-details[open] .summary-icon {
@@ -1657,22 +1591,22 @@ body.logbook-open .right-drawer {
 }
 
 .completed-badge {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
   color: var(--text-muted);
 }
 
 .completed-tasks-body {
-  padding: 0.5rem 1.25rem 1.25rem;
+  padding: 0.4rem 1.15rem 1.15rem;
 }
 
 .completed-list .task-item {
-  border-left: 3px solid var(--text-muted);
-  opacity: 0.7;
+  border-left: 2px solid var(--text-muted);
+  opacity: 0.65;
 }
 
 .completed-list .task-item:hover {
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
 .completed-list .task-title {
@@ -1699,17 +1633,17 @@ body.logbook-open .right-drawer {
   }
 
   .greeting-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
   }
 
   .cat-outline {
-    width: 125px;
-    height: 125px;
+    width: 120px;
+    height: 120px;
   }
 
   .drawer-trigger-tab {
-    padding: 0.7rem 0.8rem;
-    font-size: 0.72rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.7rem;
   }
 
   .side-drawer {
@@ -1718,7 +1652,7 @@ body.logbook-open .right-drawer {
   }
 
   .drawer-inner {
-    padding: 1.5rem 1.25rem;
+    padding: 1.5rem 1.15rem;
   }
 
   .workspace-dashboard-grid {
@@ -1726,6 +1660,6 @@ body.logbook-open .right-drawer {
   }
 
   .hud-modal-content {
-    padding: 1.75rem 1.25rem;
+    padding: 1.5rem 1.15rem;
   }
 }

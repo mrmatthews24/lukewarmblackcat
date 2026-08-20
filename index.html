@@ -21,7 +21,7 @@
        ========================================================================== -->
   <div id="public-view" class="view-wrapper">
     <!-- Screen Corner Telemetry Readouts -->
-    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.7</span><br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.8</span><br>COORD: 41.92556°N 111.47333°W</div>
     <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
       <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
@@ -35,11 +35,11 @@
       <div class="sonni-database-label" aria-hidden="true">CHRONO: SYS_SYNC<br>SONNI DATABASE // NODE-7</div>
     </div>
 
-    <!-- Left Side Tab (Personal Journal / Notes) -->
-    <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Tactical Journal">
+    <!-- Left Side Tab (Personal Logs) -->
+    <button id="journal-toggle-btn" class="drawer-trigger-tab left-tab" aria-expanded="false" aria-controls="journal-drawer" title="Toggle Personal Logs">
       <span class="tab-pulse-dot"></span>
       <span class="tab-tag">[CHRONO]</span>
-      <span class="tab-text">JOURNAL</span>
+      <span class="tab-text">PERSONAL LOGS</span>
       <span class="tab-count-badge" id="journal-tab-badge">01</span>
     </button>
 
@@ -127,17 +127,17 @@
     <!-- Shared Backdrop Overlay -->
     <div id="drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
 
-    <!-- Left Drawer: Personal Journal / Notes -->
-    <aside id="journal-drawer" class="side-drawer left-drawer" role="dialog" aria-modal="true" aria-label="Personal Journal Drawer" aria-hidden="true">
+    <!-- Left Drawer: Personal Logs -->
+    <aside id="journal-drawer" class="side-drawer left-drawer" role="dialog" aria-modal="true" aria-label="Personal Logs Drawer" aria-hidden="true">
       <div class="drawer-inner">
         <div class="drawer-header">
           <div class="terminal-title-group">
             <span class="terminal-prompt">&gt;</span>
-            <h2 class="terminal-title" data-typewriter="PERSONAL JOURNAL">PERSONAL JOURNAL</h2>
+            <h2 class="terminal-title" data-typewriter="PERSONAL LOGS">PERSONAL LOGS</h2>
           </div>
           <div class="drawer-header-actions">
             <span class="log-count-badge" id="journal-count-badge">01 ENTRY</span>
-            <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Journal Drawer">
+            <button id="journal-close-btn" class="drawer-close-btn" aria-label="Close Personal Logs Drawer">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -379,7 +379,7 @@
       <div class="nav-brand-group">
         <span class="terminal-prompt">&gt;</span>
         <div class="nav-title-column">
-          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.7</span></h1>
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.8</span></h1>
           <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
@@ -432,7 +432,7 @@
       <!-- Multi-Column Operational Panels Grid -->
       <div class="workspace-panels-grid">
         
-        <!-- PANEL 1: Unified Tactical Objectives & Goals Panel (Collapsible) -->
+        <!-- PANEL 1: Tasks (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="tasks-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -442,7 +442,7 @@
           <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">TACTICAL OBJECTIVES // TASKS</h2>
+              <h2 class="terminal-title">TASKS</h2>
               <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <span class="log-count-badge" id="open-tasks-count-badge">0 PENDING</span>
@@ -543,7 +543,7 @@
           </div>
         </section>
 
-        <!-- PANEL 2: Fitness & Conditioning Panel (Collapsible) -->
+        <!-- PANEL 2: Fitness Tracker (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="fitness-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -553,7 +553,7 @@
           <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">TACTICAL FITNESS // READINESS</h2>
+              <h2 class="terminal-title">FITNESS TRACKER</h2>
               <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <span class="log-count-badge" id="fitness-count-badge">0 LOGS</span>
@@ -622,7 +622,7 @@
           </div>
         </section>
 
-        <!-- PANEL 3: What Changed? / Git Deployment History Panel (Collapsible) -->
+        <!-- PANEL 3: Change Log (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="changelog-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -632,7 +632,7 @@
           <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">WHAT CHANGED? // CHANGELOG</h2>
+              <h2 class="terminal-title">CHANGE LOG</h2>
               <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <button type="button" id="refresh-changelog-btn" class="sci-fi-btn small-btn" title="Refresh Git deployment log">
@@ -654,7 +654,7 @@
           </div>
         </section>
 
-        <!-- PANEL 4: Workspace Notes & Journal Panel (Collapsible) -->
+        <!-- PANEL 4: Personal Logs (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="journal-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -664,7 +664,7 @@
           <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">PERSONAL LOGS // JOURNAL</h2>
+              <h2 class="terminal-title">PERSONAL LOGS</h2>
               <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <button type="button" id="ws-toggle-composer-btn" class="sci-fi-btn small-btn">

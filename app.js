@@ -27,7 +27,7 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.5", // Automatically updates HUD corner readouts and workspace header
+  version: "v1.6", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"
@@ -116,6 +116,7 @@ const auth = getAuth(app);
 const logbookRef = collection(db, "logbook");
 const tasksRef = collection(db, "tasks");
 const goalsRef = collection(db, "goals");
+const fitnessRef = collection(db, "fitness_entries");
 const visitorStatsDoc = doc(db, "stats", "visitorCount");
 
 // ==========================================================================
@@ -201,6 +202,17 @@ const openGoalsCountBadge = document.getElementById("open-goals-count-badge");
 const completedGoalsCountBadge = document.getElementById("completed-goals-count-badge");
 const completedGoalsList = document.getElementById("completed-goals-list");
 
+// Fitness Elements
+const fitnessForm = document.getElementById("fitness-form");
+const fitnessActivityInput = document.getElementById("fitness-activity-input");
+const fitnessMetricInput = document.getElementById("fitness-metric-input");
+const fitnessNotesInput = document.getElementById("fitness-notes-input");
+const fitnessSubmitBtn = document.getElementById("fitness-submit-btn");
+const fitnessSubmitText = document.getElementById("fitness-submit-text");
+const fitnessFormFeedback = document.getElementById("fitness-form-feedback");
+const fitnessCountBadge = document.getElementById("fitness-count-badge");
+const fitnessEntriesList = document.getElementById("fitness-entries-list");
+
 // Workspace In-Page Journal Elements
 const wsToggleComposerBtn = document.getElementById("ws-toggle-composer-btn");
 const wsComposerBtnText = document.getElementById("ws-composer-btn-text");
@@ -230,6 +242,26 @@ const changelogBtnText = document.getElementById("changelog-btn-text");
 // Shared Backdrop & Typewriter Target
 const drawerBackdrop = document.getElementById("drawer-backdrop");
 const typewriterTarget = document.getElementById("typewriter-target");
+
+// ==========================================================================
+// Collapsible Workspace Panels (Tasks, Goals, Fitness, Changelog, Journal)
+// ==========================================================================
+function initCollapsiblePanels() {
+  document.querySelectorAll(".collapsible-panel .panel-toggle-trigger").forEach((header) => {
+    header.addEventListener("click", (e) => {
+      // Ignore clicks on action buttons, inputs, links, or dropdowns inside header
+      if (e.target.closest("button, input, select, textarea, a, .drawer-close-btn")) {
+        return;
+      }
+      const panel = header.closest(".collapsible-panel");
+      if (panel) {
+        panel.classList.toggle("collapsed");
+        const isExpanded = !panel.classList.contains("collapsed");
+        header.setAttribute("aria-expanded", String(isExpanded));
+      }
+    });
+  });
+}
 
 // ==========================================================================
 // View Routing & Navigation (Public View vs Dedicated Workspace View)
@@ -522,6 +554,7 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
     subscribeToTasks(user.uid);
     subscribeToGoals(user.uid);
+    subscribeToFitness(user.uid);
     if (window.location.hash === "#workspace") {
       showWorkspaceView();
     }
@@ -531,6 +564,7 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
     unsubscribeFromTasks();
     unsubscribeFromGoals();
+    unsubscribeFromFitness();
     showPublicView();
   }
 });
@@ -895,7 +929,7 @@ function renderTasks(tasks) {
   }
 
   // Attach Checkbox Toggle Handlers
-  document.querySelectorAll(".task-hud-checkbox").forEach((checkbox) => {
+  document.querySelectorAll(".task-hud-checkbox:not(.goal-hud-checkbox)").forEach((checkbox) => {
     checkbox.addEventListener("change", async (e) => {
       const taskId = e.target.getAttribute("data-id");
       const isChecked = e.target.checked;
@@ -911,7 +945,7 @@ function renderTasks(tasks) {
   });
 
   // Attach Delete Handlers
-  document.querySelectorAll(".task-delete-btn").forEach((btn) => {
+  document.querySelectorAll(".task-delete-btn:not(.goal-delete-btn):not(.fitness-delete-btn)").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const taskId = btn.getAttribute("data-id");
       if (!confirm("CONFIRM DELETION: Purge this objective directive from the database?")) {
@@ -1236,6 +1270,132 @@ function clearGoalFeedback() {
     goalFormFeedback.textContent = "";
     goalFormFeedback.className = "form-feedback";
   }
+}
+
+// ==========================================================================
+// Tactical Fitness & Conditioning Management (Private Workspace)
+// ==========================================================================
+let unsubscribeFitness = null;
+
+function subscribeToFitness(userId) {
+  if (unsubscribeFitness) unsubscribeFitness();
+
+  const q = query(fitnessRef, where("userId", "==", userId));
+  
+  unsubscribeFitness = onSnapshot(q, (snapshot) => {
+    const entries = [];
+    snapshot.forEach((docSnap) => {
+      entries.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    renderFitness(entries);
+  }, (error) => {
+    console.error("Fitness subscription error:", error);
+  });
+}
+
+function unsubscribeFromFitness() {
+  if (unsubscribeFitness) {
+    unsubscribeFitness();
+    unsubscribeFitness = null;
+  }
+  renderFitness([]);
+}
+
+function renderFitness(entries) {
+  entries.sort((a, b) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA;
+  });
+
+  if (fitnessCountBadge) fitnessCountBadge.textContent = `${entries.length} LOGS`;
+
+  if (fitnessEntriesList) {
+    if (entries.length === 0) {
+      fitnessEntriesList.innerHTML = `
+        <div class="empty-log-state">
+          <span class="pulse-indicator"></span>
+          <p>NO FITNESS TELEMETRY RECORDED</p>
+        </div>
+      `;
+    } else {
+      fitnessEntriesList.innerHTML = entries.map(item => {
+        const act = escapeHTML(item.activity);
+        const metric = item.metric ? `<span class="task-due-badge">// [METRIC: ${escapeHTML(item.metric)}]</span>` : '';
+        const notes = item.notes ? `<div class="task-notes">${escapeHTML(item.notes)}</div>` : '';
+
+        return `
+          <li class="task-item" data-id="${item.id}">
+            <div class="task-content" style="padding-left: 0.25rem;">
+              <div class="task-title">${act}</div>
+              <div class="task-meta-row">
+                ${metric}
+              </div>
+              ${notes}
+            </div>
+            <div class="task-actions">
+              <button type="button" class="task-delete-btn fitness-delete-btn" data-id="${item.id}" title="Permanently purge workout log">
+                PURGE [✕]
+              </button>
+            </div>
+          </li>
+        `;
+      }).join("");
+    }
+  }
+
+  // Delete listeners
+  document.querySelectorAll(".fitness-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-id");
+      if (!confirm("CONFIRM DELETION: Purge this fitness log from the database?")) return;
+      try {
+        await deleteDoc(doc(db, "fitness_entries", id));
+      } catch (err) {
+        console.error("Error deleting fitness entry:", err);
+      }
+    });
+  });
+}
+
+if (fitnessForm) {
+  fitnessForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+
+    const activity = fitnessActivityInput.value.trim();
+    const metric = fitnessMetricInput.value.trim() || null;
+    const notes = fitnessNotesInput.value.trim() || null;
+
+    if (!activity) return;
+
+    fitnessSubmitBtn.disabled = true;
+    fitnessSubmitText.textContent = "RECORDING...";
+
+    try {
+      await addDoc(fitnessRef, {
+        activity,
+        metric,
+        notes,
+        createdAt: serverTimestamp(),
+        userId: auth.currentUser.uid
+      });
+
+      fitnessActivityInput.value = "";
+      fitnessMetricInput.value = "";
+      fitnessNotesInput.value = "";
+      fitnessSubmitText.textContent = "LOGGED ✓";
+
+      setTimeout(() => {
+        fitnessSubmitText.textContent = "+ LOG READINESS";
+        fitnessSubmitBtn.disabled = false;
+      }, 1200);
+    } catch (err) {
+      console.error("Error creating fitness entry:", err);
+      fitnessSubmitBtn.disabled = false;
+      fitnessSubmitText.textContent = "+ LOG READINESS";
+    }
+  });
 }
 
 // ==========================================================================
@@ -1631,3 +1791,4 @@ function clearFeedback() {
 renderJournal();
 subscribeToLogbook();
 initPerimeterVisitorCounter();
+initCollapsiblePanels();

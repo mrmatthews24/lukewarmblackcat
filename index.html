@@ -21,7 +21,7 @@
        ========================================================================== -->
   <div id="public-view" class="view-wrapper">
     <!-- Screen Corner Telemetry Readouts -->
-    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.5</span><br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.6</span><br>COORD: 41.92556°N 111.47333°W</div>
     <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
       <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
@@ -77,7 +77,6 @@
           <span class="cat-hud-label">[SCAN: FELIS_NOIR]</span>
 
           <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
-            <!-- Black Cat outline: contour lines -->
             <!-- Head & Ears -->
             <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
             
@@ -161,7 +160,6 @@
         <div class="drawer-hud-status">[JOURNAL_ARCHIVE: ONLINE // WRITE_AUTH: OK]</div>
 
         <div class="drawer-content">
-          <!-- Journal Action Bar -->
           <div class="journal-controls">
             <button type="button" id="toggle-composer-btn" class="sci-fi-btn small-btn">
               <span class="btn-icon">+</span>
@@ -169,7 +167,6 @@
             </button>
           </div>
 
-          <!-- Journal Composer Form (Collapsible) -->
           <div id="journal-composer" class="journal-composer hud-card hidden">
             <form id="journal-form" class="journal-form">
               <input type="hidden" id="journal-edit-id" value="">
@@ -256,7 +253,6 @@
             <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
           </form>
 
-          <!-- Access Entries Feed -->
           <div class="log-feed-container hud-card">
             <div class="log-feed-label">[AUTHENTICATED ACCESS ARCHIVE]</div>
             <ul id="logbook-list" class="logbook-list">
@@ -354,19 +350,14 @@
         <div class="cat-hud-frame hw-car-frame">
           <span class="cat-hud-label">[SCAN: VEHICLE_SPEC]</span>
           <svg class="car-outline" viewBox="0 0 200 90" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a sports car">
-            <!-- Roof & Greenhouse -->
             <path class="car-stroke" d="M52 42 L80 22 H136 L164 42" />
             <path class="car-stroke window-pillar" d="M112 23 L112 42" />
-            <!-- Beltline & Silhouette -->
             <path class="car-stroke" d="M14 50 L28 44 L52 42 L164 42 L188 47 L194 54 L192 63 H166 C164 54 156 48 146 48 C136 48 128 54 126 63 H76 C74 54 66 48 56 48 C46 48 38 54 36 63 H10 L8 55 Z" />
-            <!-- Aero crease line -->
             <path class="car-stroke aero-line" d="M28 44 L60 44 L88 52 H132" />
-            <!-- Wheels & Hubs -->
             <circle class="car-wheel" cx="56" cy="63" r="12" />
             <circle class="car-wheel-hub" cx="56" cy="63" r="4" />
             <circle class="car-wheel" cx="146" cy="63" r="12" />
             <circle class="car-wheel-hub" cx="146" cy="63" r="4" />
-            <!-- Headlights & Taillights -->
             <path class="car-stroke headlight" d="M12 52 L22 49" />
             <path class="car-stroke taillight" d="M190 50 L194 54" />
           </svg>
@@ -400,7 +391,7 @@
       <div class="nav-brand-group">
         <span class="terminal-prompt">&gt;</span>
         <div class="nav-title-column">
-          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.5</span></h1>
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.6</span></h1>
           <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
@@ -453,305 +444,331 @@
       <!-- Multi-Column Operational Panels Grid -->
       <div class="workspace-panels-grid">
         
-        <!-- COLUMN 1: Tactical Objectives / Tasks Management -->
-        <section class="workspace-panel hud-card" id="tasks-dashboard-panel">
+        <!-- PANEL 1: Tactical Objectives / Tasks Management (Collapsible) -->
+        <section class="workspace-panel hud-card collapsible-panel" id="tasks-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
           <span class="reticle reticle-bl" aria-hidden="true"></span>
           <span class="reticle reticle-br" aria-hidden="true"></span>
 
-          <div class="panel-header">
+          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
               <h2 class="terminal-title">TACTICAL OBJECTIVES // TASKS</h2>
+              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <span class="log-count-badge" id="open-tasks-count-badge">0 PENDING</span>
           </div>
 
-          <!-- Task Composer Form -->
-          <div class="task-composer-box">
-            <form id="task-form" class="task-form">
-              <div class="form-header-label">// INITIALIZE NEW DIRECTIVE</div>
-              <div class="input-container">
-                <input 
-                  type="text" 
-                  id="task-title-input" 
-                  class="sci-fi-input" 
-                  placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
-                  maxlength="120" 
-                  required
-                >
+          <div class="panel-body-content">
+            <!-- Task Composer Form -->
+            <div class="task-composer-box">
+              <form id="task-form" class="task-form">
+                <div class="form-header-label">// INITIALIZE NEW DIRECTIVE</div>
+                <div class="input-container">
+                  <input 
+                    type="text" 
+                    id="task-title-input" 
+                    class="sci-fi-input" 
+                    placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
+                    maxlength="120" 
+                    required
+                  >
 
-                <div class="task-form-row">
-                  <div class="task-field-group">
-                    <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
-                    <input 
-                      type="date" 
-                      id="task-due-date-input" 
-                      class="sci-fi-input task-date-input"
-                    >
+                  <div class="task-form-row">
+                    <div class="task-field-group">
+                      <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
+                      <input 
+                        type="date" 
+                        id="task-due-date-input" 
+                        class="sci-fi-input task-date-input"
+                      >
+                    </div>
+
+                    <div class="task-field-group flex-2">
+                      <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL [OPTIONAL]</label>
+                      <input 
+                        type="text" 
+                        id="task-notes-input" 
+                        class="sci-fi-input" 
+                        placeholder="MISSION BRIEF / TACTICAL NOTES..." 
+                        maxlength="200"
+                      >
+                    </div>
                   </div>
 
-                  <div class="task-field-group flex-2">
-                    <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL [OPTIONAL]</label>
-                    <input 
-                      type="text" 
-                      id="task-notes-input" 
-                      class="sci-fi-input" 
-                      placeholder="MISSION BRIEF / TACTICAL NOTES..." 
-                      maxlength="200"
-                    >
+                  <div class="task-form-actions">
+                    <button type="submit" id="task-submit-btn" class="sci-fi-btn">
+                      <span id="task-submit-text">+ ASSIGN DIRECTIVE</span>
+                      <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </button>
                   </div>
                 </div>
+                <div id="task-form-feedback" class="form-feedback" aria-live="polite"></div>
+              </form>
+            </div>
 
-                <div class="task-form-actions">
-                  <button type="submit" id="task-submit-btn" class="sci-fi-btn">
-                    <span id="task-submit-text">+ ASSIGN DIRECTIVE</span>
-                    <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </button>
+            <!-- Active Tasks Stream -->
+            <div class="tasks-stream-wrapper">
+              <div class="log-feed-label">[ACTIVE DIRECTIVES // TIMELINE PRIORITY]</div>
+              <ul id="open-tasks-list" class="tasks-list">
+                <div class="empty-log-state">
+                  <span class="pulse-indicator"></span>
+                  <p>NO ACTIVE DIRECTIVES RECORDED</p>
                 </div>
-              </div>
-              <div id="task-form-feedback" class="form-feedback" aria-live="polite"></div>
-            </form>
-          </div>
+              </ul>
+            </div>
 
-          <!-- Active Tasks Stream -->
-          <div class="tasks-stream-wrapper">
-            <div class="log-feed-label">[ACTIVE DIRECTIVES // TIMELINE PRIORITY]</div>
-            <ul id="open-tasks-list" class="tasks-list">
-              <div class="empty-log-state">
-                <span class="pulse-indicator"></span>
-                <p>NO ACTIVE DIRECTIVES RECORDED</p>
-              </div>
-            </ul>
-          </div>
-
-          <!-- Completed Tasks Archive -->
-          <div class="completed-tasks-wrapper">
-            <details id="completed-tasks-details" class="completed-tasks-details hud-card">
-              <summary class="completed-tasks-summary">
-                <span class="summary-left">
-                  <span class="summary-icon">▼</span>
-                  <span>COMPLETED DIRECTIVES</span>
-                </span>
-                <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
-              </summary>
-              <div class="completed-tasks-body">
-                <ul id="completed-tasks-list" class="tasks-list completed-list">
-                  <!-- Rendered dynamically by app.js -->
-                </ul>
-              </div>
-            </details>
+            <!-- Completed Tasks Archive -->
+            <div class="completed-tasks-wrapper">
+              <details id="completed-tasks-details" class="completed-tasks-details hud-card">
+                <summary class="completed-tasks-summary">
+                  <span class="summary-left">
+                    <span class="summary-icon">▼</span>
+                    <span>COMPLETED DIRECTIVES</span>
+                  </span>
+                  <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
+                </summary>
+                <div class="completed-tasks-body">
+                  <ul id="completed-tasks-list" class="tasks-list completed-list">
+                    <!-- Rendered dynamically by app.js -->
+                  </ul>
+                </div>
+              </details>
+            </div>
           </div>
         </section>
 
-        <!-- COLUMN 2: Goals Panel (5 Timeframe Sections) -->
-        <section class="workspace-panel hud-card" id="goals-dashboard-panel">
+        <!-- PANEL 2: Goals Panel (5 Timeframe Sections - Collapsible) -->
+        <section class="workspace-panel hud-card collapsible-panel" id="goals-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
           <span class="reticle reticle-bl" aria-hidden="true"></span>
           <span class="reticle reticle-br" aria-hidden="true"></span>
 
-          <div class="panel-header">
+          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
               <h2 class="terminal-title">STRATEGIC GOALS // HORIZONS</h2>
+              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <span class="log-count-badge" id="open-goals-count-badge">0 ACTIVE</span>
           </div>
 
-          <!-- Goal Composer Form -->
-          <div class="task-composer-box">
-            <form id="goal-form" class="task-form">
-              <div class="form-header-label">// ESTABLISH STRATEGIC TARGET</div>
-              <div class="input-container">
-                <input 
-                  type="text" 
-                  id="goal-title-input" 
-                  class="sci-fi-input" 
-                  placeholder="GOAL / TARGET MILESTONE..." 
-                  maxlength="140" 
-                  required
-                >
+          <div class="panel-body-content">
+            <!-- Goal Composer Form -->
+            <div class="task-composer-box">
+              <form id="goal-form" class="task-form">
+                <div class="form-header-label">// ESTABLISH STRATEGIC TARGET</div>
+                <div class="input-container">
+                  <input 
+                    type="text" 
+                    id="goal-title-input" 
+                    class="sci-fi-input" 
+                    placeholder="GOAL / TARGET MILESTONE..." 
+                    maxlength="140" 
+                    required
+                  >
 
-                <div class="task-form-row">
-                  <div class="task-field-group flex-2">
-                    <label for="goal-timeframe-select" class="task-field-label">// TIMEFRAME HORIZON</label>
-                    <select id="goal-timeframe-select" class="sci-fi-input sci-fi-select" required>
-                      <option value="daily">DAILY DIRECTIVES</option>
-                      <option value="weekly" selected>WEEKLY TARGETS</option>
-                      <option value="monthly">MONTHLY MILESTONES</option>
-                      <option value="yearly">1-YEAR HORIZONS</option>
-                      <option value="longterm">LONG-RANGE STRATEGY (5-YEAR)</option>
-                    </select>
+                  <div class="task-form-row">
+                    <div class="task-field-group flex-2">
+                      <label for="goal-timeframe-select" class="task-field-label">// TIMEFRAME HORIZON</label>
+                      <select id="goal-timeframe-select" class="sci-fi-input sci-fi-select" required>
+                        <option value="daily">DAILY DIRECTIVES</option>
+                        <option value="weekly" selected>WEEKLY TARGETS</option>
+                        <option value="monthly">MONTHLY MILESTONES</option>
+                        <option value="yearly">1-YEAR HORIZONS</option>
+                        <option value="longterm">LONG-RANGE STRATEGY (5-YEAR)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="task-form-actions">
+                    <button type="submit" id="goal-submit-btn" class="sci-fi-btn">
+                      <span id="goal-submit-text">+ COMMIT GOAL</span>
+                      <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </button>
                   </div>
                 </div>
+                <div id="goal-form-feedback" class="form-feedback" aria-live="polite"></div>
+              </form>
+            </div>
 
-                <div class="task-form-actions">
-                  <button type="submit" id="goal-submit-btn" class="sci-fi-btn">
-                    <span id="goal-submit-text">+ COMMIT GOAL</span>
-                    <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </button>
+            <!-- 5 Timeframe Goals Streams -->
+            <div class="goals-timeframes-container">
+              
+              <!-- Timeframe 1: Daily Directives -->
+              <div class="goal-timeframe-section">
+                <div class="timeframe-header">
+                  <span class="timeframe-title">// DAILY DIRECTIVES</span>
+                  <span class="timeframe-count" id="count-daily-goals">0</span>
                 </div>
-              </div>
-              <div id="goal-form-feedback" class="form-feedback" aria-live="polite"></div>
-            </form>
-          </div>
-
-          <!-- 5 Timeframe Goals Streams -->
-          <div class="goals-timeframes-container">
-            
-            <!-- Timeframe 1: Daily Directives -->
-            <div class="goal-timeframe-section">
-              <div class="timeframe-header">
-                <span class="timeframe-title">// DAILY DIRECTIVES</span>
-                <span class="timeframe-count" id="count-daily-goals">0</span>
-              </div>
-              <ul id="goals-list-daily" class="tasks-list goals-list">
-                <!-- Rendered dynamically -->
-              </ul>
-            </div>
-
-            <!-- Timeframe 2: Weekly Targets -->
-            <div class="goal-timeframe-section">
-              <div class="timeframe-header">
-                <span class="timeframe-title">// WEEKLY TARGETS</span>
-                <span class="timeframe-count" id="count-weekly-goals">0</span>
-              </div>
-              <ul id="goals-list-weekly" class="tasks-list goals-list">
-                <!-- Rendered dynamically -->
-              </ul>
-            </div>
-
-            <!-- Timeframe 3: Monthly Milestones -->
-            <div class="goal-timeframe-section">
-              <div class="timeframe-header">
-                <span class="timeframe-title">// MONTHLY MILESTONES</span>
-                <span class="timeframe-count" id="count-monthly-goals">0</span>
-              </div>
-              <ul id="goals-list-monthly" class="tasks-list goals-list">
-                <!-- Rendered dynamically -->
-              </ul>
-            </div>
-
-            <!-- Timeframe 4: 1-Year Horizons -->
-            <div class="goal-timeframe-section">
-              <div class="timeframe-header">
-                <span class="timeframe-title">// 1-YEAR HORIZONS</span>
-                <span class="timeframe-count" id="count-yearly-goals">0</span>
-              </div>
-              <ul id="goals-list-yearly" class="tasks-list goals-list">
-                <!-- Rendered dynamically -->
-              </ul>
-            </div>
-
-            <!-- Timeframe 5: Long-Range Strategy (5-Year) -->
-            <div class="goal-timeframe-section">
-              <div class="timeframe-header">
-                <span class="timeframe-title">// LONG-RANGE STRATEGY [5-YEAR]</span>
-                <span class="timeframe-count" id="count-longterm-goals">0</span>
-              </div>
-              <ul id="goals-list-longterm" class="tasks-list goals-list">
-                <!-- Rendered dynamically -->
-              </ul>
-            </div>
-
-          </div>
-
-          <!-- Completed Goals Archive -->
-          <div class="completed-tasks-wrapper">
-            <details id="completed-goals-details" class="completed-tasks-details hud-card">
-              <summary class="completed-tasks-summary">
-                <span class="summary-left">
-                  <span class="summary-icon">▼</span>
-                  <span>ACHIEVED GOALS ARCHIVE</span>
-                </span>
-                <span class="log-count-badge completed-badge" id="completed-goals-count-badge">0 ACHIEVED</span>
-              </summary>
-              <div class="completed-tasks-body">
-                <ul id="completed-goals-list" class="tasks-list completed-list">
-                  <!-- Rendered dynamically by app.js -->
+                <ul id="goals-list-daily" class="tasks-list goals-list">
+                  <!-- Rendered dynamically -->
                 </ul>
               </div>
-            </details>
+
+              <!-- Timeframe 2: Weekly Targets -->
+              <div class="goal-timeframe-section">
+                <div class="timeframe-header">
+                  <span class="timeframe-title">// WEEKLY TARGETS</span>
+                  <span class="timeframe-count" id="count-weekly-goals">0</span>
+                </div>
+                <ul id="goals-list-weekly" class="tasks-list goals-list">
+                  <!-- Rendered dynamically -->
+                </ul>
+              </div>
+
+              <!-- Timeframe 3: Monthly Milestones -->
+              <div class="goal-timeframe-section">
+                <div class="timeframe-header">
+                  <span class="timeframe-title">// MONTHLY MILESTONES</span>
+                  <span class="timeframe-count" id="count-monthly-goals">0</span>
+                </div>
+                <ul id="goals-list-monthly" class="tasks-list goals-list">
+                  <!-- Rendered dynamically -->
+                </ul>
+              </div>
+
+              <!-- Timeframe 4: 1-Year Horizons -->
+              <div class="goal-timeframe-section">
+                <div class="timeframe-header">
+                  <span class="timeframe-title">// 1-YEAR HORIZONS</span>
+                  <span class="timeframe-count" id="count-yearly-goals">0</span>
+                </div>
+                <ul id="goals-list-yearly" class="tasks-list goals-list">
+                  <!-- Rendered dynamically -->
+                </ul>
+              </div>
+
+              <!-- Timeframe 5: Long-Range Strategy (5-Year) -->
+              <div class="goal-timeframe-section">
+                <div class="timeframe-header">
+                  <span class="timeframe-title">// LONG-RANGE STRATEGY [5-YEAR]</span>
+                  <span class="timeframe-count" id="count-longterm-goals">0</span>
+                </div>
+                <ul id="goals-list-longterm" class="tasks-list goals-list">
+                  <!-- Rendered dynamically -->
+                </ul>
+              </div>
+
+            </div>
+
+            <!-- Completed Goals Archive -->
+            <div class="completed-tasks-wrapper">
+              <details id="completed-goals-details" class="completed-tasks-details hud-card">
+                <summary class="completed-tasks-summary">
+                  <span class="summary-left">
+                    <span class="summary-icon">▼</span>
+                    <span>ACHIEVED GOALS ARCHIVE</span>
+                  </span>
+                  <span class="log-count-badge completed-badge" id="completed-goals-count-badge">0 ACHIEVED</span>
+                </summary>
+                <div class="completed-tasks-body">
+                  <ul id="completed-goals-list" class="tasks-list completed-list">
+                    <!-- Rendered dynamically by app.js -->
+                  </ul>
+                </div>
+              </details>
+            </div>
           </div>
         </section>
 
-        <!-- COLUMN 3: Workspace Notes & Journal Panel -->
-        <section class="workspace-panel hud-card" id="journal-dashboard-panel">
+        <!-- PANEL 3: Fitness & Conditioning Panel (Collapsible) -->
+        <section class="workspace-panel hud-card collapsible-panel" id="fitness-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
           <span class="reticle reticle-bl" aria-hidden="true"></span>
           <span class="reticle reticle-br" aria-hidden="true"></span>
 
-          <div class="panel-header">
+          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">PERSONAL LOGS // JOURNAL</h2>
+              <h2 class="terminal-title">TACTICAL FITNESS // READINESS</h2>
+              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
-            <button type="button" id="ws-toggle-composer-btn" class="sci-fi-btn small-btn">
-              <span class="btn-icon">+</span>
-              <span id="ws-composer-btn-text">NEW LOG</span>
-            </button>
+            <span class="log-count-badge" id="fitness-count-badge">0 LOGS</span>
           </div>
 
-          <!-- In-Dashboard Journal Composer -->
-          <div id="ws-journal-composer" class="journal-composer hud-card hidden">
-            <form id="ws-journal-form" class="journal-form">
-              <input type="hidden" id="ws-journal-edit-id" value="">
-              <div class="composer-header">
-                <span id="ws-composer-mode-title" class="composer-mode-title">// COMPOSE LOG TRANSMISSION</span>
-              </div>
-              <div class="input-container">
-                <input 
-                  type="text" 
-                  id="ws-journal-title-input" 
-                  class="sci-fi-input" 
-                  placeholder="LOG TITLE / SUBJECT..." 
-                  maxlength="100" 
-                  required
-                >
-                <textarea 
-                  id="ws-journal-body-input" 
-                  class="sci-fi-input sci-fi-textarea" 
-                  placeholder="ENTER LOG TRANSMISSION CONTENT..." 
-                  rows="4" 
-                  required
-                ></textarea>
-              </div>
-              <div class="composer-actions">
-                <button type="button" id="ws-cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
-                <button type="submit" id="ws-save-journal-btn" class="sci-fi-btn">
-                  <span id="ws-save-journal-text">SAVE ENTRY</span>
-                </button>
-              </div>
-            </form>
-          </div>
+          <div class="panel-body-content">
+            <div class="task-composer-box">
+              <form id="fitness-form" class="task-form">
+                <div class="form-header-label">// LOG PHYSICAL CONDITIONING</div>
+                <div class="input-container">
+                  <input 
+                    type="text" 
+                    id="fitness-activity-input" 
+                    class="sci-fi-input" 
+                    placeholder="ACTIVITY / WORKOUT (E.G. 5K RUN, BENCH PRESS)..." 
+                    maxlength="120" 
+                    required
+                  >
 
-          <!-- Journal Logs Feed in Dashboard -->
-          <div class="ws-journal-feed-wrapper">
-            <div class="log-feed-label">[CHRONOLOGICAL QUANTUM ARCHIVE]</div>
-            <div id="ws-journal-entries-container" class="journal-entries-list">
-              <!-- Rendered dynamically by app.js -->
+                  <div class="task-form-row">
+                    <div class="task-field-group">
+                      <label for="fitness-metric-input" class="task-field-label">// STATS / METRICS</label>
+                      <input 
+                        type="text" 
+                        id="fitness-metric-input" 
+                        class="sci-fi-input" 
+                        placeholder="E.G. 24:15 MIN, 225 LBS..."
+                        maxlength="60"
+                      >
+                    </div>
+
+                    <div class="task-field-group flex-2">
+                      <label for="fitness-notes-input" class="task-field-label">// INTEL / NOTES</label>
+                      <input 
+                        type="text" 
+                        id="fitness-notes-input" 
+                        class="sci-fi-input" 
+                        placeholder="SESSION NOTES..." 
+                        maxlength="160"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="task-form-actions">
+                    <button type="submit" id="fitness-submit-btn" class="sci-fi-btn">
+                      <span id="fitness-submit-text">+ LOG READINESS</span>
+                      <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div id="fitness-form-feedback" class="form-feedback" aria-live="polite"></div>
+              </form>
+            </div>
+
+            <div class="ws-changelog-feed-wrapper">
+              <div class="log-feed-label">[READINESS & TRAINING TELEMETRY]</div>
+              <ul id="fitness-entries-list" class="tasks-list">
+                <div class="empty-log-state">
+                  <span class="pulse-indicator"></span>
+                  <p>NO FITNESS TELEMETRY RECORDED</p>
+                </div>
+              </ul>
             </div>
           </div>
         </section>
 
-        <!-- COLUMN 4: What Changed? / Git Deployment History Panel -->
-        <section class="workspace-panel hud-card" id="changelog-dashboard-panel">
+        <!-- PANEL 4: What Changed? / Git Deployment History Panel (Collapsible) -->
+        <section class="workspace-panel hud-card collapsible-panel" id="changelog-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
           <span class="reticle reticle-bl" aria-hidden="true"></span>
           <span class="reticle reticle-br" aria-hidden="true"></span>
 
-          <div class="panel-header">
+          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
             <div class="terminal-title-group">
               <span class="terminal-prompt">&gt;</span>
               <h2 class="terminal-title">WHAT CHANGED? // CHANGELOG</h2>
+              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
             </div>
             <button type="button" id="refresh-changelog-btn" class="sci-fi-btn small-btn" title="Refresh Git deployment log">
               <span class="btn-icon">↻</span>
@@ -759,12 +776,77 @@
             </button>
           </div>
 
-          <div class="ws-changelog-feed-wrapper">
-            <div class="log-feed-label">[GIT COMMIT ARCHIVE // RECENT DEPLOYMENTS]</div>
-            <div id="workspace-changelog-list" class="changelog-entries-list">
-              <div class="empty-log-state">
-                <span class="pulse-indicator"></span>
-                <p>SYNCING RECENT COMMIT HISTORY...</p>
+          <div class="panel-body-content">
+            <div class="ws-changelog-feed-wrapper">
+              <div class="log-feed-label">[GIT COMMIT ARCHIVE // RECENT DEPLOYMENTS]</div>
+              <div id="workspace-changelog-list" class="changelog-entries-list">
+                <div class="empty-log-state">
+                  <span class="pulse-indicator"></span>
+                  <p>SYNCING RECENT COMMIT HISTORY...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL 5: Workspace Notes & Journal Panel (Collapsible) -->
+        <section class="workspace-panel hud-card collapsible-panel" id="journal-dashboard-panel">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
+            <div class="terminal-title-group">
+              <span class="terminal-prompt">&gt;</span>
+              <h2 class="terminal-title">PERSONAL LOGS // JOURNAL</h2>
+              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
+            </div>
+            <button type="button" id="ws-toggle-composer-btn" class="sci-fi-btn small-btn">
+              <span class="btn-icon">+</span>
+              <span id="ws-composer-btn-text">NEW LOG</span>
+            </button>
+          </div>
+
+          <div class="panel-body-content">
+            <!-- In-Dashboard Journal Composer -->
+            <div id="ws-journal-composer" class="journal-composer hud-card hidden">
+              <form id="ws-journal-form" class="journal-form">
+                <input type="hidden" id="ws-journal-edit-id" value="">
+                <div class="composer-header">
+                  <span id="ws-composer-mode-title" class="composer-mode-title">// COMPOSE LOG TRANSMISSION</span>
+                </div>
+                <div class="input-container">
+                  <input 
+                    type="text" 
+                    id="ws-journal-title-input" 
+                    class="sci-fi-input" 
+                    placeholder="LOG TITLE / SUBJECT..." 
+                    maxlength="100" 
+                    required
+                  >
+                  <textarea 
+                    id="ws-journal-body-input" 
+                    class="sci-fi-input sci-fi-textarea" 
+                    placeholder="ENTER LOG TRANSMISSION CONTENT..." 
+                    rows="4" 
+                    required
+                  ></textarea>
+                </div>
+                <div class="composer-actions">
+                  <button type="button" id="ws-cancel-compose-btn" class="sci-fi-btn secondary-btn">CANCEL</button>
+                  <button type="submit" id="ws-save-journal-btn" class="sci-fi-btn">
+                    <span id="ws-save-journal-text">SAVE ENTRY</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Journal Logs Feed in Dashboard -->
+            <div class="ws-journal-feed-wrapper">
+              <div class="log-feed-label">[CHRONOLOGICAL QUANTUM ARCHIVE]</div>
+              <div id="ws-journal-entries-container" class="journal-entries-list">
+                <!-- Rendered dynamically by app.js -->
               </div>
             </div>
           </div>

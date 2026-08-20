@@ -25,7 +25,7 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.3", // Automatically updates HUD corner readouts and workspace header
+  version: "v1.4", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"

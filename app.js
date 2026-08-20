@@ -6,9 +6,11 @@ import {
   collection, 
   addDoc, 
   doc,
+  setDoc,
   updateDoc,
   deleteDoc,
   serverTimestamp, 
+  increment,
   query, 
   where,
   orderBy, 
@@ -25,7 +27,7 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.4", // Automatically updates HUD corner readouts and workspace header
+  version: "v1.5", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"
@@ -113,6 +115,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const logbookRef = collection(db, "logbook");
 const tasksRef = collection(db, "tasks");
+const goalsRef = collection(db, "goals");
+const visitorStatsDoc = doc(db, "stats", "visitorCount");
 
 // ==========================================================================
 // DOM Elements
@@ -170,6 +174,7 @@ const authFeedback = document.getElementById("auth-feedback");
 const workspaceUserEmail = document.getElementById("workspace-user-email");
 const workspaceLockdownBtn = document.getElementById("workspace-lockdown-btn");
 const wsPendingMetric = document.getElementById("ws-pending-metric");
+const wsGoalsMetric = document.getElementById("ws-goals-metric");
 const wsJournalMetric = document.getElementById("ws-journal-metric");
 
 // Tasks Elements
@@ -184,6 +189,17 @@ const openTasksList = document.getElementById("open-tasks-list");
 const openTasksCountBadge = document.getElementById("open-tasks-count-badge");
 const completedTasksList = document.getElementById("completed-tasks-list");
 const completedTasksCountBadge = document.getElementById("completed-tasks-count-badge");
+
+// Goals Elements (5 Timeframe Sections)
+const goalForm = document.getElementById("goal-form");
+const goalTitleInput = document.getElementById("goal-title-input");
+const goalTimeframeSelect = document.getElementById("goal-timeframe-select");
+const goalSubmitBtn = document.getElementById("goal-submit-btn");
+const goalSubmitText = document.getElementById("goal-submit-text");
+const goalFormFeedback = document.getElementById("goal-form-feedback");
+const openGoalsCountBadge = document.getElementById("open-goals-count-badge");
+const completedGoalsCountBadge = document.getElementById("completed-goals-count-badge");
+const completedGoalsList = document.getElementById("completed-goals-list");
 
 // Workspace In-Page Journal Elements
 const wsToggleComposerBtn = document.getElementById("ws-toggle-composer-btn");
@@ -310,6 +326,44 @@ updateHUDLiveClock();
 setInterval(updateHUDLiveClock, 1000);
 
 // ==========================================================================
+// Perimeter Log (Visitor Counter) with Session Deduplication
+// ==========================================================================
+function initPerimeterVisitorCounter() {
+  const badge = document.getElementById("visitor-count-badge");
+
+  // Real-time listener on visitor stats
+  try {
+    onSnapshot(visitorStatsDoc, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const count = data.count || 0;
+        if (badge) badge.textContent = String(count).padStart(3, "0");
+      } else {
+        if (badge) badge.textContent = "001";
+      }
+    }, (err) => {
+      console.warn("Visitor stats listener error:", err);
+      if (badge) badge.textContent = "SYNC";
+    });
+  } catch (e) {
+    console.warn("Visitor counter init warning:", e);
+  }
+
+  // Deduplicated increment per session
+  const hasLoggedSession = sessionStorage.getItem("perimeter_ping_logged_v1");
+  if (!hasLoggedSession) {
+    setDoc(visitorStatsDoc, {
+      count: increment(1),
+      lastPing: serverTimestamp()
+    }, { merge: true }).then(() => {
+      sessionStorage.setItem("perimeter_ping_logged_v1", "true");
+    }).catch((err) => {
+      console.warn("Visitor telemetry write warning:", err);
+    });
+  }
+}
+
+// ==========================================================================
 // Drawer Open / Close Logic
 // ==========================================================================
 function closeAllDrawers() {
@@ -318,6 +372,7 @@ function closeAllDrawers() {
   if (journalToggleBtn) journalToggleBtn.setAttribute("aria-expanded", "false");
   if (logbookDrawer) logbookDrawer.setAttribute("aria-hidden", "true");
   if (journalDrawer) journalDrawer.setAttribute("aria-hidden", "true");
+  closeHWPopup();
 }
 
 function openLogbookDrawer() {
@@ -466,6 +521,7 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.add("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
     subscribeToTasks(user.uid);
+    subscribeToGoals(user.uid);
     if (window.location.hash === "#workspace") {
       showWorkspaceView();
     }
@@ -474,6 +530,7 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.remove("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
     unsubscribeFromTasks();
+    unsubscribeFromGoals();
     showPublicView();
   }
 });
@@ -980,6 +1037,208 @@ function clearTaskFeedback() {
 }
 
 // ==========================================================================
+// Strategic Goals Management (5 Timeframe Sections: Daily, Weekly, Monthly, 1-Year, 5-Year)
+// ==========================================================================
+let unsubscribeGoals = null;
+
+function subscribeToGoals(userId) {
+  if (unsubscribeGoals) unsubscribeGoals();
+
+  const q = query(goalsRef, where("userId", "==", userId));
+  
+  unsubscribeGoals = onSnapshot(q, (snapshot) => {
+    const goals = [];
+    snapshot.forEach((docSnap) => {
+      goals.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    renderGoals(goals);
+  }, (error) => {
+    console.error("Goals subscription error:", error);
+  });
+}
+
+function unsubscribeFromGoals() {
+  if (unsubscribeGoals) {
+    unsubscribeGoals();
+    unsubscribeGoals = null;
+  }
+  renderGoals([]);
+}
+
+const GOAL_TIMEFRAMES = [
+  { id: "daily", label: "DAILY DIRECTIVES" },
+  { id: "weekly", label: "WEEKLY TARGETS" },
+  { id: "monthly", label: "MONTHLY MILESTONES" },
+  { id: "yearly", label: "1-YEAR HORIZONS" },
+  { id: "longterm", label: "LONG-RANGE STRATEGY" }
+];
+
+function renderGoals(goals) {
+  const openGoals = goals.filter(g => !g.completed);
+  const completedGoals = goals.filter(g => g.completed);
+
+  if (openGoalsCountBadge) openGoalsCountBadge.textContent = `${openGoals.length} ACTIVE`;
+  if (completedGoalsCountBadge) completedGoalsCountBadge.textContent = `${completedGoals.length} ACHIEVED`;
+  if (wsGoalsMetric) wsGoalsMetric.textContent = `${openGoals.length} ACTIVE`;
+
+  // Render open goals across the 5 timeframe streams
+  GOAL_TIMEFRAMES.forEach(tf => {
+    const tfGoals = openGoals.filter(g => (g.timeframe || "weekly") === tf.id);
+    const listEl = document.getElementById(`goals-list-${tf.id}`);
+    const countEl = document.getElementById(`count-${tf.id}-goals`);
+
+    if (countEl) countEl.textContent = String(tfGoals.length);
+
+    if (listEl) {
+      if (tfGoals.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-log-state" style="padding: 0.75rem 0.25rem;">
+            <p>NO ACTIVE ${tf.label}</p>
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = tfGoals.map(g => renderGoalItemHTML(g, false)).join("");
+      }
+    }
+  });
+
+  // Render completed goals
+  if (completedGoalsList) {
+    if (completedGoals.length === 0) {
+      completedGoalsList.innerHTML = `
+        <div class="empty-log-state">
+          <p>NO ACHIEVED GOALS RECORDED</p>
+        </div>
+      `;
+    } else {
+      completedGoalsList.innerHTML = completedGoals.map(g => renderGoalItemHTML(g, true)).join("");
+    }
+  }
+
+  // Attach Goal Checkbox Toggle Handlers
+  document.querySelectorAll(".goal-hud-checkbox").forEach((checkbox) => {
+    checkbox.addEventListener("change", async (e) => {
+      const goalId = e.target.getAttribute("data-id");
+      const isChecked = e.target.checked;
+      try {
+        await updateDoc(doc(db, "goals", goalId), {
+          completed: isChecked
+        });
+      } catch (err) {
+        console.error("Error updating goal status:", err);
+        e.target.checked = !isChecked;
+      }
+    });
+  });
+
+  // Attach Goal Delete Handlers
+  document.querySelectorAll(".goal-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const goalId = btn.getAttribute("data-id");
+      if (!confirm("CONFIRM DELETION: Purge this strategic goal from the database?")) {
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, "goals", goalId));
+      } catch (err) {
+        console.error("Error deleting goal:", err);
+      }
+    });
+  });
+}
+
+function renderGoalItemHTML(goal, isCompleted) {
+  const sanitizedTitle = escapeHTML(goal.title);
+  const tfName = (goal.timeframe || "TARGET").toUpperCase();
+
+  return `
+    <li class="task-item" data-id="${goal.id}">
+      <div class="task-checkbox-container">
+        <input 
+          type="checkbox" 
+          class="task-hud-checkbox goal-hud-checkbox" 
+          data-id="${goal.id}" 
+          ${isCompleted ? 'checked' : ''} 
+          aria-label="Toggle goal achievement"
+        >
+      </div>
+      <div class="task-content">
+        <div class="task-title">${sanitizedTitle}</div>
+        <div class="task-meta-row">
+          <span class="task-due-badge no-due">// [HORIZON: ${tfName}]</span>
+        </div>
+      </div>
+      <div class="task-actions">
+        <button type="button" class="task-delete-btn goal-delete-btn" data-id="${goal.id}" title="Permanently delete goal">
+          PURGE [✕]
+        </button>
+      </div>
+    </li>
+  `;
+}
+
+// Handle Goal Form Submission
+if (goalForm) {
+  goalForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!auth.currentUser) {
+      showGoalFeedback("AUTHENTICATION REQUIRED TO COMMIT GOALS", "error");
+      return;
+    }
+
+    const title = goalTitleInput.value.trim();
+    const timeframe = goalTimeframeSelect.value || "weekly";
+
+    if (!title) {
+      showGoalFeedback("ENTER GOAL TITLE", "error");
+      return;
+    }
+
+    goalSubmitBtn.disabled = true;
+    goalSubmitText.textContent = "COMMITTING...";
+    clearGoalFeedback();
+
+    try {
+      await addDoc(goalsRef, {
+        title,
+        timeframe,
+        completed: false,
+        createdAt: serverTimestamp(),
+        userId: auth.currentUser.uid
+      });
+
+      goalTitleInput.value = "";
+      showGoalFeedback("STRATEGIC TARGET COMMITTED TO DATABASE", "success");
+      goalSubmitText.textContent = "COMMITTED ✓";
+
+      setTimeout(() => {
+        goalSubmitText.textContent = "+ COMMIT GOAL";
+        goalSubmitBtn.disabled = false;
+      }, 1200);
+    } catch (err) {
+      console.error("Error creating goal:", err);
+      showGoalFeedback("TRANSMISSION ERROR: " + (err.message || "SECURITY FAILURE"), "error");
+      goalSubmitBtn.disabled = false;
+      goalSubmitText.textContent = "+ COMMIT GOAL";
+    }
+  });
+}
+
+function showGoalFeedback(msg, type) {
+  if (goalFormFeedback) {
+    goalFormFeedback.textContent = msg;
+    goalFormFeedback.className = `form-feedback ${type}`;
+  }
+}
+
+function clearGoalFeedback() {
+  if (goalFormFeedback) {
+    goalFormFeedback.textContent = "";
+    goalFormFeedback.className = "form-feedback";
+  }
+}
+
+// ==========================================================================
 // Personal Journal Storage & Management (Shared across Drawer & Dashboard)
 // ==========================================================================
 const JOURNAL_STORAGE_KEY = "matthews_personal_journal_v1";
@@ -1371,3 +1630,4 @@ function clearFeedback() {
 // ==========================================================================
 renderJournal();
 subscribeToLogbook();
+initPerimeterVisitorCounter();

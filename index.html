@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Tactical HUD personal terminal, access log, and journal of Mister Matthews.">
   <title>Hello, Mister Matthews // Tactical HUD</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,12 +21,12 @@
        ========================================================================== -->
   <div id="public-view" class="view-wrapper">
     <!-- Screen Corner Telemetry Readouts -->
-    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.4</span><br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.5</span><br>COORD: 41.92556°N 111.47333°W</div>
     <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
       <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
     </div>
-    <div class="hud-telemetry hud-telemetry-bl" aria-hidden="true">SEC_LEVEL: 01 // CLASSIFIED<br>FREQ: 1420.405 MHz</div>
+    <div class="hud-telemetry hud-telemetry-bl" aria-label="Perimeter Telemetry">SEC_LEVEL: 01 // CLASSIFIED<br>PERIMETER LOG: <span id="visitor-count-badge" class="visitor-count-badge">--</span> SCANS</div>
     <div class="hud-telemetry hud-telemetry-br">
       <button type="button" id="hw-directive-btn" class="hw-directive-btn" title="Open H.W. Directive (Car of the Day)">
         <span class="hw-btn-dot"></span>
@@ -398,7 +400,7 @@
       <div class="nav-brand-group">
         <span class="terminal-prompt">&gt;</span>
         <div class="nav-title-column">
-          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.4</span></h1>
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.5</span></h1>
           <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
@@ -439,12 +441,12 @@
           <span class="metric-val text-red" id="ws-pending-metric">0 ACTIVE</span>
         </div>
         <div class="metric-card hud-card">
-          <span class="metric-label">// ENCRYPTED LOGS</span>
-          <span class="metric-val" id="ws-journal-metric">0 RECORDED</span>
+          <span class="metric-label">// STRATEGIC GOALS</span>
+          <span class="metric-val text-red" id="ws-goals-metric">0 ACTIVE</span>
         </div>
         <div class="metric-card hud-card">
-          <span class="metric-label">// CIPHER ENCRYPTION</span>
-          <span class="metric-val">AES-256-GCM</span>
+          <span class="metric-label">// ENCRYPTED LOGS</span>
+          <span class="metric-val" id="ws-journal-metric">0 RECORDED</span>
         </div>
       </section>
 
@@ -545,7 +547,141 @@
           </div>
         </section>
 
-        <!-- COLUMN 2: Workspace Notes & Journal Panel -->
+        <!-- COLUMN 2: Goals Panel (5 Timeframe Sections) -->
+        <section class="workspace-panel hud-card" id="goals-dashboard-panel">
+          <span class="reticle reticle-tl" aria-hidden="true"></span>
+          <span class="reticle reticle-tr" aria-hidden="true"></span>
+          <span class="reticle reticle-bl" aria-hidden="true"></span>
+          <span class="reticle reticle-br" aria-hidden="true"></span>
+
+          <div class="panel-header">
+            <div class="terminal-title-group">
+              <span class="terminal-prompt">&gt;</span>
+              <h2 class="terminal-title">STRATEGIC GOALS // HORIZONS</h2>
+            </div>
+            <span class="log-count-badge" id="open-goals-count-badge">0 ACTIVE</span>
+          </div>
+
+          <!-- Goal Composer Form -->
+          <div class="task-composer-box">
+            <form id="goal-form" class="task-form">
+              <div class="form-header-label">// ESTABLISH STRATEGIC TARGET</div>
+              <div class="input-container">
+                <input 
+                  type="text" 
+                  id="goal-title-input" 
+                  class="sci-fi-input" 
+                  placeholder="GOAL / TARGET MILESTONE..." 
+                  maxlength="140" 
+                  required
+                >
+
+                <div class="task-form-row">
+                  <div class="task-field-group flex-2">
+                    <label for="goal-timeframe-select" class="task-field-label">// TIMEFRAME HORIZON</label>
+                    <select id="goal-timeframe-select" class="sci-fi-input sci-fi-select" required>
+                      <option value="daily">DAILY DIRECTIVES</option>
+                      <option value="weekly" selected>WEEKLY TARGETS</option>
+                      <option value="monthly">MONTHLY MILESTONES</option>
+                      <option value="yearly">1-YEAR HORIZONS</option>
+                      <option value="longterm">LONG-RANGE STRATEGY (5-YEAR)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="task-form-actions">
+                  <button type="submit" id="goal-submit-btn" class="sci-fi-btn">
+                    <span id="goal-submit-text">+ COMMIT GOAL</span>
+                    <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div id="goal-form-feedback" class="form-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <!-- 5 Timeframe Goals Streams -->
+          <div class="goals-timeframes-container">
+            
+            <!-- Timeframe 1: Daily Directives -->
+            <div class="goal-timeframe-section">
+              <div class="timeframe-header">
+                <span class="timeframe-title">// DAILY DIRECTIVES</span>
+                <span class="timeframe-count" id="count-daily-goals">0</span>
+              </div>
+              <ul id="goals-list-daily" class="tasks-list goals-list">
+                <!-- Rendered dynamically -->
+              </ul>
+            </div>
+
+            <!-- Timeframe 2: Weekly Targets -->
+            <div class="goal-timeframe-section">
+              <div class="timeframe-header">
+                <span class="timeframe-title">// WEEKLY TARGETS</span>
+                <span class="timeframe-count" id="count-weekly-goals">0</span>
+              </div>
+              <ul id="goals-list-weekly" class="tasks-list goals-list">
+                <!-- Rendered dynamically -->
+              </ul>
+            </div>
+
+            <!-- Timeframe 3: Monthly Milestones -->
+            <div class="goal-timeframe-section">
+              <div class="timeframe-header">
+                <span class="timeframe-title">// MONTHLY MILESTONES</span>
+                <span class="timeframe-count" id="count-monthly-goals">0</span>
+              </div>
+              <ul id="goals-list-monthly" class="tasks-list goals-list">
+                <!-- Rendered dynamically -->
+              </ul>
+            </div>
+
+            <!-- Timeframe 4: 1-Year Horizons -->
+            <div class="goal-timeframe-section">
+              <div class="timeframe-header">
+                <span class="timeframe-title">// 1-YEAR HORIZONS</span>
+                <span class="timeframe-count" id="count-yearly-goals">0</span>
+              </div>
+              <ul id="goals-list-yearly" class="tasks-list goals-list">
+                <!-- Rendered dynamically -->
+              </ul>
+            </div>
+
+            <!-- Timeframe 5: Long-Range Strategy (5-Year) -->
+            <div class="goal-timeframe-section">
+              <div class="timeframe-header">
+                <span class="timeframe-title">// LONG-RANGE STRATEGY [5-YEAR]</span>
+                <span class="timeframe-count" id="count-longterm-goals">0</span>
+              </div>
+              <ul id="goals-list-longterm" class="tasks-list goals-list">
+                <!-- Rendered dynamically -->
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Completed Goals Archive -->
+          <div class="completed-tasks-wrapper">
+            <details id="completed-goals-details" class="completed-tasks-details hud-card">
+              <summary class="completed-tasks-summary">
+                <span class="summary-left">
+                  <span class="summary-icon">▼</span>
+                  <span>ACHIEVED GOALS ARCHIVE</span>
+                </span>
+                <span class="log-count-badge completed-badge" id="completed-goals-count-badge">0 ACHIEVED</span>
+              </summary>
+              <div class="completed-tasks-body">
+                <ul id="completed-goals-list" class="tasks-list completed-list">
+                  <!-- Rendered dynamically by app.js -->
+                </ul>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- COLUMN 3: Workspace Notes & Journal Panel -->
         <section class="workspace-panel hud-card" id="journal-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -605,7 +741,7 @@
           </div>
         </section>
 
-        <!-- COLUMN 3: What Changed? / Git Deployment History Panel -->
+        <!-- COLUMN 4: What Changed? / Git Deployment History Panel -->
         <section class="workspace-panel hud-card" id="changelog-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>

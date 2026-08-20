@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Minimal Dark HUD Background with Subtle Crimson Reticle Border -->
+  <rect width="200" height="200" fill="#090a0f" rx="36" />
+  <rect x="8" y="8" width="184" height="184" fill="none" stroke="rgba(239, 68, 68, 0.4)" stroke-width="3" rx="28" />
+
+  <!-- Corner Reticles -->
+  <path d="M22 36 V22 H36" stroke="#ef4444" stroke-width="4" stroke-linecap="square"/>
+  <path d="M178 36 V22 H164" stroke="#ef4444" stroke-width="4" stroke-linecap="square"/>
+  <path d="M22 164 V178 H36" stroke="#ef4444" stroke-width="4" stroke-linecap="square"/>
+  <path d="M178 164 V178 H164" stroke="#ef4444" stroke-width="4" stroke-linecap="square"/>
+
+  <!-- Tactical HUD "LM" Monogram Graphic -->
+  <!-- 'L' Glyph -->
+  <path d="M48 56 V144 H102" stroke="#f8fafc" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M48 144 H102" stroke="#ef4444" stroke-width="6" stroke-linecap="square"/>
+
+  <!-- 'M' Glyph -->
+  <path d="M112 144 V56 L138 106 L164 56 V144" stroke="#f8fafc" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M112 56 L138 106 L164 56" stroke="#ef4444" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+
+  <!-- Subtle Tactical Dot Accent -->
+  <circle cx="107" cy="144" r="4" fill="#ef4444"/>
+</svg>

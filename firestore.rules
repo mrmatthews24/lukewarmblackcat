@@ -3,26 +3,46 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Public Access Log collection
+    // Public Access Log (logbook & access_log aliases)
     match /logbook/{entryId} {
-      // 1. Allow reading so the public feed displays signers
       allow read: if true;
-      
-      // 2. Allow anyone to create new entries with strict validation
       allow create: if request.resource.data.name is string 
                     && request.resource.data.name.trim().size() > 0 
-                    && request.resource.data.name.size() <= 100
-                    && request.resource.data.keys().hasOnly(['name', 'timestamp']);
-                    
-      // 3. Prevent any modifying or deleting of existing log entries
-      allow update: if false;
+                    && request.resource.data.name.size() <= 100;
+      allow update, delete: if false;
+    }
+
+    match /access_log/{entryId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string 
+                    && request.resource.data.name.trim().size() > 0 
+                    && request.resource.data.name.size() <= 100;
+      allow update, delete: if false;
+    }
+
+    // Public Perimeter Telemetry / Visitor Count Stats
+    match /stats/{statId} {
+      allow read: if true;
+      allow create, update: if true;
       allow delete: if false;
     }
 
-    // Tasks collection: Strictly locked to the logged-in user's own tasks
+    // Tactical Objectives / Tasks: Strictly locked to the logged-in user's own userId
     match /tasks/{taskId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Strategic Goals (5-Timeframe Horizons): Strictly locked to user's own userId
+    match /goals/{goalId} {
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Fitness Entries: Strictly locked to user's own userId
+    match /fitness_entries/{entryId} {
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
     }
 
     // Private Workspace data: STRICTLY LOCKED to authenticated owner accounts
@@ -34,7 +54,7 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
-    // Block all access to any other collections across the database
+    // Block all unauthorized access across any other collections
     match /{document=**} {
       allow read, write: if false;
     }

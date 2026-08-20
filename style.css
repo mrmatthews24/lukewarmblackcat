@@ -1552,7 +1552,7 @@ body.logbook-open .right-drawer {
 /* Dashboard Panels Layout */
 .workspace-panels-grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
@@ -1830,6 +1830,63 @@ body.logbook-open .right-drawer {
 .completed-list .task-title {
   text-decoration: line-through;
   color: var(--text-muted);
+}
+
+/* Strategic Goals 5-Timeframe Sections */
+.goals-timeframes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.goal-timeframe-section {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 2px solid var(--accent-red);
+  padding: 0.75rem 0.85rem;
+}
+
+.timeframe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.timeframe-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.06em;
+}
+
+.timeframe-count {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.goals-list {
+  max-height: 220px;
+}
+
+.sci-fi-select {
+  cursor: pointer;
+}
+
+.sci-fi-select option {
+  background: #090a0f;
+  color: #f8fafc;
+}
+
+.visitor-count-badge {
+  color: var(--accent-red-bright);
+  font-weight: 700;
 }
 
 /* Changelog Feed & Items */

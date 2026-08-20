@@ -1878,47 +1878,39 @@ body.logbook-open .right-drawer {
   color: var(--text-muted);
 }
 
-/* Strategic Goals 5-Timeframe Sections */
-.goals-timeframes-container {
+/* Timeframe Filter Bar */
+.tasks-filter-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  max-height: 480px;
-  overflow-y: auto;
-  padding-right: 0.25rem;
-}
-
-.goal-timeframe-section {
-  background: rgba(255, 255, 255, 0.015);
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-left: 2px solid var(--accent-red);
-  padding: 0.75rem 0.85rem;
 }
 
-.timeframe-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.45rem;
-}
-
-.timeframe-title {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--accent-red-bright);
-  letter-spacing: 0.06em;
-}
-
-.timeframe-count {
+.filter-tab {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 600;
-  color: var(--text-muted);
+  padding: 0.28rem 0.6rem;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.15s ease;
 }
 
-.goals-list {
-  max-height: 220px;
+.filter-tab:hover {
+  border-color: var(--accent-red);
+  color: var(--text-primary);
+}
+
+.filter-tab.active {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: var(--accent-red);
+  color: var(--accent-red-bright);
 }
 
 .sci-fi-select {

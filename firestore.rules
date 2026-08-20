@@ -27,14 +27,8 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Tactical Objectives / Tasks: Strictly locked to the logged-in user's own userId
+    // Tactical Objectives / Tasks (Unified Tasks & Goals Collection): Strictly locked to owner userId
     match /tasks/{taskId} {
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Strategic Goals (5-Timeframe Horizons): Strictly locked to user's own userId
-    match /goals/{goalId} {
       allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
       allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
     }

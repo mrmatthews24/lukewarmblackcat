@@ -27,7 +27,7 @@ import {
 // Central System Configuration (Single Source of Truth for Version & Metadata)
 // ==========================================================================
 export const APP_CONFIG = {
-  version: "v1.6", // Automatically updates HUD corner readouts and workspace header
+  version: "v1.7", // Automatically updates HUD corner readouts and workspace header
   organization: "GEORGE TECH",
   coordinates: "41.92556°N 111.47333°W",
   facility: "LOGAN CANYON, UT"
@@ -115,7 +115,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const logbookRef = collection(db, "logbook");
 const tasksRef = collection(db, "tasks");
-const goalsRef = collection(db, "goals");
 const fitnessRef = collection(db, "fitness_entries");
 const visitorStatsDoc = doc(db, "stats", "visitorCount");
 
@@ -175,13 +174,13 @@ const authFeedback = document.getElementById("auth-feedback");
 const workspaceUserEmail = document.getElementById("workspace-user-email");
 const workspaceLockdownBtn = document.getElementById("workspace-lockdown-btn");
 const wsPendingMetric = document.getElementById("ws-pending-metric");
-const wsGoalsMetric = document.getElementById("ws-goals-metric");
+const wsFitnessMetric = document.getElementById("ws-fitness-metric");
 const wsJournalMetric = document.getElementById("ws-journal-metric");
 
-// Tasks Elements
+// Unified Tasks Elements
 const taskForm = document.getElementById("task-form");
 const taskTitleInput = document.getElementById("task-title-input");
-const taskDueDateInput = document.getElementById("task-due-date-input");
+const taskTimeframeSelect = document.getElementById("task-timeframe-select");
 const taskNotesInput = document.getElementById("task-notes-input");
 const taskSubmitBtn = document.getElementById("task-submit-btn");
 const taskSubmitText = document.getElementById("task-submit-text");
@@ -190,17 +189,6 @@ const openTasksList = document.getElementById("open-tasks-list");
 const openTasksCountBadge = document.getElementById("open-tasks-count-badge");
 const completedTasksList = document.getElementById("completed-tasks-list");
 const completedTasksCountBadge = document.getElementById("completed-tasks-count-badge");
-
-// Goals Elements (5 Timeframe Sections)
-const goalForm = document.getElementById("goal-form");
-const goalTitleInput = document.getElementById("goal-title-input");
-const goalTimeframeSelect = document.getElementById("goal-timeframe-select");
-const goalSubmitBtn = document.getElementById("goal-submit-btn");
-const goalSubmitText = document.getElementById("goal-submit-text");
-const goalFormFeedback = document.getElementById("goal-form-feedback");
-const openGoalsCountBadge = document.getElementById("open-goals-count-badge");
-const completedGoalsCountBadge = document.getElementById("completed-goals-count-badge");
-const completedGoalsList = document.getElementById("completed-goals-list");
 
 // Fitness Elements
 const fitnessForm = document.getElementById("fitness-form");
@@ -244,7 +232,7 @@ const drawerBackdrop = document.getElementById("drawer-backdrop");
 const typewriterTarget = document.getElementById("typewriter-target");
 
 // ==========================================================================
-// Collapsible Workspace Panels (Tasks, Goals, Fitness, Changelog, Journal)
+// Collapsible Workspace Panels
 // ==========================================================================
 function initCollapsiblePanels() {
   document.querySelectorAll(".collapsible-panel .panel-toggle-trigger").forEach((header) => {
@@ -553,7 +541,6 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.add("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = user.email || "AUTHORIZED USER";
     subscribeToTasks(user.uid);
-    subscribeToGoals(user.uid);
     subscribeToFitness(user.uid);
     if (window.location.hash === "#workspace") {
       showWorkspaceView();
@@ -563,7 +550,6 @@ onAuthStateChanged(auth, (user) => {
     if (workspaceTriggerBtn) workspaceTriggerBtn.classList.remove("authenticated");
     if (workspaceUserEmail) workspaceUserEmail.textContent = "DISCONNECTED";
     unsubscribeFromTasks();
-    unsubscribeFromGoals();
     unsubscribeFromFitness();
     showPublicView();
   }
@@ -836,9 +822,21 @@ if (refreshChangelogBtn) {
 }
 
 // ==========================================================================
-// Tactical Tasks & Objectives Management (Private Workspace)
+// Unified Tactical Objectives & Goals Management (Private Workspace)
+// Timeframe options: "this week", "this month", "this semester", "this year", "long-term", "none"
 // ==========================================================================
 let unsubscribeTasks = null;
+let allUserTasks = [];
+let activeTasksFilter = "all";
+
+const TIMEFRAME_WEIGHTS = {
+  "this week": 1,
+  "this month": 2,
+  "this semester": 3,
+  "this year": 4,
+  "long-term": 5,
+  "none": 6
+};
 
 function subscribeToTasks(userId) {
   if (unsubscribeTasks) unsubscribeTasks();
@@ -850,7 +848,8 @@ function subscribeToTasks(userId) {
     snapshot.forEach((docSnap) => {
       tasks.push({ id: docSnap.id, ...docSnap.data() });
     });
-    renderTasks(tasks);
+    allUserTasks = tasks;
+    renderTasks();
   }, (error) => {
     console.error("Tasks subscription error:", error);
     if (openTasksList) {
@@ -868,24 +867,52 @@ function unsubscribeFromTasks() {
     unsubscribeTasks();
     unsubscribeTasks = null;
   }
-  renderTasks([]);
+  allUserTasks = [];
+  renderTasks();
 }
 
-function renderTasks(tasks) {
-  const openTasks = tasks.filter(t => !t.completed);
-  const completedTasks = tasks.filter(t => t.completed);
+function renderTasks() {
+  const openTasks = allUserTasks.filter(t => !t.completed);
+  const completedTasks = allUserTasks.filter(t => t.completed);
 
-  // Sort open tasks: by due date ascending (no due date goes to bottom), secondary by createdAt desc
-  openTasks.sort((a, b) => {
-    const dateA = a.dueDate || "";
-    const dateB = b.dueDate || "";
+  // Update filter count badges
+  const filterCounts = {
+    "all": openTasks.length,
+    "this week": openTasks.filter(t => (t.timeframe || "none") === "this week").length,
+    "this month": openTasks.filter(t => (t.timeframe || "none") === "this month").length,
+    "this semester": openTasks.filter(t => (t.timeframe || "none") === "this semester").length,
+    "this year": openTasks.filter(t => (t.timeframe || "none") === "this year").length,
+    "long-term": openTasks.filter(t => (t.timeframe || "none") === "long-term").length,
+    "none": openTasks.filter(t => (t.timeframe || "none") === "none").length
+  };
 
-    if (!dateA && dateB) return 1;
-    if (dateA && !dateB) return -1;
-    if (dateA && dateB) {
-      const cmp = dateA.localeCompare(dateB);
-      if (cmp !== 0) return cmp;
-    }
+  const countAllEl = document.getElementById("filter-count-all");
+  const countWeekEl = document.getElementById("filter-count-this-week");
+  const countMonthEl = document.getElementById("filter-count-this-month");
+  const countSemEl = document.getElementById("filter-count-this-semester");
+  const countYearEl = document.getElementById("filter-count-this-year");
+  const countLongEl = document.getElementById("filter-count-long-term");
+  const countNoneEl = document.getElementById("filter-count-none");
+
+  if (countAllEl) countAllEl.textContent = String(filterCounts["all"]);
+  if (countWeekEl) countWeekEl.textContent = String(filterCounts["this week"]);
+  if (countMonthEl) countMonthEl.textContent = String(filterCounts["this month"]);
+  if (countSemEl) countSemEl.textContent = String(filterCounts["this semester"]);
+  if (countYearEl) countYearEl.textContent = String(filterCounts["this year"]);
+  if (countLongEl) countLongEl.textContent = String(filterCounts["long-term"]);
+  if (countNoneEl) countNoneEl.textContent = String(filterCounts["none"]);
+
+  // Filter open tasks
+  let displayedOpenTasks = openTasks;
+  if (activeTasksFilter !== "all") {
+    displayedOpenTasks = openTasks.filter(t => (t.timeframe || "none") === activeTasksFilter);
+  }
+
+  // Sort: by timeframe weight asc, then by createdAt desc
+  displayedOpenTasks.sort((a, b) => {
+    const wA = TIMEFRAME_WEIGHTS[a.timeframe || "none"] || 6;
+    const wB = TIMEFRAME_WEIGHTS[b.timeframe || "none"] || 6;
+    if (wA !== wB) return wA - wB;
 
     const timeA = a.createdAt?.seconds || 0;
     const timeB = b.createdAt?.seconds || 0;
@@ -904,15 +931,15 @@ function renderTasks(tasks) {
   if (wsPendingMetric) wsPendingMetric.textContent = `${openTasks.length} ACTIVE`;
 
   if (openTasksList) {
-    if (openTasks.length === 0) {
+    if (displayedOpenTasks.length === 0) {
       openTasksList.innerHTML = `
         <div class="empty-log-state">
           <span class="pulse-indicator"></span>
-          <p>NO ACTIVE DIRECTIVES // ALL OBJECTIVES FULFILLED</p>
+          <p>NO ACTIVE DIRECTIVES IN THIS HORIZON</p>
         </div>
       `;
     } else {
-      openTasksList.innerHTML = openTasks.map(t => renderTaskItemHTML(t, false)).join("");
+      openTasksList.innerHTML = displayedOpenTasks.map(t => renderTaskItemHTML(t, false)).join("");
     }
   }
 
@@ -929,7 +956,7 @@ function renderTasks(tasks) {
   }
 
   // Attach Checkbox Toggle Handlers
-  document.querySelectorAll(".task-hud-checkbox:not(.goal-hud-checkbox)").forEach((checkbox) => {
+  document.querySelectorAll(".task-hud-checkbox").forEach((checkbox) => {
     checkbox.addEventListener("change", async (e) => {
       const taskId = e.target.getAttribute("data-id");
       const isChecked = e.target.checked;
@@ -945,7 +972,7 @@ function renderTasks(tasks) {
   });
 
   // Attach Delete Handlers
-  document.querySelectorAll(".task-delete-btn:not(.goal-delete-btn):not(.fitness-delete-btn)").forEach((btn) => {
+  document.querySelectorAll(".task-delete-btn:not(.fitness-delete-btn)").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const taskId = btn.getAttribute("data-id");
       if (!confirm("CONFIRM DELETION: Purge this objective directive from the database?")) {
@@ -963,19 +990,17 @@ function renderTasks(tasks) {
 function renderTaskItemHTML(task, isCompleted) {
   const sanitizedTitle = escapeHTML(task.title);
   const sanitizedNotes = task.notes ? escapeHTML(task.notes) : "";
-  
-  let dueBadgeHTML = '';
-  if (task.dueDate) {
-    const todayStr = new Date().toISOString().split("T")[0];
-    const isOverdue = !isCompleted && task.dueDate < todayStr;
-    const isToday = !isCompleted && task.dueDate === todayStr;
-    const badgeClass = isOverdue ? "task-due-badge overdue" : (isToday ? "task-due-badge overdue" : "task-due-badge");
-    const label = isOverdue ? `OVERDUE: ${task.dueDate}` : (isToday ? `DUE TODAY: ${task.dueDate}` : `DUE: ${task.dueDate}`);
-    dueBadgeHTML = `<span class="${badgeClass}">${label}</span>`;
-  } else {
-    dueBadgeHTML = `<span class="task-due-badge no-due">NO DEADLINE</span>`;
-  }
+  const tf = task.timeframe || "none";
 
+  let tfLabel = "QUICK TO-DO";
+  if (tf === "this week") tfLabel = "THIS WEEK";
+  else if (tf === "this month") tfLabel = "THIS MONTH";
+  else if (tf === "this semester") tfLabel = "THIS SEMESTER";
+  else if (tf === "this year") tfLabel = "THIS YEAR";
+  else if (tf === "long-term") tfLabel = "LONG-TERM";
+
+  const tfBadgeClass = tf === "this week" ? "task-due-badge overdue" : (tf === "none" ? "task-due-badge no-due" : "task-due-badge");
+  const dueBadgeHTML = `<span class="${tfBadgeClass}">// [HORIZON: ${tfLabel}]</span>`;
   const notesHTML = sanitizedNotes ? `<div class="task-notes">${sanitizedNotes}</div>` : '';
 
   return `
@@ -1005,6 +1030,16 @@ function renderTaskItemHTML(task, isCompleted) {
   `;
 }
 
+// Timeframe Filter Tabs Handler
+document.querySelectorAll(".filter-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeTasksFilter = tab.getAttribute("data-filter") || "all";
+    renderTasks();
+  });
+});
+
 // Handle Task Form Submission
 if (taskForm) {
   taskForm.addEventListener("submit", async (e) => {
@@ -1015,7 +1050,7 @@ if (taskForm) {
     }
 
     const title = taskTitleInput.value.trim();
-    const dueDate = taskDueDateInput.value || null;
+    const timeframe = taskTimeframeSelect.value || "none";
     const notes = taskNotesInput.value.trim() || null;
 
     if (!title) {
@@ -1030,7 +1065,7 @@ if (taskForm) {
     try {
       await addDoc(tasksRef, {
         title,
-        dueDate,
+        timeframe,
         notes,
         completed: false,
         createdAt: serverTimestamp(),
@@ -1038,7 +1073,6 @@ if (taskForm) {
       });
 
       taskTitleInput.value = "";
-      taskDueDateInput.value = "";
       taskNotesInput.value = "";
       showTaskFeedback("OBJECTIVE INITIALIZED IN DATABASE", "success");
       taskSubmitText.textContent = "RECORDED ✓";
@@ -1067,208 +1101,6 @@ function clearTaskFeedback() {
   if (taskFormFeedback) {
     taskFormFeedback.textContent = "";
     taskFormFeedback.className = "form-feedback";
-  }
-}
-
-// ==========================================================================
-// Strategic Goals Management (5 Timeframe Sections: Daily, Weekly, Monthly, 1-Year, 5-Year)
-// ==========================================================================
-let unsubscribeGoals = null;
-
-function subscribeToGoals(userId) {
-  if (unsubscribeGoals) unsubscribeGoals();
-
-  const q = query(goalsRef, where("userId", "==", userId));
-  
-  unsubscribeGoals = onSnapshot(q, (snapshot) => {
-    const goals = [];
-    snapshot.forEach((docSnap) => {
-      goals.push({ id: docSnap.id, ...docSnap.data() });
-    });
-    renderGoals(goals);
-  }, (error) => {
-    console.error("Goals subscription error:", error);
-  });
-}
-
-function unsubscribeFromGoals() {
-  if (unsubscribeGoals) {
-    unsubscribeGoals();
-    unsubscribeGoals = null;
-  }
-  renderGoals([]);
-}
-
-const GOAL_TIMEFRAMES = [
-  { id: "daily", label: "DAILY DIRECTIVES" },
-  { id: "weekly", label: "WEEKLY TARGETS" },
-  { id: "monthly", label: "MONTHLY MILESTONES" },
-  { id: "yearly", label: "1-YEAR HORIZONS" },
-  { id: "longterm", label: "LONG-RANGE STRATEGY" }
-];
-
-function renderGoals(goals) {
-  const openGoals = goals.filter(g => !g.completed);
-  const completedGoals = goals.filter(g => g.completed);
-
-  if (openGoalsCountBadge) openGoalsCountBadge.textContent = `${openGoals.length} ACTIVE`;
-  if (completedGoalsCountBadge) completedGoalsCountBadge.textContent = `${completedGoals.length} ACHIEVED`;
-  if (wsGoalsMetric) wsGoalsMetric.textContent = `${openGoals.length} ACTIVE`;
-
-  // Render open goals across the 5 timeframe streams
-  GOAL_TIMEFRAMES.forEach(tf => {
-    const tfGoals = openGoals.filter(g => (g.timeframe || "weekly") === tf.id);
-    const listEl = document.getElementById(`goals-list-${tf.id}`);
-    const countEl = document.getElementById(`count-${tf.id}-goals`);
-
-    if (countEl) countEl.textContent = String(tfGoals.length);
-
-    if (listEl) {
-      if (tfGoals.length === 0) {
-        listEl.innerHTML = `
-          <div class="empty-log-state" style="padding: 0.75rem 0.25rem;">
-            <p>NO ACTIVE ${tf.label}</p>
-          </div>
-        `;
-      } else {
-        listEl.innerHTML = tfGoals.map(g => renderGoalItemHTML(g, false)).join("");
-      }
-    }
-  });
-
-  // Render completed goals
-  if (completedGoalsList) {
-    if (completedGoals.length === 0) {
-      completedGoalsList.innerHTML = `
-        <div class="empty-log-state">
-          <p>NO ACHIEVED GOALS RECORDED</p>
-        </div>
-      `;
-    } else {
-      completedGoalsList.innerHTML = completedGoals.map(g => renderGoalItemHTML(g, true)).join("");
-    }
-  }
-
-  // Attach Goal Checkbox Toggle Handlers
-  document.querySelectorAll(".goal-hud-checkbox").forEach((checkbox) => {
-    checkbox.addEventListener("change", async (e) => {
-      const goalId = e.target.getAttribute("data-id");
-      const isChecked = e.target.checked;
-      try {
-        await updateDoc(doc(db, "goals", goalId), {
-          completed: isChecked
-        });
-      } catch (err) {
-        console.error("Error updating goal status:", err);
-        e.target.checked = !isChecked;
-      }
-    });
-  });
-
-  // Attach Goal Delete Handlers
-  document.querySelectorAll(".goal-delete-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const goalId = btn.getAttribute("data-id");
-      if (!confirm("CONFIRM DELETION: Purge this strategic goal from the database?")) {
-        return;
-      }
-      try {
-        await deleteDoc(doc(db, "goals", goalId));
-      } catch (err) {
-        console.error("Error deleting goal:", err);
-      }
-    });
-  });
-}
-
-function renderGoalItemHTML(goal, isCompleted) {
-  const sanitizedTitle = escapeHTML(goal.title);
-  const tfName = (goal.timeframe || "TARGET").toUpperCase();
-
-  return `
-    <li class="task-item" data-id="${goal.id}">
-      <div class="task-checkbox-container">
-        <input 
-          type="checkbox" 
-          class="task-hud-checkbox goal-hud-checkbox" 
-          data-id="${goal.id}" 
-          ${isCompleted ? 'checked' : ''} 
-          aria-label="Toggle goal achievement"
-        >
-      </div>
-      <div class="task-content">
-        <div class="task-title">${sanitizedTitle}</div>
-        <div class="task-meta-row">
-          <span class="task-due-badge no-due">// [HORIZON: ${tfName}]</span>
-        </div>
-      </div>
-      <div class="task-actions">
-        <button type="button" class="task-delete-btn goal-delete-btn" data-id="${goal.id}" title="Permanently delete goal">
-          PURGE [✕]
-        </button>
-      </div>
-    </li>
-  `;
-}
-
-// Handle Goal Form Submission
-if (goalForm) {
-  goalForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!auth.currentUser) {
-      showGoalFeedback("AUTHENTICATION REQUIRED TO COMMIT GOALS", "error");
-      return;
-    }
-
-    const title = goalTitleInput.value.trim();
-    const timeframe = goalTimeframeSelect.value || "weekly";
-
-    if (!title) {
-      showGoalFeedback("ENTER GOAL TITLE", "error");
-      return;
-    }
-
-    goalSubmitBtn.disabled = true;
-    goalSubmitText.textContent = "COMMITTING...";
-    clearGoalFeedback();
-
-    try {
-      await addDoc(goalsRef, {
-        title,
-        timeframe,
-        completed: false,
-        createdAt: serverTimestamp(),
-        userId: auth.currentUser.uid
-      });
-
-      goalTitleInput.value = "";
-      showGoalFeedback("STRATEGIC TARGET COMMITTED TO DATABASE", "success");
-      goalSubmitText.textContent = "COMMITTED ✓";
-
-      setTimeout(() => {
-        goalSubmitText.textContent = "+ COMMIT GOAL";
-        goalSubmitBtn.disabled = false;
-      }, 1200);
-    } catch (err) {
-      console.error("Error creating goal:", err);
-      showGoalFeedback("TRANSMISSION ERROR: " + (err.message || "SECURITY FAILURE"), "error");
-      goalSubmitBtn.disabled = false;
-      goalSubmitText.textContent = "+ COMMIT GOAL";
-    }
-  });
-}
-
-function showGoalFeedback(msg, type) {
-  if (goalFormFeedback) {
-    goalFormFeedback.textContent = msg;
-    goalFormFeedback.className = `form-feedback ${type}`;
-  }
-}
-
-function clearGoalFeedback() {
-  if (goalFormFeedback) {
-    goalFormFeedback.textContent = "";
-    goalFormFeedback.className = "form-feedback";
   }
 }
 
@@ -1309,6 +1141,7 @@ function renderFitness(entries) {
   });
 
   if (fitnessCountBadge) fitnessCountBadge.textContent = `${entries.length} LOGS`;
+  if (wsFitnessMetric) wsFitnessMetric.textContent = `${entries.length} RECORDED`;
 
   if (fitnessEntriesList) {
     if (entries.length === 0) {

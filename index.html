@@ -21,7 +21,7 @@
        ========================================================================== -->
   <div id="public-view" class="view-wrapper">
     <!-- Screen Corner Telemetry Readouts -->
-    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.6</span><br>COORD: 41.92556°N 111.47333°W</div>
+    <div class="hud-telemetry hud-telemetry-tl" aria-hidden="true">GEORGE TECH // BUILD <span id="hud-version-tag">v1.7</span><br>COORD: 41.92556°N 111.47333°W</div>
     <div class="hud-telemetry hud-telemetry-tr" id="hud-live-clock" aria-label="Live Tactical Clock">
       <span class="hud-live-dot"></span><span id="hud-day-of-week">---</span> // <span id="hud-live-time">--:--:--</span><br>
       <span class="hud-time-sub">CHRONO: LOCAL // LOGAN CANYON, UT</span>
@@ -77,30 +77,19 @@
           <span class="cat-hud-label">[SCAN: FELIS_NOIR]</span>
 
           <svg class="cat-outline" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of a black cat">
-            <!-- Head & Ears -->
             <path class="cat-stroke" d="M68 82 L58 48 C57 44 61 41 65 43 L84 57 C92 54 108 54 116 57 L135 43 C139 41 143 44 142 48 L132 82 C142 94 146 112 142 128 C138 142 126 152 100 152 C74 152 62 142 58 128 C54 112 58 94 68 82Z" />
-            
-            <!-- Sleepy / Relaxed Eyes -->
             <path class="cat-stroke" d="M78 88 Q86 94 94 88" />
             <path class="cat-stroke" d="M106 88 Q114 94 122 88" />
-            
-            <!-- Nose & Mouth -->
             <path class="cat-stroke" d="M100 96 L100 102" />
             <path class="cat-stroke" d="M100 102 Q94 107 89 104" />
             <path class="cat-stroke" d="M100 102 Q106 107 111 104" />
-            
-            <!-- Whiskers -->
             <path class="cat-stroke whisker" d="M52 94 L72 96" />
             <path class="cat-stroke whisker" d="M50 103 L70 102" />
             <path class="cat-stroke whisker" d="M128 96 L148 94" />
             <path class="cat-stroke whisker" d="M130 102 L150 103" />
-
-            <!-- Body & Front Paws -->
             <path class="cat-stroke" d="M72 148 C68 162 65 178 65 186 C65 188 67 190 70 190 H130 C133 190 135 188 135 186 C135 178 132 162 128 148" />
             <path class="cat-stroke" d="M92 155 V190" />
             <path class="cat-stroke" d="M108 155 V190" />
-            
-            <!-- Curled Tail -->
             <path class="cat-stroke tail" d="M135 186 C152 186 166 176 166 160 C166 148 156 142 148 146 C142 150 144 158 150 158" />
           </svg>
         </div>
@@ -345,7 +334,6 @@
         </button>
       </div>
 
-      <!-- Line Art Car Graphic (Matching Cat Line-Art Aesthetic) -->
       <div class="hw-car-graphic-wrapper">
         <div class="cat-hud-frame hw-car-frame">
           <span class="cat-hud-label">[SCAN: VEHICLE_SPEC]</span>
@@ -391,7 +379,7 @@
       <div class="nav-brand-group">
         <span class="terminal-prompt">&gt;</span>
         <div class="nav-title-column">
-          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.6</span></h1>
+          <h1 class="nav-brand-title">GEORGE TECH // TAC-WORKSPACE <span id="ws-version-tag" class="ws-version-tag">v1.7</span></h1>
           <span class="nav-brand-sub">COORD: 41.92556°N 111.47333°W [LOGAN CANYON, UT]</span>
         </div>
       </div>
@@ -428,12 +416,12 @@
           <span class="metric-val text-green">ROOT_ADMIN [ONLINE]</span>
         </div>
         <div class="metric-card hud-card">
-          <span class="metric-label">// PENDING DIRECTIVES</span>
+          <span class="metric-label">// PENDING TASKS</span>
           <span class="metric-val text-red" id="ws-pending-metric">0 ACTIVE</span>
         </div>
         <div class="metric-card hud-card">
-          <span class="metric-label">// STRATEGIC GOALS</span>
-          <span class="metric-val text-red" id="ws-goals-metric">0 ACTIVE</span>
+          <span class="metric-label">// FITNESS LOGS</span>
+          <span class="metric-val" id="ws-fitness-metric">0 RECORDED</span>
         </div>
         <div class="metric-card hud-card">
           <span class="metric-label">// ENCRYPTED LOGS</span>
@@ -444,7 +432,7 @@
       <!-- Multi-Column Operational Panels Grid -->
       <div class="workspace-panels-grid">
         
-        <!-- PANEL 1: Tactical Objectives / Tasks Management (Collapsible) -->
+        <!-- PANEL 1: Unified Tactical Objectives & Goals Panel (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="tasks-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -464,29 +452,32 @@
             <!-- Task Composer Form -->
             <div class="task-composer-box">
               <form id="task-form" class="task-form">
-                <div class="form-header-label">// INITIALIZE NEW DIRECTIVE</div>
+                <div class="form-header-label">// INITIALIZE DIRECTIVE / GOAL</div>
                 <div class="input-container">
                   <input 
                     type="text" 
                     id="task-title-input" 
                     class="sci-fi-input" 
-                    placeholder="OBJECTIVE TITLE / DIRECTIVE..." 
-                    maxlength="120" 
+                    placeholder="OBJECTIVE TITLE / TASK / TARGET GOAL..." 
+                    maxlength="140" 
                     required
                   >
 
                   <div class="task-form-row">
                     <div class="task-field-group">
-                      <label for="task-due-date-input" class="task-field-label">// DUE DATE [OPTIONAL]</label>
-                      <input 
-                        type="date" 
-                        id="task-due-date-input" 
-                        class="sci-fi-input task-date-input"
-                      >
+                      <label for="task-timeframe-select" class="task-field-label">// TIMEFRAME HORIZON</label>
+                      <select id="task-timeframe-select" class="sci-fi-input sci-fi-select">
+                        <option value="none" selected>NONE // QUICK TO-DO</option>
+                        <option value="this week">THIS WEEK</option>
+                        <option value="this month">THIS MONTH</option>
+                        <option value="this semester">THIS SEMESTER</option>
+                        <option value="this year">THIS YEAR</option>
+                        <option value="long-term">LONG-TERM</option>
+                      </select>
                     </div>
 
                     <div class="task-field-group flex-2">
-                      <label for="task-notes-input" class="task-field-label">// ADDITIONAL INTEL [OPTIONAL]</label>
+                      <label for="task-notes-input" class="task-field-label">// INTEL / NOTES [OPTIONAL]</label>
                       <input 
                         type="text" 
                         id="task-notes-input" 
@@ -510,9 +501,20 @@
               </form>
             </div>
 
+            <!-- Timeframe Filter Bar -->
+            <div class="tasks-filter-bar" role="tablist" aria-label="Filter tasks by timeframe">
+              <button type="button" class="filter-tab active" data-filter="all">ALL (<span id="filter-count-all">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="this week">THIS WEEK (<span id="filter-count-this-week">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="this month">THIS MONTH (<span id="filter-count-this-month">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="this semester">THIS SEMESTER (<span id="filter-count-this-semester">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="this year">THIS YEAR (<span id="filter-count-this-year">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="long-term">LONG-TERM (<span id="filter-count-long-term">0</span>)</button>
+              <button type="button" class="filter-tab" data-filter="none">QUICK TO-DOS (<span id="filter-count-none">0</span>)</button>
+            </div>
+
             <!-- Active Tasks Stream -->
             <div class="tasks-stream-wrapper">
-              <div class="log-feed-label">[ACTIVE DIRECTIVES // TIMELINE PRIORITY]</div>
+              <div class="log-feed-label">[ACTIVE DIRECTIVES // PRIORITY HORIZONS]</div>
               <ul id="open-tasks-list" class="tasks-list">
                 <div class="empty-log-state">
                   <span class="pulse-indicator"></span>
@@ -527,7 +529,7 @@
                 <summary class="completed-tasks-summary">
                   <span class="summary-left">
                     <span class="summary-icon">▼</span>
-                    <span>COMPLETED DIRECTIVES</span>
+                    <span>COMPLETED DIRECTIVES ARCHIVE</span>
                   </span>
                   <span class="log-count-badge completed-badge" id="completed-tasks-count-badge">0 COMPLETED</span>
                 </summary>
@@ -541,144 +543,7 @@
           </div>
         </section>
 
-        <!-- PANEL 2: Goals Panel (5 Timeframe Sections - Collapsible) -->
-        <section class="workspace-panel hud-card collapsible-panel" id="goals-dashboard-panel">
-          <span class="reticle reticle-tl" aria-hidden="true"></span>
-          <span class="reticle reticle-tr" aria-hidden="true"></span>
-          <span class="reticle reticle-bl" aria-hidden="true"></span>
-          <span class="reticle reticle-br" aria-hidden="true"></span>
-
-          <div class="panel-header panel-toggle-trigger" role="button" aria-expanded="true" title="Click title bar to collapse/expand">
-            <div class="terminal-title-group">
-              <span class="terminal-prompt">&gt;</span>
-              <h2 class="terminal-title">STRATEGIC GOALS // HORIZONS</h2>
-              <span class="panel-collapse-icon" aria-hidden="true">▼</span>
-            </div>
-            <span class="log-count-badge" id="open-goals-count-badge">0 ACTIVE</span>
-          </div>
-
-          <div class="panel-body-content">
-            <!-- Goal Composer Form -->
-            <div class="task-composer-box">
-              <form id="goal-form" class="task-form">
-                <div class="form-header-label">// ESTABLISH STRATEGIC TARGET</div>
-                <div class="input-container">
-                  <input 
-                    type="text" 
-                    id="goal-title-input" 
-                    class="sci-fi-input" 
-                    placeholder="GOAL / TARGET MILESTONE..." 
-                    maxlength="140" 
-                    required
-                  >
-
-                  <div class="task-form-row">
-                    <div class="task-field-group flex-2">
-                      <label for="goal-timeframe-select" class="task-field-label">// TIMEFRAME HORIZON</label>
-                      <select id="goal-timeframe-select" class="sci-fi-input sci-fi-select" required>
-                        <option value="daily">DAILY DIRECTIVES</option>
-                        <option value="weekly" selected>WEEKLY TARGETS</option>
-                        <option value="monthly">MONTHLY MILESTONES</option>
-                        <option value="yearly">1-YEAR HORIZONS</option>
-                        <option value="longterm">LONG-RANGE STRATEGY (5-YEAR)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="task-form-actions">
-                    <button type="submit" id="goal-submit-btn" class="sci-fi-btn">
-                      <span id="goal-submit-text">+ COMMIT GOAL</span>
-                      <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <div id="goal-form-feedback" class="form-feedback" aria-live="polite"></div>
-              </form>
-            </div>
-
-            <!-- 5 Timeframe Goals Streams -->
-            <div class="goals-timeframes-container">
-              
-              <!-- Timeframe 1: Daily Directives -->
-              <div class="goal-timeframe-section">
-                <div class="timeframe-header">
-                  <span class="timeframe-title">// DAILY DIRECTIVES</span>
-                  <span class="timeframe-count" id="count-daily-goals">0</span>
-                </div>
-                <ul id="goals-list-daily" class="tasks-list goals-list">
-                  <!-- Rendered dynamically -->
-                </ul>
-              </div>
-
-              <!-- Timeframe 2: Weekly Targets -->
-              <div class="goal-timeframe-section">
-                <div class="timeframe-header">
-                  <span class="timeframe-title">// WEEKLY TARGETS</span>
-                  <span class="timeframe-count" id="count-weekly-goals">0</span>
-                </div>
-                <ul id="goals-list-weekly" class="tasks-list goals-list">
-                  <!-- Rendered dynamically -->
-                </ul>
-              </div>
-
-              <!-- Timeframe 3: Monthly Milestones -->
-              <div class="goal-timeframe-section">
-                <div class="timeframe-header">
-                  <span class="timeframe-title">// MONTHLY MILESTONES</span>
-                  <span class="timeframe-count" id="count-monthly-goals">0</span>
-                </div>
-                <ul id="goals-list-monthly" class="tasks-list goals-list">
-                  <!-- Rendered dynamically -->
-                </ul>
-              </div>
-
-              <!-- Timeframe 4: 1-Year Horizons -->
-              <div class="goal-timeframe-section">
-                <div class="timeframe-header">
-                  <span class="timeframe-title">// 1-YEAR HORIZONS</span>
-                  <span class="timeframe-count" id="count-yearly-goals">0</span>
-                </div>
-                <ul id="goals-list-yearly" class="tasks-list goals-list">
-                  <!-- Rendered dynamically -->
-                </ul>
-              </div>
-
-              <!-- Timeframe 5: Long-Range Strategy (5-Year) -->
-              <div class="goal-timeframe-section">
-                <div class="timeframe-header">
-                  <span class="timeframe-title">// LONG-RANGE STRATEGY [5-YEAR]</span>
-                  <span class="timeframe-count" id="count-longterm-goals">0</span>
-                </div>
-                <ul id="goals-list-longterm" class="tasks-list goals-list">
-                  <!-- Rendered dynamically -->
-                </ul>
-              </div>
-
-            </div>
-
-            <!-- Completed Goals Archive -->
-            <div class="completed-tasks-wrapper">
-              <details id="completed-goals-details" class="completed-tasks-details hud-card">
-                <summary class="completed-tasks-summary">
-                  <span class="summary-left">
-                    <span class="summary-icon">▼</span>
-                    <span>ACHIEVED GOALS ARCHIVE</span>
-                  </span>
-                  <span class="log-count-badge completed-badge" id="completed-goals-count-badge">0 ACHIEVED</span>
-                </summary>
-                <div class="completed-tasks-body">
-                  <ul id="completed-goals-list" class="tasks-list completed-list">
-                    <!-- Rendered dynamically by app.js -->
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </section>
-
-        <!-- PANEL 3: Fitness & Conditioning Panel (Collapsible) -->
+        <!-- PANEL 2: Fitness & Conditioning Panel (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="fitness-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -715,7 +580,7 @@
                         type="text" 
                         id="fitness-metric-input" 
                         class="sci-fi-input" 
-                        placeholder="E.G. 24:15 MIN, 225 LBS..."
+                        placeholder="E.G. 24:15 MIN, 225 LBS..." 
                         maxlength="60"
                       >
                     </div>
@@ -757,7 +622,7 @@
           </div>
         </section>
 
-        <!-- PANEL 4: What Changed? / Git Deployment History Panel (Collapsible) -->
+        <!-- PANEL 3: What Changed? / Git Deployment History Panel (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="changelog-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
@@ -789,7 +654,7 @@
           </div>
         </section>
 
-        <!-- PANEL 5: Workspace Notes & Journal Panel (Collapsible) -->
+        <!-- PANEL 4: Workspace Notes & Journal Panel (Collapsible) -->
         <section class="workspace-panel hud-card collapsible-panel" id="journal-dashboard-panel">
           <span class="reticle reticle-tl" aria-hidden="true"></span>
           <span class="reticle reticle-tr" aria-hidden="true"></span>
